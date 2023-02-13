@@ -1,8 +1,27 @@
 {
-  "name": "plugin",
-  "private": true,
-  "version": "0.0.0",
+  "name": "chartjs-plugin-chart2music",
+  "version": "0.0.1",
   "type": "module",
+  "description": "Chart.js plugin for Chart2Music. Automatically make your chart.js charts accessibile for keyboard-only and screen reader users with interactive sonification, just by registering this plugin.",
+  "main": "dist/plugin.js",
+  "files": ["dist/*"],
+  "keywords": [
+    "a11y",
+    "accessibility",
+    "chart.js",
+    "chart",
+    "dataviz",
+    "screen reader",
+    "sonification"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianna-langston/chartjs2music"
+  },
+  "bugs": {
+    "url": "https://github.com/julianna-langston/chartjs2music/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "start": "vite",
     "build": "rollup -c rollup.config.js --silent",
