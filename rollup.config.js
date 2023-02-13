@@ -13,5 +13,15 @@ export default [
         plugins: [
             typescript({tsconfig: "./tsconfig.json"})
         ]
+    },
+    {
+        input: "src/c2m-plugin.ts",
+        output: [
+            {
+                file: "dist/plugin.mjs",
+                format: "es"
+            }
+        ],
+        plugins: [typescript({tsconfig: "./tsconfig.json"})]
     }
 ]

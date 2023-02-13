@@ -2,8 +2,12 @@
   "name": "chartjs-plugin-chart2music",
   "version": "0.0.1",
   "type": "module",
-  "description": "Chart.js plugin for Chart2Music. Automatically make your chart.js charts accessibile for keyboard-only and screen reader users with interactive sonification, just by registering this plugin.",
+  "description": "Chart.js plugin for Chart2Music. Turns chart.js charts into music so the blind can hear data.",
   "main": "dist/plugin.js",
+  "module": "dist/plugin.mjs",
+  "exports": {
+      "import": "./dist/plugin.mjs"
+  },
   "files": ["dist/*"],
   "keywords": [
     "a11y",
