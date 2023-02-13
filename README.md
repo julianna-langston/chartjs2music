@@ -56,3 +56,11 @@ Things we plan to support in the future:
 * Dataset visibility (when you show/hide a category from the legend)
 * Radar charts
 * Custom formatting for axis tick values
+
+Plugins we plan to support in the future:
+* [@sgratzl/chartjs-chart-boxplot](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot)
+* [chartjs-char-error-bars](https://www.npmjs.com/package/chartjs-chart-error-bars)
+* [chartjs-chart-matrix](https://www.npmjs.com/package/chartjs-chart-matrix)
+* [chartjs-chart-pcp](https://www.npmjs.com/package/chartjs-chart-pcp)
+* [chartjs-chart-wordcloud](https://www.npmjs.com/package/chartjs-chart-wordcloud)
+* [chartjs-plugin-zoom](https://www.npmjs.com/package/chartjs-plugin-zoom)
