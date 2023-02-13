@@ -43,6 +43,7 @@ A quick list of chart.js features we currently support includes:
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
 * Chart title
 * Most data structures (not including `parsing` or non-standard axes identifiers)
+* Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
 
 Note that visual-specific chart features are ignored. This includes things like color, padding, line thickness, etc.
 
