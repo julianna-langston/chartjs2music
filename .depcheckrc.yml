@@ -1,0 +1,36 @@
+ignores: [
+    "typescript",
+
+    # Used as a script in package.json
+    "rollup", # for yarn build
+    "rimraf", # for yarn clean
+
+    # Configured with the jest.config.js
+    "jest-environment-jsdom",
+
+    # Helper library sideloaded by jest
+    "tslib",
+    "ts-jest",  # transformer for jest to work with typescript
+    "@types/jest",
+    "canvas"  # without this, Chart.js can't run in the test system
+  ]
+skip-missing: true
+
+# https://github.com/depcheck/depcheck/issues/615
+parsers:
+  "**/*.mjs":
+    - "es6"
+  "**/*.cjs":
+    - "es6"
+  "**/*.mts":
+    - "typescript"
+  "**/*.cts":
+    - "typescript"
+  "**/*.jsx":
+    - "jsx"
+  "**/*.tsx":
+    - "typescript"
+  "**/*.ts":
+    - "typescript"
+  "**/*.js":
+    - "es6"
