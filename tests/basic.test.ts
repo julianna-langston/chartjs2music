@@ -1,5 +1,5 @@
 import {Chart} from "chart.js";
-import {plugin} from "../src/c2m-plugin";
+import plugin from "../src/c2m-plugin";
 import charts from "../samples/charts"
 
 Chart.register(plugin);

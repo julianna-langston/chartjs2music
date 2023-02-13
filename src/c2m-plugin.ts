@@ -153,7 +153,7 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided: HTMLElement | n
     return cc;
 }
 
-export const plugin: Plugin = {
+const plugin: Plugin = {
     id: "chartjs2music",
 
     afterInit: (chart: Chart, args, options) => {
@@ -234,3 +234,5 @@ export const plugin: Plugin = {
     }
 
 };
+
+export default plugin;

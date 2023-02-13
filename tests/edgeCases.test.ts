@@ -6,7 +6,7 @@ import {
     PointElement,
     LineElement
 } from "chart.js";
-import {plugin} from "../src/c2m-plugin";
+import plugin from "../src/c2m-plugin";
 import logChart from "../samples/charts/log";
 
 Chart.register(
