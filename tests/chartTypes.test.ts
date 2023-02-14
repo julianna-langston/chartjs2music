@@ -2,25 +2,18 @@ import {Chart, ChartConfiguration} from "chart.js";
 import plugin from "../src/c2m-plugin";
 import charts from "../samples/charts"
 
-const [
+const {
     simple_bar, 
-    log,
     grouped_bar, 
     grouped_line,
-    floating_bar,
-    bar_line,
-    getting_started_Example,
     polarArea1,
-    polarArea2,
     donut,
-    string_x_minimum,
     stacked_pie,
-    string_x_values,
     box_plot,
     box_plot_numbers,
     box_plot_group,
     box_plot_group_numbers
-] = charts;
+} = charts;
 
 Chart.register(plugin);
 
@@ -81,6 +74,7 @@ test("Grouped pie chart", () => {
     expect(cc.textContent).toContain(`y is "" from 10 to 90`);
 });
 test("Box plot", () => {
+    // @ts-ignore
     const {cc} = setup(box_plot);
     
     expect(cc.textContent).toContain(`Sonified box chart "City Mileage for Vehicle Types"`);
@@ -102,6 +96,7 @@ test("Grouped box plot", () => {
     expect(cc.textContent).toContain(`y is "" from 0.1 to 7.7`);
 });
 test("Grouped box plot (numbers)", () => {
+    // @ts-ignore
     const {cc} = setup(box_plot_group_numbers);
     
     expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);

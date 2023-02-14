@@ -1,7 +1,9 @@
 import Chart from "chart.js/auto";
 import plugin from "../src/c2m-plugin";
-import charts from "./charts";
+import samples from "./charts";
 import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
+
+const charts = Object.values(samples);
 
 Chart.register(BoxPlotController, BoxAndWiskers);
 

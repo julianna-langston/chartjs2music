@@ -1,5 +1,7 @@
+import { ChartTypeRegistry } from "chart.js";
+
 export default {
-    type: "boxplot",
+    type: "boxplot" as keyof ChartTypeRegistry,
     data: {
         labels: ["Setosa", "Versicolor", "Virginica"],
         datasets: [{

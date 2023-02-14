@@ -1,5 +1,7 @@
+import { ChartTypeRegistry } from "chart.js";
+
 export default {
-    type: "boxplot",
+    type: "boxplot" as keyof ChartTypeRegistry,
     data: {
         labels: ["Sepal Length", "Sepal width", "Petal length", "Petal width"],
         datasets: [

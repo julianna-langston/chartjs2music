@@ -28,9 +28,6 @@ export default {
   options: {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top',
-      },
       title: {
         display: true,
         text: 'Chart.js Line Chart'

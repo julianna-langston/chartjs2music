@@ -16,7 +16,7 @@ import box_plot_numbers from "./box_plot_numbers";
 import box_plot_group from "./box_plot_group";
 import box_plot_group_numbers from "./box_plot_group_numbers";
 
-export default [
+export default {
     simple_bar, 
     log,
     grouped_bar, 
@@ -24,14 +24,14 @@ export default [
     floating_bar,
     bar_line,
     getting_started_Example,
+    string_x_minimum,
+    string_x_values,
+    stacked_pie,
     polarArea1,
     polarArea2,
     donut,
-    string_x_minimum,
-    stacked_pie,
-    string_x_values,
     box_plot,
     box_plot_numbers,
     box_plot_group,
-    box_plot_group_numbers
-];
+    box_plot_group_numbers,
+};
