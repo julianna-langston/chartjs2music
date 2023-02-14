@@ -82,6 +82,7 @@ test("Box plot", () => {
     expect(cc.textContent).toContain(`y is "" from 10 to 60`);
 });
 test("Box plot (numbers)", () => {
+    // @ts-ignore
     const {cc} = setup(box_plot_numbers);
     
     expect(cc.textContent).toContain(`Sonified box chart "Iris"`);
@@ -89,6 +90,7 @@ test("Box plot (numbers)", () => {
     expect(cc.textContent).toContain(`y is "" from 4.3 to 7.7`);
 });
 test("Grouped box plot", () => {
+    // @ts-ignore
     const {cc} = setup(box_plot_group);
     
     expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);

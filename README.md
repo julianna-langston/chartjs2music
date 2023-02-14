@@ -39,11 +39,11 @@ new Chart(canvasElement, {
 This plugin is currently in beta, so not all of the chart.js features are currently supported.
 
 A quick list of chart.js features we currently support includes:
-* Chart types: bar, line, pie, doughnut, polar, and combinations therein.
+* Chart types: bar, line, pie, doughnut, polar, radar, and combinations therein.
+* Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
 * Chart title
 * Most data structures (not including `parsing` or non-standard axes identifiers)
-* Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
 
 Note that visual-specific chart features are ignored. This includes things like color, padding, line thickness, etc.
 
@@ -59,7 +59,6 @@ Things we plan to support in the future:
 * Custom formatting for axis tick values
 
 Plugins we plan to support in the future:
-* [@sgratzl/chartjs-chart-boxplot](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot)
 * [chartjs-char-error-bars](https://www.npmjs.com/package/chartjs-chart-error-bars)
 * [chartjs-chart-matrix](https://www.npmjs.com/package/chartjs-chart-matrix)
 * [chartjs-chart-pcp](https://www.npmjs.com/package/chartjs-chart-pcp)

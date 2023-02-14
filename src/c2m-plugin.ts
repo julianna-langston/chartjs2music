@@ -11,6 +11,7 @@ const chartjs_c2m_converter: any = {
     polarArea: "bar",
     doughnut: "pie",
     boxplot: "box",
+    radar: "bar"
 };
 
 const processChartType = (chart: any) => {

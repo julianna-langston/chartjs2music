@@ -15,6 +15,7 @@ import box_plot from "./box_plot";
 import box_plot_numbers from "./box_plot_numbers";
 import box_plot_group from "./box_plot_group";
 import box_plot_group_numbers from "./box_plot_group_numbers";
+import radar from "./radar";
 
 export default {
     simple_bar, 
@@ -26,12 +27,14 @@ export default {
     getting_started_Example,
     string_x_minimum,
     string_x_values,
-    stacked_pie,
-    polarArea1,
-    polarArea2,
-    donut,
     box_plot,
     box_plot_numbers,
     box_plot_group,
     box_plot_group_numbers,
+
+    stacked_pie,
+    polarArea1,
+    polarArea2,
+    donut,
+    radar
 };
