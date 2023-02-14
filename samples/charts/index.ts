@@ -11,6 +11,10 @@ import string_x_minimum from "./string_x_minimum";
 import stacked_pie from "./stacked_pie";
 import log from "./log";
 import string_x_values from "./string_x_values";
+import box_plot from "./box_plot";
+import box_plot_numbers from "./box_plot_numbers";
+import box_plot_group from "./box_plot_group";
+import box_plot_group_numbers from "./box_plot_group_numbers";
 
 export default [
     simple_bar, 
@@ -25,5 +29,9 @@ export default [
     donut,
     string_x_minimum,
     stacked_pie,
-    string_x_values
+    string_x_values,
+    box_plot,
+    box_plot_numbers,
+    box_plot_group,
+    box_plot_group_numbers
 ];

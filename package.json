@@ -6,9 +6,11 @@
   "main": "dist/plugin.js",
   "module": "dist/plugin.mjs",
   "exports": {
-      "import": "./dist/plugin.mjs"
+    "import": "./dist/plugin.mjs"
   },
-  "files": ["dist/*"],
+  "files": [
+    "dist/*"
+  ],
   "keywords": [
     "a11y",
     "accessibility",
@@ -35,6 +37,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
+    "@sgratzl/chartjs-chart-boxplot": "^4.1.1",
     "@types/jest": "^29.4.0",
     "canvas": "^2.11.0",
     "cross-env": "^7.0.3",

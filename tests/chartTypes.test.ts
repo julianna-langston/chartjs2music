@@ -14,7 +14,12 @@ const [
     polarArea2,
     donut,
     string_x_minimum,
-    stacked_pie
+    stacked_pie,
+    string_x_values,
+    box_plot,
+    box_plot_numbers,
+    box_plot_group,
+    box_plot_group_numbers
 ] = charts;
 
 Chart.register(plugin);
@@ -74,6 +79,34 @@ test("Grouped pie chart", () => {
     expect(cc.textContent).toContain(`Sonified pie chart "", contains 4 categories`);
     expect(cc.textContent).toContain(`x is "" from Overall Yay to Overall Nay`);
     expect(cc.textContent).toContain(`y is "" from 10 to 90`);
+});
+test("Box plot", () => {
+    const {cc} = setup(box_plot);
+    
+    expect(cc.textContent).toContain(`Sonified box chart "City Mileage for Vehicle Types"`);
+    expect(cc.textContent).toContain(`x is "" from SUV to Hybrid`);
+    expect(cc.textContent).toContain(`y is "" from 10 to 60`);
+});
+test("Box plot (numbers)", () => {
+    const {cc} = setup(box_plot_numbers);
+    
+    expect(cc.textContent).toContain(`Sonified box chart "Iris"`);
+    expect(cc.textContent).toContain(`x is "" from Setosa to Virginica`);
+    expect(cc.textContent).toContain(`y is "" from 4.3 to 7.7`);
+});
+test("Grouped box plot", () => {
+    const {cc} = setup(box_plot_group);
+    
+    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);
+    expect(cc.textContent).toContain(`x is "" from Sepal Length to Petal width`);
+    expect(cc.textContent).toContain(`y is "" from 0.1 to 7.7`);
+});
+test("Grouped box plot (numbers)", () => {
+    const {cc} = setup(box_plot_group_numbers);
+    
+    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);
+    expect(cc.textContent).toContain(`x is "" from Sepal Length to Petal width`);
+    expect(cc.textContent).toContain(`y is "" from 0.1 to 7.9`);
 });
 
 
