@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
     <style>
+      :root{
+        --tile-size: 400px;
+      }
       #app {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(var(--tile-size), 1fr));
       }
       #app > div:has(canvas) {
-        max-width: 400px;
+        max-width: var(--tile-size);
       }
 
       #cc {
-        position: absolute;
+        position: fixed;
         bottom: 10px;
         right: 10px;
         padding: 5px;
