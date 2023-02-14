@@ -1,8 +1,11 @@
 import Chart from "chart.js/auto";
 import plugin from "../src/c2m-plugin";
 import samples from "./charts";
+import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
 
 const charts = Object.values(samples);
+
+Chart.register(BoxPlotController, BoxAndWiskers);
 
 /*
 y2 axis
@@ -66,13 +69,13 @@ export const generateCharts = (container: HTMLDivElement) => {
                     ...c.options?.plugins,
                     chartjs2music: {
                         ...c.options?.plugins?.chartjs2music,
-                        cc: document.getElementById("cc")
+                        cc: document.getElementById("cc"),
+                        errorCallback: console.error
                     }
                 }
             },
             plugins: [plugin]
         });
-    })
-
+    });
 
 }
