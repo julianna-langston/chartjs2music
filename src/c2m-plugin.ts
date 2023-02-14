@@ -12,7 +12,8 @@ const chartjs_c2m_converter: any = {
     polarArea: "bar",
     doughnut: "pie",
     boxplot: "box",
-    radar: "bar"
+    radar: "bar",
+    wordCloud: "bar"
 };
 
 const processChartType = (chart: any) => {
@@ -171,6 +172,20 @@ const plugin: Plugin = {
         }
 
         const axes = generateAxes(chart);
+
+        if(chart.config.type === "wordCloud"){
+            delete axes.x.minimum;
+            delete axes.x.maximum;
+            delete axes.y.minimum;
+            delete axes.y.maximum;
+
+            if(!axes.x.label){
+                axes.x.label = "Word";
+            }
+            if(!axes.y.label){
+                axes.y.label = "Emphasis";
+            }
+        }
 
         // Generate CC element
         const cc = determineCCElement(chart.canvas, options.cc);

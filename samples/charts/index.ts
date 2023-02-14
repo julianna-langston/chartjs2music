@@ -16,6 +16,8 @@ import box_plot_numbers from "./box_plot_numbers";
 import box_plot_group from "./box_plot_group";
 import box_plot_group_numbers from "./box_plot_group_numbers";
 import radar from "./radar";
+import wordcloud from "./wordcloud";
+import wordcloud2 from "./wordcloud2";
 
 export default {
     simple_bar, 
@@ -31,6 +33,9 @@ export default {
     box_plot_numbers,
     box_plot_group,
     box_plot_group_numbers,
+
+    wordcloud,
+    wordcloud2,
 
     stacked_pie,
     polarArea1,

@@ -2,10 +2,11 @@ import Chart from "chart.js/auto";
 import plugin from "../src/c2m-plugin";
 import samples from "./charts";
 import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
+import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud';
 
 const charts = Object.values(samples);
 
-Chart.register(BoxPlotController, BoxAndWiskers);
+Chart.register(BoxPlotController, BoxAndWiskers, WordCloudController, WordElement);
 
 /*
 y2 axis

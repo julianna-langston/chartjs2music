@@ -12,7 +12,8 @@ const {
     box_plot,
     box_plot_numbers,
     box_plot_group,
-    box_plot_group_numbers
+    box_plot_group_numbers,
+    wordcloud
 } = charts;
 
 Chart.register(plugin);
@@ -104,6 +105,14 @@ test("Grouped box plot (numbers)", () => {
     expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);
     expect(cc.textContent).toContain(`x is "" from Sepal Length to Petal width`);
     expect(cc.textContent).toContain(`y is "" from 0.1 to 7.9`);
+});
+test("Word cloud", () => {
+    // @ts-ignore
+    const {cc} = setup(wordcloud);
+    
+    expect(cc.textContent).toContain(`Sonified bar chart "Word Cloud Examples"`);
+    expect(cc.textContent).toContain(`x is "Word" from Hello to this`);
+    expect(cc.textContent).toContain(`y is "Emphasis" from 10 to 90`);
 });
 
 
