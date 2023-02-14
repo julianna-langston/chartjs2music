@@ -1,6 +1,8 @@
 import Chart from "chart.js/auto";
 import plugin from "../src/c2m-plugin";
-import charts from "./charts";
+import samples from "./charts";
+
+const charts = Object.values(samples);
 
 /*
 y2 axis

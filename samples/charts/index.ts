@@ -12,7 +12,7 @@ import stacked_pie from "./stacked_pie";
 import log from "./log";
 import string_x_values from "./string_x_values";
 
-export default [
+export default {
     simple_bar, 
     log,
     grouped_bar, 
@@ -20,10 +20,10 @@ export default [
     floating_bar,
     bar_line,
     getting_started_Example,
+    string_x_minimum,
+    string_x_values,
+    stacked_pie,
     polarArea1,
     polarArea2,
     donut,
-    string_x_minimum,
-    stacked_pie,
-    string_x_values
-];
+};

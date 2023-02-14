@@ -2,7 +2,7 @@ import {Chart, ChartConfiguration} from "chart.js";
 import plugin from "../src/c2m-plugin";
 import charts from "../samples/charts"
 
-const [
+const {
     simple_bar, 
     log,
     grouped_bar, 
@@ -15,7 +15,7 @@ const [
     donut,
     string_x_minimum,
     stacked_pie
-] = charts;
+} = charts;
 
 Chart.register(plugin);
 

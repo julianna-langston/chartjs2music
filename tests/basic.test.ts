@@ -1,6 +1,8 @@
 import {Chart} from "chart.js";
 import plugin from "../src/c2m-plugin";
-import charts from "../samples/charts"
+import samples from "../samples/charts"
+
+const {simple_bar} = samples;
 
 Chart.register(plugin);
 
@@ -9,7 +11,7 @@ test("C2M Plugin modifies source canvas element", () => {
     const mockElement = document.createElement("canvas");
     mockParent.appendChild(mockElement);
     expect(mockParent.childElementCount).toBe(1);
-    new Chart(mockElement, charts[0]);
+    new Chart(mockElement, simple_bar);
 
     // Canvas now has tabIndex=0
     expect(mockElement.getAttribute("tabIndex")).toBe("0");
@@ -42,13 +44,14 @@ test("Providing a CC element as part of the C2M plugin options", () => {
     const mockCC = document.createElement("div");
     expect(mockParent.childElementCount).toBe(1);
     new Chart(mockElement, {
-        ...charts[0],
+        ...simple_bar,
         options: {
             // @ts-ignore
-            ...charts[0].options,
+            ...simple_bar.options,
             plugins: {
                 // @ts-ignore
-                ...charts[0].options.plugins,
+                ...simple_bar.options.plugins,
+                // @ts-ignore
                 chartjs2music: {
                     cc: mockCC
                 }

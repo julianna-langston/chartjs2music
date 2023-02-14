@@ -2,21 +2,13 @@ import {Chart, ChartConfiguration} from "chart.js";
 import plugin from "../src/c2m-plugin";
 import charts from "../samples/charts"
 
-const [
+const {
     simple_bar, 
-    log,
-    grouped_bar, 
-    grouped_line,
-    floating_bar,
     bar_line,
     getting_started_Example,
-    polarArea1,
-    polarArea2,
-    donut,
     string_x_minimum,
-    stacked_pie,
     string_x_values
-] = charts;
+} = charts;
 
 Chart.register(plugin);
 
