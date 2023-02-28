@@ -5,6 +5,8 @@ chartjs plugin for chart2music.
 
 Turns your chart.js charts into music so the blind can hear data. This plugin will automatically add Chart2Music, an interactive sonification library, to your chart.js charts. The contents of the chart element will be modified to best support screen reader users, and the interactions will be visually synchronized to provide support for keyboard-only users.
 
+[Check out our CodePen collection of examples using the plugin.](https://codepen.io/collection/VYEvEQ)
+
 ## Getting started
 
 Add the chartjs2music plugin to your existing chart.js code like this:
@@ -41,6 +43,7 @@ This plugin is currently in beta, so not all of the chart.js features are curren
 A quick list of chart.js features we currently support includes:
 * Chart types: bar, line, pie, doughnut, polar, radar, and combinations therein.
 * Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
+* Wordclouds using the `chartjs-chart-wordcloud` plugin
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
 * Chart title
 * Most data structures (not including `parsing` or non-standard axes identifiers)
@@ -62,5 +65,4 @@ Plugins we plan to support in the future:
 * [chartjs-char-error-bars](https://www.npmjs.com/package/chartjs-chart-error-bars)
 * [chartjs-chart-matrix](https://www.npmjs.com/package/chartjs-chart-matrix)
 * [chartjs-chart-pcp](https://www.npmjs.com/package/chartjs-chart-pcp)
-* [chartjs-chart-wordcloud](https://www.npmjs.com/package/chartjs-chart-wordcloud)
 * [chartjs-plugin-zoom](https://www.npmjs.com/package/chartjs-plugin-zoom)
