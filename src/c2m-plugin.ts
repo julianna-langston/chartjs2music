@@ -13,7 +13,8 @@ const chartjs_c2m_converter: any = {
     doughnut: "pie",
     boxplot: "box",
     radar: "bar",
-    wordCloud: "bar"
+    wordCloud: "bar",
+    scatter: "scatter"
 };
 
 const processChartType = (chart: any) => {
@@ -200,6 +201,11 @@ const plugin: Plugin = {
             }    
         }
 
+        if(c2m_types === "scatter"){
+            delete scrub?.data;
+            delete axes.x.valueLabels;
+        }
+
         const c2mOptions = {
             cc,
             element: chart.canvas,
@@ -209,12 +215,22 @@ const plugin: Plugin = {
             axes,
             options: {
                 // @ts-ignore
-                onFocusCallback: ({slice, index}) => {
+                onFocusCallback: ({point, index}) => {
                     try{
-                        const highlightElements = [{
-                            datasetIndex: groups?.indexOf(slice) ?? 0,
-                            index
-                        }];
+                        const highlightElements = [];
+                        if("custom" in point){
+                            highlightElements.push({
+                                datasetIndex: point.custom.group,
+                                index: point.custom.index
+                            });
+                        }else{
+                            for(let i=0; i<(groups?.length ?? 1); i++){
+                                highlightElements.push({
+                                    datasetIndex: i,
+                                    index
+                                })
+                            }
+                        }
                         chart?.setActiveElements(highlightElements);
                         chart?.tooltip?.setActiveElements(highlightElements, {})
                         chart?.update();
@@ -224,6 +240,62 @@ const plugin: Plugin = {
                 }
             }
         };
+
+        if(Array.isArray(c2mOptions.data)){
+            if(isNaN(c2mOptions.data[0])){
+                c2mOptions.data = c2mOptions.data.map((point, index) => {
+                    return {
+                        ...point,
+                        custom: {
+                            group: 0,
+                            index
+                        }
+                    }
+                })
+            }else{
+                c2mOptions.data = c2mOptions.data.map((num, index) => {
+                    return {
+                        x: index,
+                        y: num,
+                        custom: {
+                            group: 0,
+                            index
+                        }
+                    }
+                })
+            }
+        }else{
+            const groups = Object.keys(c2mOptions.data);
+            groups.forEach((groupName, groupNumber) => {
+                if(!isNaN(c2mOptions.data[groupName][0])){
+                    c2mOptions.data[groupName] = c2mOptions.data[groupName].map((num: number, index: number) => {
+                        return {
+                            x: index,
+                            y: num,
+                            custom: {
+                                group: groupNumber,
+                                index
+                            }
+                        }
+                    })
+                }else{
+                    
+                    c2mOptions.data[groupName] = c2mOptions.data[groupName].map((point: any, index: number) => {
+                        return {
+                            ...point,
+                            custom: {
+                                group: groupNumber,
+                                index
+                            }
+                        }
+                    })
+                }
+            })
+        }
+
+        if(chart.config.options?.scales?.x?.stacked){
+            c2mOptions.options.stack = true;
+        }
 
         if(options.audioEngine){
             // @ts-ignore

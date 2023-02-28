@@ -1,6 +1,6 @@
 {
   "name": "chartjs-plugin-chart2music",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "description": "Chart.js plugin for Chart2Music. Turns chart.js charts into music so the blind can hear data.",
   "main": "dist/plugin.js",
@@ -54,6 +54,6 @@
   },
   "dependencies": {
     "chart.js": "^4.2.1",
-    "chart2music": "^1.8.2"
+    "chart2music": "^1.9.0"
   }
 }

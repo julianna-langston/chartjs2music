@@ -9,6 +9,7 @@ import getting_started_Example from "./getting_started_Example";
 import donut from "./donut";
 import string_x_minimum from "./string_x_minimum";
 import stacked_pie from "./stacked_pie";
+import stacked_bar from "./stacked_bar";
 import log from "./log";
 import string_x_values from "./string_x_values";
 import box_plot from "./box_plot";
@@ -18,6 +19,8 @@ import box_plot_group_numbers from "./box_plot_group_numbers";
 import radar from "./radar";
 import wordcloud from "./wordcloud";
 import wordcloud2 from "./wordcloud2";
+import scatter from "./scatter";
+import grouped_scatter from "./grouped_scatter";
 
 export default {
     simple_bar, 
@@ -25,6 +28,7 @@ export default {
     grouped_bar, 
     grouped_line,
     floating_bar,
+    stacked_bar,
     bar_line,
     getting_started_Example,
     string_x_minimum,
@@ -33,6 +37,8 @@ export default {
     box_plot_numbers,
     box_plot_group,
     box_plot_group_numbers,
+    scatter,
+    grouped_scatter,
 
     wordcloud,
     wordcloud2,

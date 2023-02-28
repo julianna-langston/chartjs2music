@@ -1213,10 +1213,10 @@ chart.js@^4.2.1:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
-chart2music@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.8.2.tgz#598e611047f7753f88eb41b56f20abffb3faaac8"
-  integrity sha512-BdpqudtaHqmccnSYVhuQDnmhnOvHZ0z5e98pYsoo4SSZ6WGKdSxzcmLchI0bFFN7ApFpgpGtR5EnyW4txsSoDA==
+chart2music@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.9.0.tgz#8abb7b68149c8a9d040075609508397e17ec7033"
+  integrity sha512-P4Wz1XVfXXmsC9xiwQuApyettYA+ncxdksVdeQSDX+746vHDa8lZaJf0nK7CyZoXJxydRECyMOIr1NrCCTqzaA==
 
 chartjs-chart-wordcloud@^4.1.1:
   version "4.1.1"

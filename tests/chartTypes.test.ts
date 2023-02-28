@@ -42,14 +42,14 @@ test("Bar chart", () => {
 test("Floating Grouped bar chart", () => {
     const {cc} = setup(grouped_bar);
 
-    expect(cc.textContent).toContain(`Sonified bar chart "Chart.js Bar Chart", contains 2 categories`);
+    expect(cc.textContent).toContain(`Sonified bar chart "Chart.js Bar Chart", contains 2 groups`);
     expect(cc.textContent).toContain(`x is "" from January to July`);
     expect(cc.textContent).toContain(`y is "" from -62 to 100`);
 });
 test("Grouped line chart", () => {
     const {cc} = setup(grouped_line);
 
-    expect(cc.textContent).toContain(`Sonified line chart "Chart.js Line Chart", contains 2 categories`);
+    expect(cc.textContent).toContain(`Sonified line chart "Chart.js Line Chart", contains 2 groups`);
     expect(cc.textContent).toContain(`x is "" from January to July`);
     expect(cc.textContent).toContain(`y is "" from -62 to 100`);
 });
@@ -70,7 +70,7 @@ test("Donut chart", () => {
 test("Grouped pie chart", () => {
     const {cc} = setup(stacked_pie);
 
-    expect(cc.textContent).toContain(`Sonified pie chart "", contains 4 categories`);
+    expect(cc.textContent).toContain(`Sonified pie chart "", contains 4 groups`);
     expect(cc.textContent).toContain(`x is "" from Overall Yay to Overall Nay`);
     expect(cc.textContent).toContain(`y is "" from 10 to 90`);
 });
@@ -94,7 +94,7 @@ test("Grouped box plot", () => {
     // @ts-ignore
     const {cc} = setup(box_plot_group);
     
-    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);
+    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 groups`);
     expect(cc.textContent).toContain(`x is "" from Sepal Length to Petal width`);
     expect(cc.textContent).toContain(`y is "" from 0.1 to 7.7`);
 });
@@ -102,7 +102,7 @@ test("Grouped box plot (numbers)", () => {
     // @ts-ignore
     const {cc} = setup(box_plot_group_numbers);
     
-    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 categories`);
+    expect(cc.textContent).toContain(`Sonified box chart "Iris", contains 3 groups`);
     expect(cc.textContent).toContain(`x is "" from Sepal Length to Petal width`);
     expect(cc.textContent).toContain(`y is "" from 0.1 to 7.9`);
 });
