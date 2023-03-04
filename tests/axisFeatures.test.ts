@@ -7,7 +7,8 @@ const {
     bar_line,
     getting_started_Example,
     string_x_minimum,
-    string_x_values
+    string_x_values,
+    grouped_scatter
 } = charts;
 
 Chart.register(plugin);
@@ -60,4 +61,9 @@ test("Axis with string values", () => {
     const {cc} = setup(string_x_values);
 
     expect(cc.textContent).toContain(`x is "" from Sales to Revenue`);
-})
+});
+test("Axis correctly displays provided formats", () => {
+    const {cc} = setup(grouped_scatter);
+
+    expect(cc.textContent).toContain(`x is "State Area" from 68.3 to 665,384`);
+});

@@ -172,7 +172,7 @@ const plugin: Plugin = {
             return;
         }
 
-        const axes = generateAxes(chart);
+        let axes = generateAxes(chart);
 
         if(chart.config.type === "wordCloud"){
             delete axes.x.minimum;
@@ -205,6 +205,18 @@ const plugin: Plugin = {
             delete scrub?.data;
             delete axes.x.valueLabels;
         }
+
+        axes = {
+            ...axes,
+            x: {
+                ...axes.x,
+                ...(options.axes?.x)
+            },
+            y: {
+                ...axes.y,
+                ...(options.axes?.y)
+            },
+        };
 
         const c2mOptions = {
             cc,

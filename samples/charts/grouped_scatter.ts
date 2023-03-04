@@ -97,6 +97,13 @@ const config = {
           title: {
               display: true,
               text: "Cars by State"
+          },
+          chartjs2music: {
+            axes: {
+                x: {
+                    format: (value: number) => value.toLocaleString()
+                }
+            }
           }
       },
       scales: {
