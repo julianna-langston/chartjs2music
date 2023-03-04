@@ -36,6 +36,46 @@ new Chart(canvasElement, {
 
 ```
 
+## Available options
+
+The following plugin options are available:
+* `errorCallback` - A callback that will return errors if any arise while the plugin works.
+* `cc` - the equivalent of the [chart2music option `cc`](https://chart2music.com/docs/API/Config#axes)
+* `audioEngine` - the equivalent of the [chart2music option `audioEngine`](https://chart2music.com/docs/API/Config#cc)
+* `axes` - the equivalent of the [chart2music option `axes`](https://chart2music.com/docs/API/Config#axes)
+
+Here's an example for providing options:
+```js
+import {Chart} from "chart.js/auto";
+import chartjs2music from "chartjs-plugin-chart2music";
+
+new Chart(canvasElement, {
+    type: "bar",
+    data: {
+        datasets: [{
+            data: [1,4,2,8]
+        }]
+    },
+    options: {
+        plugins: {
+            chartjs2music: {
+                // All errors should be logged as errors
+                errorCallback: console.error,
+                // Here's a div I made to be the CC
+                cc: myDiv,
+                // The Y values should all be money
+                axes: {
+                    y: {
+                        format: (value) => "$" + value
+                    }
+                }
+            }
+        }
+    },
+    plugins: [chartjs2music]
+});
+```
+
 ## Supported features
 
 This plugin is currently in beta, so not all of the chart.js features are currently supported.
