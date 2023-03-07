@@ -1,5 +1,5 @@
 # chartjs-plugin-chart2music
-chartjs plugin for chart2music.
+[![npm version](https://badge.fury.io/js/chartjs-plugin-chart2music.svg)](https://badge.fury.io/js/chartjs-plugin-chart2music)
 
 **This is a beta release of this plugin**
 
