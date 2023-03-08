@@ -1,5 +1,5 @@
 # chartjs-plugin-chart2music
-chartjs plugin for chart2music.
+[![npm version](https://badge.fury.io/js/chartjs-plugin-chart2music.svg)](https://badge.fury.io/js/chartjs-plugin-chart2music)
 
 **This is a beta release of this plugin**
 
@@ -13,9 +13,9 @@ Add the chartjs2music plugin to your existing chart.js code like this:
 
 ```js
 import {Chart} from "chart.js/auto";
-import plugin from "chartjs-plugin-chart2music";
+import chartjs2music from "chartjs-plugin-chart2music";
 
-Chart.register(plugin);
+Chart.register(chartjs2music);
 ```
 
 That will register the plugin globally. Alternatively, if you only want to enable for a given chart, you can do this:
