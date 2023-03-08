@@ -22,6 +22,13 @@ const options: ChartOptions = {
     title: {
       display: true,
       text: ['Chart.js Line Chart', "Logarithmic"]
+    },
+    chartjs2music: {
+      axes: {
+        y: {
+          format: (value: number) => `$${value.toLocaleString()}`
+        }
+      }
     }
   },
   scales: {
@@ -31,6 +38,9 @@ const options: ChartOptions = {
     y: {
       display: true,
       type: 'logarithmic',
+      ticks: {
+        callback: (value) => `$${value.toLocaleString()}`
+      }
     }
   }
 };
