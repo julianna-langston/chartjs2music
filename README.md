@@ -1,7 +1,7 @@
 # chartjs-plugin-chart2music
 [![npm version](https://badge.fury.io/js/chartjs-plugin-chart2music.svg)](https://badge.fury.io/js/chartjs-plugin-chart2music)
 
-**This is a beta release of this plugin**
+**This is a beta release of this plugin. Not all chart.js features are supported yet.**
 
 Turns your chart.js charts into music so the blind can hear data. This plugin will automatically add Chart2Music, an interactive sonification library, to your chart.js charts. The contents of the chart element will be modified to best support screen reader users, and the interactions will be visually synchronized to provide support for keyboard-only users.
 
