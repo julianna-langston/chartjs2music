@@ -81,7 +81,7 @@ new Chart(canvasElement, {
 This plugin is currently in beta, so not all of the chart.js features are currently supported.
 
 A quick list of chart.js features we currently support includes:
-* Chart types: bar, line, pie, doughnut, polar, radar, and combinations therein.
+* Chart types: bar, doughnut, line, pie, polar, radar, scatter, and combinations therein.
 * Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
 * Wordclouds using the `chartjs-chart-wordcloud` plugin
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
