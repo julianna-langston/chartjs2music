@@ -3,10 +3,11 @@ import plugin from "../src/c2m-plugin";
 import samples from "./charts";
 import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
 import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud';
+import legendPlugin from "chartjs-plugin-a11y-legend";
 
 const charts = Object.values(samples);
 
-Chart.register(BoxPlotController, BoxAndWiskers, WordCloudController, WordElement);
+Chart.register(BoxPlotController, BoxAndWiskers, WordCloudController, WordElement, legendPlugin);
 
 /*
 y2 axis

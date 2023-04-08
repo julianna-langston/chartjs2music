@@ -2,9 +2,6 @@ import type { ChartOptions, Plugin, Chart } from "chart.js";
 import c2mChart from "chart2music";
 import {processBoxData} from "./boxplots";
 
-let c2mChartRef: any = null;
-// let lastDataObj = "";
-
 const chartjs_c2m_converter: any = {
     bar: "bar",
     line: "line",
@@ -236,12 +233,13 @@ const plugin: Plugin = {
                                 index: point.custom.index
                             });
                         }else{
-                            for(let i=0; i<(groups?.length ?? 1); i++){
+                            const indices = chart.config.options?.plugins?.chartjs2music?.internal.visible_groups as number[];
+                            indices.forEach((datasetIndex) => {
                                 highlightElements.push({
-                                    datasetIndex: i,
+                                    datasetIndex,
                                     index
                                 })
-                            }
+                            })
                         }
                         chart?.setActiveElements(highlightElements);
                         chart?.tooltip?.setActiveElements(highlightElements, {})
@@ -291,7 +289,6 @@ const plugin: Plugin = {
                         }
                     })
                 }else{
-                    
                     c2mOptions.data[groupName] = c2mOptions.data[groupName].map((point: any, index: number) => {
                         return {
                             ...point,
@@ -302,7 +299,7 @@ const plugin: Plugin = {
                         }
                     })
                 }
-            })
+            });
         }
 
         if(chart.config.options?.scales?.x?.stacked){
@@ -315,7 +312,20 @@ const plugin: Plugin = {
         }
 
         const {err, data:c2m} = c2mChart(c2mOptions);
-        c2mChartRef = c2m;
+
+        chart.config.options = {
+            ...(chart.config.options ?? {}),
+            plugins: {
+                ...chart.config.options?.plugins,
+                chartjs2music: {
+                    ...chart.config.options?.plugins?.chartjs2music,
+                    internal: {
+                        c2m,
+                        visible_groups: groups?.map((g, i) => i)
+                    }
+                }
+            }
+        }
 
         // /* istanbul-ignore-next */
         if(err){
@@ -323,14 +333,32 @@ const plugin: Plugin = {
         }
     },
 
-    // afterUpdate: (chart: Chart) => {
-    //     const {data} = processData(chart.data);
-    //     if(JSON.stringify(data) !== lastDataObj){
-    //         c2mChartRef?.setData(data);
-    //         lastDataObj = JSON.stringify(data);
-    //     }
+    afterDatasetUpdate: (chart: Chart, args) => {
+        if(!args.mode){
+            return;
+        }
 
-    // },
+        const ref = chart.config.options?.plugins?.chartjs2music?.internal.c2m;
+
+        const groups = ref._groups.slice(0);
+        if(ref._options.stack){
+            groups.shift();
+        }
+
+        if(args.mode === "hide"){
+            const err = ref.setCategoryVisibility(groups[args.index], false);
+            chart.config.options.plugins.chartjs2music?.internal.visible_groups.splice(args.index, 1);
+            if(err){console.error(err)}
+            return;
+        }
+
+        if(args.mode === "show"){
+            const err = ref.setCategoryVisibility(groups[args.index], true);
+            chart.config.options.plugins.chartjs2music.internal.visible_groups.push(args.index);
+            if(err){console.error(err)}
+            return;
+        }
+    },
 
     defaults: {
         cc: null,
