@@ -339,6 +339,9 @@ const plugin: Plugin = {
         }
 
         const ref = chart.config.options?.plugins?.chartjs2music?.internal.c2m;
+        if(!ref){
+            return;
+        }
 
         const groups = ref._groups.slice(0);
         if(ref._options.stack){
