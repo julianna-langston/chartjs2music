@@ -2,6 +2,8 @@ import type { ChartOptions, Plugin, Chart } from "chart.js";
 import c2mChart from "chart2music";
 import {processBoxData} from "./boxplots";
 
+const chartStates = new Map();
+
 const chartjs_c2m_converter: any = {
     bar: "bar",
     line: "line",
@@ -233,8 +235,8 @@ const plugin: Plugin = {
                                 index: point.custom.index
                             });
                         }else{
-                            const indices = chart.config.options?.plugins?.chartjs2music?.internal.visible_groups as number[];
-                            indices.forEach((datasetIndex) => {
+                            const {visible_groups} = chartStates.get(chart);
+                            visible_groups.forEach((datasetIndex: number) => {
                                 highlightElements.push({
                                     datasetIndex,
                                     index
@@ -313,19 +315,10 @@ const plugin: Plugin = {
 
         const {err, data:c2m} = c2mChart(c2mOptions);
 
-        chart.config.options = {
-            ...(chart.config.options ?? {}),
-            plugins: {
-                ...chart.config.options?.plugins,
-                chartjs2music: {
-                    ...chart.config.options?.plugins?.chartjs2music,
-                    internal: {
-                        c2m,
-                        visible_groups: groups?.map((g, i) => i)
-                    }
-                }
-            }
-        }
+        chartStates.set(chart, {
+            c2m,
+            visible_groups: groups?.map((g, i) => i)
+        });
 
         // /* istanbul-ignore-next */
         if(err){
@@ -338,7 +331,7 @@ const plugin: Plugin = {
             return;
         }
 
-        const ref = chart.config.options?.plugins?.chartjs2music?.internal.c2m;
+        const {c2m: ref, visible_groups} = chartStates.get(chart);
         if(!ref){
             return;
         }
@@ -350,14 +343,14 @@ const plugin: Plugin = {
 
         if(args.mode === "hide"){
             const err = ref.setCategoryVisibility(groups[args.index], false);
-            chart.config.options.plugins.chartjs2music?.internal.visible_groups.splice(args.index, 1);
+            visible_groups.splice(args.index, 1);
             if(err){console.error(err)}
             return;
         }
 
         if(args.mode === "show"){
             const err = ref.setCategoryVisibility(groups[args.index], true);
-            chart.config.options.plugins.chartjs2music.internal.visible_groups.push(args.index);
+            visible_groups.push(args.index);
             if(err){console.error(err)}
             return;
         }
