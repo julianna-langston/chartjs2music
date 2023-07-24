@@ -1819,9 +1819,9 @@ __metadata:
   linkType: hard
 
 "chart2music@npm:^1.10.2":
-  version: 1.10.2
-  resolution: "chart2music@npm:1.10.2"
-  checksum: 67de286712d92e9650f5c93702d89b75dfcd9bd6f5380ac229674076faff1e855cdb05b8c315c932fd56a765662d7af3a6c8d35b167de23f3d6fc6f7a744081a
+  version: 1.11.0
+  resolution: "chart2music@npm:1.11.0"
+  checksum: fa227afcfc601571e87e1bca18876c67021d03e84785c228a2899aa07826929ab0797f747e2f1cbba33cd69f598c8b4c4c9b2efa772f3633b45880abfc00449f
   languageName: node
   linkType: hard
 
