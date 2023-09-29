@@ -32,9 +32,10 @@ test("C2M Plugin modifies source canvas element", () => {
     mockElement.dispatchEvent(new Event("focus"));
 
     // CC element has been updated with details.
-    expect(mockParent.children[1].textContent).toContain(`Sonified bar chart "Test"`);
-    expect(mockParent.children[1].textContent).toContain(`x is "Year" from 2010 to 2016`);
-    expect(mockParent.children[1].textContent).toContain(`y is "Count" from 10 to 30`);
+    expect(mockParent.children[1].textContent).toContain(`Sonified chart titled "Test".`);
+    expect(mockParent.children[1].textContent).toContain(`Bar chart.`);
+    expect(mockParent.children[1].textContent).toContain(`X is "Year" from 2010 to 2016.`);
+    expect(mockParent.children[1].textContent).toContain(`Y is "Count" from 10 to 30.`);
 });
 
 test("Providing a CC element as part of the C2M plugin options", () => {
@@ -65,6 +66,6 @@ test("Providing a CC element as part of the C2M plugin options", () => {
     // Apply focus to the canvas element
     mockElement.dispatchEvent(new Event("focus"));
 
-    expect(mockCC.textContent).toContain(`Sonified bar chart "Test"`)
-
+    expect(mockCC.textContent).toContain(`Sonified chart titled "Test".`)
+    expect(mockCC.textContent).toContain(`Bar chart.`)
 });

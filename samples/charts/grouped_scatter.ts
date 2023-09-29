@@ -1,3 +1,5 @@
+import type { ChartTypeRegistry } from "chart.js";
+
 const blueState = [
   ["Arizona", 823, 113990.3],
   ["California", 840, 163694.7],
@@ -75,7 +77,7 @@ const redState = [
 });
 
 const config = {
-  type: "scatter",
+  type: "scatter" as keyof ChartTypeRegistry,
   data: {
       datasets: [
           {

@@ -121,7 +121,7 @@ test("Explicit minimum (number)", () => {
     });
 
     mockElement.dispatchEvent(new Event("focus"));
-    expect(mockParent.children[1].textContent).toContain(`x is "" from C to E`);
+    expect(mockParent.children[1].textContent).toContain(`X is "" from C to E.`);
 
 });
 
@@ -147,7 +147,7 @@ test("Explicit maximum (number)", () => {
     });
 
     mockElement.dispatchEvent(new Event("focus"));
-    expect(mockParent.children[1].textContent).toContain(`x is "" from A to D`);
+    expect(mockParent.children[1].textContent).toContain(`X is "" from A to D.`);
 });
 
 test("Explicit maximum (number)", () => {
@@ -172,7 +172,7 @@ test("Explicit maximum (number)", () => {
     });
 
     mockElement.dispatchEvent(new Event("focus"));
-    expect(mockParent.children[1].textContent).toContain(`x is "" from A to D`);
+    expect(mockParent.children[1].textContent).toContain(`X is "" from A to D.`);
 });
 
 test("Floating bar (non-grouped)", () => {
@@ -196,5 +196,5 @@ test("Floating bar (non-grouped)", () => {
     });
 
     mockElement.dispatchEvent(new Event("focus"));
-    expect(mockParent.children[1].textContent).toContain(`Sonified bar chart "", x is "" from A to E, y is "" from 11 to 25`);
+    expect(mockParent.children[1].textContent).toContain(`Sonified chart. Bar chart. X is "" from A to E. Y is "" from 11 to 25.`);
 });
