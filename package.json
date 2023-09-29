@@ -43,7 +43,7 @@
     "chartjs-chart-wordcloud": "4.1.1",
     "chartjs-plugin-a11y-legend": "0.1.0",
     "cross-env": "7.0.3",
-    "depcheck": "1.4.3",
+    "depcheck": "1.4.6",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.4.2",
     "rimraf": "5.0.1",
