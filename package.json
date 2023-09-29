@@ -54,7 +54,7 @@
     "vite": "4.1.0"
   },
   "dependencies": {
-    "chart.js": "4.2.1",
+    "chart.js": "4.4.0",
     "chart2music": "1.10.2"
   }
 }
