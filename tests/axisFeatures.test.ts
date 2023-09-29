@@ -30,17 +30,18 @@ const setup = (config: ChartConfiguration) => {
 test("Axis with label", () => {
     const {cc} = setup(getting_started_Example);
 
-    expect(cc.textContent).toContain(`x is "Color" from Red to Orange`);
+    expect(cc.textContent).toContain(`X is "Color" from Red to Orange`);
 });
 test("Axis without label", () => {
     const {cc} = setup(bar_line);
 
-    expect(cc.textContent).toContain(`x is "" from 1st yr to 6th yr, y is "" from 1 to 15`);
+    expect(cc.textContent).toContain(`X is "" from 1st yr to 6th yr.`);
+    expect(cc.textContent).toContain(`Y is "" from 1 to 15.`);
 });
 test("Axis with hidden label", () => {
     const {cc} = setup(simple_bar);
 
-    expect(cc.textContent).toContain(`x is "Year" from 2010 to 2016`);
+    expect(cc.textContent).toContain(`X is "Year" from 2010 to 2016`);
 });
 // test("Axis with explicit minimum", () => {
 //     const {cc} = setup();
@@ -50,7 +51,7 @@ test("Axis with hidden label", () => {
 test("Axis with explicit minimum (string)", () => {
     const {cc} = setup(string_x_minimum);
 
-    expect(cc.textContent).toContain(`x is "" from March to Jun`);
+    expect(cc.textContent).toContain(`X is "" from March to Jun`);
 });
 // test("Axis with explicit maximum", () => {
 //     const {cc} = setup();
@@ -58,12 +59,14 @@ test("Axis with explicit minimum (string)", () => {
 //     expect(cc.textContent).toContain();
 // });
 test("Axis with string values", () => {
+    // @ts-ignore
     const {cc} = setup(string_x_values);
 
-    expect(cc.textContent).toContain(`x is "" from Sales to Revenue`);
+    expect(cc.textContent).toContain(`X is "" from Sales to Revenue`);
 });
 test("Axis correctly displays provided formats", () => {
+    // @ts-ignore
     const {cc} = setup(grouped_scatter);
 
-    expect(cc.textContent).toContain(`x is "State Area" from 68.3 to 665,384`);
+    expect(cc.textContent).toContain(`X is "State Area" from 68.3 to 665,384`);
 });
