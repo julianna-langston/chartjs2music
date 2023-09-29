@@ -39,7 +39,7 @@
     "@rollup/plugin-typescript": "11.1.4",
     "@sgratzl/chartjs-chart-boxplot": "4.2.5",
     "@types/jest": "29.5.5", 
-    "canvas": "2.11.0",
+    "canvas": "2.11.2",
     "chartjs-chart-wordcloud": "4.1.1",
     "chartjs-plugin-a11y-legend": "0.0.2",
     "cross-env": "7.0.3",
