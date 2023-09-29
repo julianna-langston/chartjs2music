@@ -1246,10 +1246,10 @@ chartjs-chart-wordcloud@4.1.1:
     "@types/d3-cloud" "^1.2.5"
     d3-cloud "^1.2.5"
 
-chartjs-plugin-a11y-legend@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/chartjs-plugin-a11y-legend/-/chartjs-plugin-a11y-legend-0.0.2.tgz#1d8826ec8ed9fb5c37d36e0f10a687031aa573c4"
-  integrity sha512-RQ2zQ+UibWxcOfEKTBxaC6csXwMzhFNalrVM9HQ4diGfJSlDVBz+1N9zqPHiehr34GUTVxRAspyBmOxbadP5xg==
+chartjs-plugin-a11y-legend@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/chartjs-plugin-a11y-legend/-/chartjs-plugin-a11y-legend-0.1.0.tgz#6ee82188d5e31525f5152573e9b6112b3e174da5"
+  integrity sha512-wTA4aUQgjH5VJqsgDO1ZxTmQge3K1+gcrzivCFLHKPeHc3zIBcBahbrhKJZevSafMW8gR/zvDqWfgzUgd+6PGg==
   dependencies:
     chart.js "^4.2.1"
 
