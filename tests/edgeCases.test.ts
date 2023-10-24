@@ -198,3 +198,30 @@ test("Floating bar (non-grouped)", () => {
     mockElement.dispatchEvent(new Event("focus"));
     expect(mockParent.children[1].textContent).toContain(`Sonified chart. Bar chart. X is "" from A to E. Y is "" from 11 to 25.`);
 });
+
+test("Empty chart (empty data)", () => {
+    const mockElement = document.createElement("canvas");
+    expect(() => {
+        new Chart(mockElement, {
+            type: "bar",
+            data: {
+                labels: ["A", "B", "C", "D", "E"],
+                datasets: [{
+                    data: []
+                }]
+            }
+        });
+    }).not.toThrowError();
+});
+test("Empty chart (empty datasets)", () => {
+    const mockElement = document.createElement("canvas");
+    expect(() => {
+        new Chart(mockElement, {
+            type: "bar",
+            data: {
+                labels: ["A", "B", "C", "D", "E"],
+                datasets: []
+            }
+        });
+    }).not.toThrowError();
+});
