@@ -1,4 +1,4 @@
-import type {ChartData, ChartOptions, ChartTypeRegistry} from "chart.js";
+import type {Chart, ChartData, ChartOptions, ChartTypeRegistry} from "chart.js";
 
 // https://codepen.io/mountainash/pen/MWBaLvM
 
@@ -31,5 +31,10 @@ const options: ChartOptions = {
 
 export default {
   data,
-  options
+  options,
+  updateData: (chart: Chart) => {
+    chart.data.datasets[0].data = chart.data.datasets[0].data.map((num) => (num as number) + 1);
+    chart.update();
+    return true;
+  }
 } as any;
