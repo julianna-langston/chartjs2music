@@ -21,6 +21,7 @@ import wordcloud from "./wordcloud";
 import wordcloud2 from "./wordcloud2";
 import scatter from "./scatter";
 import grouped_scatter from "./grouped_scatter";
+import empty from "./empty";
 
 export default {
     simple_bar, 
@@ -30,6 +31,7 @@ export default {
     floating_bar,
     stacked_bar,
     bar_line,
+    empty,
     getting_started_Example,
     string_x_minimum,
     string_x_values,
