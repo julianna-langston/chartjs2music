@@ -313,6 +313,10 @@ const plugin: Plugin = {
             c2mOptions.audioEngine = options.audioEngine;
         }
 
+        if(c2mOptions.data.length === 0){
+            return;
+        }
+
         const {err, data:c2m} = c2mChart(c2mOptions);
 
         chartStates.set(chart, {

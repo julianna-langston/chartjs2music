@@ -4,7 +4,10 @@ import {
     LogarithmicScale, 
     LineController,
     PointElement,
-    LineElement
+    LineElement,
+    BarController,
+    LinearScale,
+    BarElement,
 } from "chart.js";
 import plugin from "../src/c2m-plugin";
 import logChart from "../samples/charts/log";
@@ -15,7 +18,10 @@ Chart.register(
     LogarithmicScale, 
     LineController,
     PointElement,
-    LineElement
+    LineElement,
+    BarController,
+    LinearScale,
+    BarElement,
 );
 
 jest.useFakeTimers();
@@ -197,4 +203,33 @@ test("Floating bar (non-grouped)", () => {
 
     mockElement.dispatchEvent(new Event("focus"));
     expect(mockParent.children[1].textContent).toContain(`Sonified chart. Bar chart. X is "" from A to E. Y is "" from 11 to 25.`);
+});
+
+test("Empty chart (empty data)", () => {
+    const mockElement = document.createElement("canvas");
+    expect(() => {
+        const chart = new Chart(mockElement, {
+            type: "bar",
+            data: {
+                labels: ["A", "B", "C", "D", "E"],
+                datasets: [{
+                    data: []
+                }]
+            }
+        });
+        chart.data.datasets[0].data = [1,2,3,4];
+        chart.update();
+    }).not.toThrowError();
+});
+test("Empty chart (empty datasets)", () => {
+    const mockElement = document.createElement("canvas");
+    expect(() => {
+        new Chart(mockElement, {
+            type: "bar",
+            data: {
+                labels: ["A", "B", "C", "D", "E"],
+                datasets: []
+            }
+        });
+    }).not.toThrowError();
 });
