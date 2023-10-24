@@ -57,20 +57,21 @@ Fix typescript issues with Chart2Music output
 
 export const generateCharts = (container: HTMLDivElement) => {
     charts.forEach((c) => {
+        const {updateData, ...config} = c;
         const newContainer = document.createElement("div");
         const canvas = document.createElement("canvas");
         newContainer.appendChild(canvas);
         container.appendChild(newContainer);
 
         // @ts-ignore
-        new Chart(canvas, {
-            ...c,
+        const chart = new Chart(canvas, {
+            ...config,
             options: {
-                ...c.options,
+                ...config.options,
                 plugins: {
-                    ...c.options?.plugins,
+                    ...config.options?.plugins,
                     chartjs2music: {
-                        ...c.options?.plugins?.chartjs2music,
+                        ...config.options?.plugins?.chartjs2music,
                         cc: document.getElementById("cc"),
                         errorCallback: console.error
                     }
@@ -78,6 +79,17 @@ export const generateCharts = (container: HTMLDivElement) => {
             },
             plugins: [plugin]
         });
+
+        if(!updateData){
+            return;
+        }
+
+        const button = document.createElement("button");
+        button.textContent = "Update";
+        button.addEventListener("click", () => {
+            button.disabled = !(updateData(chart));
+        });
+        newContainer.appendChild(button);
     });
 
 }
