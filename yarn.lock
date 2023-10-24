@@ -791,10 +791,10 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
-"@types/d3-cloud@^1.2.5":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@types/d3-cloud/-/d3-cloud-1.2.6.tgz#0ac782334aa0183de7aa04b3b712bb35d172e689"
-  integrity sha512-AI5glrUgfhzjkFZXSZxruzZp1XpBoKRSGVCNGVV8dEtJ3JkuBt8KbbDLuVi3OrntSLEZFWTis6pvnAJF+LuJxg==
+"@types/d3-cloud@^1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@types/d3-cloud/-/d3-cloud-1.2.7.tgz#6db7c90604355c7249ff4308ee23b5830b9abda7"
+  integrity sha512-W6glNfUNLZB+YEAjrZZT0LRCCvRcasa9vH0TDIEKW7EE125aG/t5tM6LGz8vnAKSXz7oDkW7CdoZQqflwgTPag==
   dependencies:
     "@types/d3" "^3"
 
@@ -1254,12 +1254,12 @@ chart2music@1.12.2:
   resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.12.2.tgz#c199c0a745341f3f969e94eb5a16c16347d0f483"
   integrity sha512-15ozhbSBg/asIZf19wVzxStZ+Q12cHYikVTbyX7S/oMed9G6pxAnNlZZIouPVPDVC8McKeDgEYgfAm4nAhfRFA==
 
-chartjs-chart-wordcloud@4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.3.0.tgz#6d99d491f9de57f2ec69aa4a5cc8bf0163142ad6"
-  integrity sha512-YCM6HryfersW/06s/sdg0XhNMUh8Woq3ECceGWJxJ/ZTYVhksH0v5AsPZrBMqZVjn4Ztgkt4OCnmL9lLFUg4hg==
+chartjs-chart-wordcloud@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.3.2.tgz#3942074da3b2213a2fb5312ba11224956efe13b2"
+  integrity sha512-ayPoZxXC5sqGvs2naEVaRhddMnjSKntE+TZdqLTQ/PfchwgFs1tAqYGJtldHbsNrFdRJPvIs4bwtrgZ2M+S6Tw==
   dependencies:
-    "@types/d3-cloud" "^1.2.5"
+    "@types/d3-cloud" "^1.2.7"
     d3-cloud "^1.2.7"
 
 chartjs-plugin-a11y-legend@0.1.0:
