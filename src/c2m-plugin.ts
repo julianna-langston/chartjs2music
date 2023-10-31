@@ -160,179 +160,190 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided: HTMLElement | n
     return cc;
 }
 
-const plugin: Plugin = {
-    id: "chartjs2music",
+const generateChart = (chart: Chart, options: ChartOptions) => {
+    const {valid, c2m_types, invalidType} = processChartType(chart);
 
-    afterInit: (chart: Chart, args, options) => {
-        const {valid, c2m_types, invalidType} = processChartType(chart);
+    if(!valid){
+        options.errorCallback?.(`Unable to connect chart2music to chart. The chart is of type "${invalidType}", which is not one of the supported chart types for this plugin. This plugin supports: ${Object.keys(chartjs_c2m_converter).join(", ")}`);
+        return;
+    }
 
-        if(!valid){
-            options.errorCallback?.(`Unable to connect chart2music to chart. The chart is of type "${invalidType}", which is not one of the supported chart types for this plugin. This plugin supports: ${Object.keys(chartjs_c2m_converter).join(", ")}`);
-            return;
+    let axes = generateAxes(chart);
+
+    if(chart.config.type === "wordCloud"){
+        delete axes.x.minimum;
+        delete axes.x.maximum;
+        delete axes.y.minimum;
+        delete axes.y.maximum;
+
+        if(!axes.x.label){
+            axes.x.label = "Word";
         }
-
-        let axes = generateAxes(chart);
-
-        if(chart.config.type === "wordCloud"){
-            delete axes.x.minimum;
-            delete axes.x.maximum;
-            delete axes.y.minimum;
-            delete axes.y.maximum;
-
-            if(!axes.x.label){
-                axes.x.label = "Word";
-            }
-            if(!axes.y.label){
-                axes.y.label = "Emphasis";
-            }
+        if(!axes.y.label){
+            axes.y.label = "Emphasis";
         }
+    }
 
-        // Generate CC element
-        const cc = determineCCElement(chart.canvas, options.cc);
+    // Generate CC element
+    const cc = determineCCElement(chart.canvas, options.cc);
 
-        const {data, groups} = processData(chart.data, c2m_types);
-        // lastDataObj = JSON.stringify(data);
+    const {data, groups} = processData(chart.data, c2m_types);
+    // lastDataObj = JSON.stringify(data);
 
-        let scrub = scrubX(data);
-        if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed
-            if(!chart.data.labels || chart.data.labels.length === 0){
-                axes.x.valueLabels = scrub.labels.slice(0);
-            }    
-        }
+    let scrub = scrubX(data);
+    if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed
+        if(!chart.data.labels || chart.data.labels.length === 0){
+            axes.x.valueLabels = scrub.labels.slice(0);
+        }    
+    }
 
-        if(c2m_types === "scatter"){
-            delete scrub?.data;
-            delete axes.x.valueLabels;
-        }
+    if(c2m_types === "scatter"){
+        delete scrub?.data;
+        delete axes.x.valueLabels;
+    }
 
-        axes = {
-            ...axes,
-            x: {
-                ...axes.x,
-                ...(options.axes?.x)
-            },
-            y: {
-                ...axes.y,
-                ...(options.axes?.y)
-            },
-        };
+    axes = {
+        ...axes,
+        x: {
+            ...axes.x,
+            ...(options.axes?.x)
+        },
+        y: {
+            ...axes.y,
+            ...(options.axes?.y)
+        },
+    };
 
-        const c2mOptions = {
-            cc,
-            element: chart.canvas,
-            type: c2m_types,
-            data: scrub?.data ?? data,
-            title: determineChartTitle(chart.options),
-            axes,
-            options: {
-                // @ts-ignore
-                onFocusCallback: ({point, index}) => {
-                    try{
-                        const highlightElements = [];
-                        if("custom" in point){
+    const c2mOptions = {
+        cc,
+        element: chart.canvas,
+        type: c2m_types,
+        data: scrub?.data ?? data,
+        title: determineChartTitle(chart.options),
+        axes,
+        options: {
+            // @ts-ignore
+            onFocusCallback: ({point, index}) => {
+                try{
+                    const highlightElements = [];
+                    if("custom" in point){
+                        highlightElements.push({
+                            datasetIndex: point.custom.group,
+                            index: point.custom.index
+                        });
+                    }else{
+                        const {visible_groups} = chartStates.get(chart);
+                        visible_groups.forEach((datasetIndex: number) => {
                             highlightElements.push({
-                                datasetIndex: point.custom.group,
-                                index: point.custom.index
-                            });
-                        }else{
-                            const {visible_groups} = chartStates.get(chart);
-                            visible_groups.forEach((datasetIndex: number) => {
-                                highlightElements.push({
-                                    datasetIndex,
-                                    index
-                                })
+                                datasetIndex,
+                                index
                             })
-                        }
-                        chart?.setActiveElements(highlightElements);
-                        chart?.tooltip?.setActiveElements(highlightElements, {})
-                        chart?.update();
-                    }catch(e){
-                        // console.warn(e);
+                        })
                     }
+                    chart?.setActiveElements(highlightElements);
+                    chart?.tooltip?.setActiveElements(highlightElements, {})
+                    chart?.update();
+                }catch(e){
+                    // console.warn(e);
                 }
             }
-        };
+        }
+    };
 
-        if(Array.isArray(c2mOptions.data)){
-            if(isNaN(c2mOptions.data[0])){
-                c2mOptions.data = c2mOptions.data.map((point, index) => {
+    if(Array.isArray(c2mOptions.data)){
+        if(isNaN(c2mOptions.data[0])){
+            c2mOptions.data = c2mOptions.data.map((point, index) => {
+                return {
+                    ...point,
+                    custom: {
+                        group: 0,
+                        index
+                    }
+                }
+            })
+        }else{
+            c2mOptions.data = c2mOptions.data.map((num, index) => {
+                return {
+                    x: index,
+                    y: num,
+                    custom: {
+                        group: 0,
+                        index
+                    }
+                }
+            })
+        }
+    }else{
+        const groups = Object.keys(c2mOptions.data);
+        groups.forEach((groupName, groupNumber) => {
+            if(!isNaN(c2mOptions.data[groupName][0])){
+                c2mOptions.data[groupName] = c2mOptions.data[groupName].map((num: number, index: number) => {
                     return {
-                        ...point,
+                        x: index,
+                        y: num,
                         custom: {
-                            group: 0,
+                            group: groupNumber,
                             index
                         }
                     }
                 })
             }else{
-                c2mOptions.data = c2mOptions.data.map((num, index) => {
+                c2mOptions.data[groupName] = c2mOptions.data[groupName].map((point: any, index: number) => {
                     return {
-                        x: index,
-                        y: num,
+                        ...point,
                         custom: {
-                            group: 0,
+                            group: groupNumber,
                             index
                         }
                     }
                 })
             }
-        }else{
-            const groups = Object.keys(c2mOptions.data);
-            groups.forEach((groupName, groupNumber) => {
-                if(!isNaN(c2mOptions.data[groupName][0])){
-                    c2mOptions.data[groupName] = c2mOptions.data[groupName].map((num: number, index: number) => {
-                        return {
-                            x: index,
-                            y: num,
-                            custom: {
-                                group: groupNumber,
-                                index
-                            }
-                        }
-                    })
-                }else{
-                    c2mOptions.data[groupName] = c2mOptions.data[groupName].map((point: any, index: number) => {
-                        return {
-                            ...point,
-                            custom: {
-                                group: groupNumber,
-                                index
-                            }
-                        }
-                    })
-                }
-            });
-        }
-
-        if(chart.config.options?.scales?.x?.stacked){
-            c2mOptions.options.stack = true;
-        }
-
-        if(options.audioEngine){
-            // @ts-ignore
-            c2mOptions.audioEngine = options.audioEngine;
-        }
-
-        if(c2mOptions.data.length === 0){
-            return;
-        }
-
-        const {err, data:c2m} = c2mChart(c2mOptions);
-
-        chartStates.set(chart, {
-            c2m,
-            visible_groups: groups?.map((g, i) => i)
         });
+    }
 
-        // /* istanbul-ignore-next */
-        if(err){
-            options.errorCallback?.(err);
+    if(chart.config.options?.scales?.x?.stacked){
+        c2mOptions.options.stack = true;
+    }
+
+    if(options.audioEngine){
+        // @ts-ignore
+        c2mOptions.audioEngine = options.audioEngine;
+    }
+
+    if(c2mOptions.data.length === 0){
+        return;
+    }
+
+    const {err, data:c2m} = c2mChart(c2mOptions);
+
+    chartStates.set(chart, {
+        c2m,
+        visible_groups: groups?.map((g, i) => i)
+    });
+
+    // /* istanbul-ignore-next */
+    if(err){
+        options.errorCallback?.(err);
+    }
+
+}
+
+const plugin: Plugin = {
+    id: "chartjs2music",
+
+    afterInit: (chart: Chart, args, options) => {
+        if(!chartStates.has(chart)){
+            generateChart(chart, options);
         }
     },
 
-    afterDatasetUpdate: (chart: Chart, args) => {
+    afterDatasetUpdate: (chart: Chart, args, options) => {
         if(!args.mode){
             return;
+        }
+
+        if(!chartStates.has(chart)){
+            generateChart(chart, options);
         }
 
         const {c2m: ref, visible_groups} = chartStates.get(chart);
