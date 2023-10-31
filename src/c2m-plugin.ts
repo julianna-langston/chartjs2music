@@ -1,8 +1,13 @@
 import type { ChartOptions, Plugin, Chart } from "chart.js";
-import c2mChart from "chart2music";
+import c2mChart, {c2m} from "chart2music";
 import {processBoxData} from "./boxplots";
 
-const chartStates = new Map();
+type ChartStatesTypes = {
+    c2m: c2m;
+    visible_groups: number[];
+}
+
+const chartStates = new Map<Chart, ChartStatesTypes>();
 
 const chartjs_c2m_converter: any = {
     bar: "bar",
@@ -160,10 +165,42 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided: HTMLElement | n
     return cc;
 }
 
+const displayPoint = (chart: Chart) => {
+    if(!chartStates.has(chart)){
+        return;
+    }
+    const {c2m: ref, visible_groups} = chartStates.get(chart) as ChartStatesTypes;
+    const {point, index} = ref.getCurrent();
+    try{
+        const highlightElements = [];
+        if("custom" in point){
+            highlightElements.push({
+                // @ts-ignore
+                datasetIndex: point.custom.group,
+                // @ts-ignore
+                index: point.custom.index
+            });
+        }else{
+            visible_groups.forEach((datasetIndex: number) => {
+                highlightElements.push({
+                    datasetIndex,
+                    index
+                })
+            })
+        }
+        chart?.setActiveElements(highlightElements);
+        chart?.tooltip?.setActiveElements(highlightElements, {})
+        chart?.update();
+    }catch(e){
+        // console.warn(e);
+    }
+}
+
 const generateChart = (chart: Chart, options: ChartOptions) => {
     const {valid, c2m_types, invalidType} = processChartType(chart);
 
     if(!valid){
+        // @ts-ignore
         options.errorCallback?.(`Unable to connect chart2music to chart. The chart is of type "${invalidType}", which is not one of the supported chart types for this plugin. This plugin supports: ${Object.keys(chartjs_c2m_converter).join(", ")}`);
         return;
     }
@@ -223,29 +260,8 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         axes,
         options: {
             // @ts-ignore
-            onFocusCallback: ({point, index}) => {
-                try{
-                    const highlightElements = [];
-                    if("custom" in point){
-                        highlightElements.push({
-                            datasetIndex: point.custom.group,
-                            index: point.custom.index
-                        });
-                    }else{
-                        const {visible_groups} = chartStates.get(chart);
-                        visible_groups.forEach((datasetIndex: number) => {
-                            highlightElements.push({
-                                datasetIndex,
-                                index
-                            })
-                        })
-                    }
-                    chart?.setActiveElements(highlightElements);
-                    chart?.tooltip?.setActiveElements(highlightElements, {})
-                    chart?.update();
-                }catch(e){
-                    // console.warn(e);
-                }
+            onFocusCallback: () => {
+                displayPoint(chart);
             }
         }
     };
@@ -301,10 +317,13 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         });
     }
 
+    // @ts-ignore
     if(chart.config.options?.scales?.x?.stacked){
+        // @ts-ignore
         c2mOptions.options.stack = true;
     }
 
+        // @ts-ignore
     if(options.audioEngine){
         // @ts-ignore
         c2mOptions.audioEngine = options.audioEngine;
@@ -316,15 +335,21 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
 
     const {err, data:c2m} = c2mChart(c2mOptions);
 
+    /* istanbul-ignore-next */
+    if(err){
+        // @ts-ignore
+        options.errorCallback?.(err);
+        return;
+    }
+
+    if(!c2m){
+        return;
+    }
+
     chartStates.set(chart, {
         c2m,
-        visible_groups: groups?.map((g, i) => i)
+        visible_groups: groups?.map((g, i) => i) ?? []
     });
-
-    // /* istanbul-ignore-next */
-    if(err){
-        options.errorCallback?.(err);
-    }
 
 }
 
@@ -334,6 +359,18 @@ const plugin: Plugin = {
     afterInit: (chart: Chart, args, options) => {
         if(!chartStates.has(chart)){
             generateChart(chart, options);
+
+            // Remove tooltip when the chart blurs
+            chart.canvas.addEventListener("blur", () => {
+                chart.setActiveElements([]);
+                chart.tooltip?.setActiveElements([], {});
+                chart.update();
+            });
+
+            // Show tooltip when the chart receives focus
+            chart.canvas.addEventListener("focus", () => {
+                displayPoint(chart);
+            });
         }
     },
 
@@ -346,12 +383,14 @@ const plugin: Plugin = {
             generateChart(chart, options);
         }
 
-        const {c2m: ref, visible_groups} = chartStates.get(chart);
+        const {c2m: ref, visible_groups} = chartStates.get(chart) as ChartStatesTypes;
         if(!ref){
             return;
         }
 
+        // @ts-ignore
         const groups = ref._groups.slice(0);
+        // @ts-ignore
         if(ref._options.stack){
             groups.shift();
         }
