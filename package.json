@@ -38,7 +38,7 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "11.1.5",
     "@sgratzl/chartjs-chart-boxplot": "4.2.7",
-    "@types/jest": "29.5.7", 
+    "@types/jest": "29.5.8", 
     "canvas": "2.11.2",
     "chartjs-chart-wordcloud": "4.3.2",
     "chartjs-plugin-a11y-legend": "0.1.1",
