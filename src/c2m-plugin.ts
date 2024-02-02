@@ -364,7 +364,11 @@ const plugin: Plugin = {
             chart.canvas.addEventListener("blur", () => {
                 chart.setActiveElements([]);
                 chart.tooltip?.setActiveElements([], {});
-                chart.update();
+                try {
+                    chart.update();
+                } catch(e){
+                    // console.warn(e);
+                }
             });
 
             // Show tooltip when the chart receives focus
