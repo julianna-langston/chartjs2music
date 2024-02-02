@@ -6,7 +6,8 @@
   "main": "dist/plugin.js",
   "module": "dist/plugin.mjs",
   "exports": {
-    "import": "./dist/plugin.mjs"
+    "import": "./dist/plugin.mjs",
+    "require": "./dist/plugin.cjs"
   },
   "files": [
     "dist/*"
@@ -30,15 +31,20 @@
   "license": "MIT",
   "scripts": {
     "start": "vite",
-    "build": "rollup -c rollup.config.js --silent",
+    "build": "rollup -c rollup.config.js --silent && yarn build-cjs",
+    "build-cjs": "babel ./dist/plugin.mjs --out-file ./dist/plugin.cjs",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "depcheck": "depcheck",
     "clean": "rimraf dist coverage"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "@babel/preset-env": "^7.23.9",
     "@rollup/plugin-typescript": "11.1.6",
     "@sgratzl/chartjs-chart-boxplot": "4.2.8",
-    "@types/jest": "29.5.11", 
+    "@types/jest": "29.5.11",
     "canvas": "2.11.2",
     "chartjs-chart-wordcloud": "4.3.3",
     "chartjs-plugin-a11y-legend": "0.1.1",
