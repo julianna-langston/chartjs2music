@@ -333,6 +333,10 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         return;
     }
 
+    if(options.lang){
+        c2mOptions.lang = options.lang;
+    }
+
     const {err, data:c2m} = c2mChart(c2mOptions);
 
     /* istanbul-ignore-next */

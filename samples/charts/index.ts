@@ -1,4 +1,5 @@
 import simple_bar from "./simple_bar";
+import spanish_bar from "./spanish_bar";
 import grouped_bar from "./grouped_bar";
 import grouped_line from "./grouped_line";
 import floating_bar from "./floating_bar";
@@ -24,7 +25,8 @@ import grouped_scatter from "./grouped_scatter";
 import empty from "./empty";
 
 export default {
-    simple_bar, 
+    simple_bar,
+    spanish_bar, 
     log,
     grouped_bar, 
     grouped_line,

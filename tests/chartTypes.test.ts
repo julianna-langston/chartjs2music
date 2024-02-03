@@ -4,6 +4,7 @@ import charts from "../samples/charts"
 
 const {
     simple_bar, 
+    spanish_bar,
     grouped_bar, 
     grouped_line,
     polarArea1,
@@ -40,6 +41,14 @@ test("Bar chart", () => {
     expect(cc.textContent).toContain(`X is "Year" from 2010 to 2016`);
     expect(cc.textContent).toContain(`Y is "Count" from 10 to 30`);
 });
+test("Spanish test", () => {
+    const {cc} = setup(spanish_bar);
+
+    expect(cc.textContent).toContain(`Gráfico Sonificado llamado "Prueba"`);
+    expect(cc.textContent).toContain(`Gráfico de barras.`);
+    expect(cc.textContent).toContain(`X es "Año" de 2010 a 2016`);
+    expect(cc.textContent).toContain(`Y es "Cuantos" de 10 a 30`);
+})
 test("Floating Grouped bar chart", () => {
     const {cc} = setup(grouped_bar);
 
@@ -103,7 +112,7 @@ test("Grouped box plot", () => {
     const {cc} = setup(box_plot_group);
     
     expect(cc.textContent).toContain(`Sonified chart with 3 groups titled "Iris".`);
-    expect(cc.textContent).toContain(`Box chart showing "Setosa".`);
+    expect(cc.textContent).toContain(`Box plot showing "Setosa".`);
     expect(cc.textContent).toContain(`X is "" from Sepal Length to Petal width`);
     expect(cc.textContent).toContain(`Y is "" from 0.1 to 7.7`);
 });
@@ -112,7 +121,7 @@ test("Grouped box plot (numbers)", () => {
     const {cc} = setup(box_plot_group_numbers);
     
     expect(cc.textContent).toContain(`Sonified chart with 3 groups titled "Iris"`);
-    expect(cc.textContent).toContain(`Box chart showing "Setosa".`);
+    expect(cc.textContent).toContain(`Box plot showing "Setosa".`);
     expect(cc.textContent).toContain(`X is "" from Sepal Length to Petal width`);
     expect(cc.textContent).toContain(`Y is "" from 0.1 to 7.9`);
 });
