@@ -2089,10 +2089,10 @@ chart.js@4.4.1, chart.js@^4.2.1:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
-chart2music@1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.14.0.tgz#2bc076f9effa04cb42685ca3389305eb4f9b5649"
-  integrity sha512-EYp9Mdz3kOLor4uGlhnS4m0io0y6u3ddYazLnw4kbCGQAAbvOJK5hQYXYglQZC8sh0xag/+QyPu2rO8/BC7AAA==
+chart2music@1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.15.1.tgz#45f3f3f63f5f285a2cc8b599e29f5230d10f0c50"
+  integrity sha512-uVfZl/X8LS7O/sI2ackar613jGK8XliJA27optH9MwiCdlypmnCwCdwEVK5bakfdjjtpjiHYUfc8Hy9F4cAgQA==
   dependencies:
     "@formatjs/intl" "^2.9.11"
 

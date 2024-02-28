@@ -43,7 +43,7 @@ The following plugin options are available:
 * `cc` - the equivalent of the [chart2music option `cc`](https://chart2music.com/docs/API/Config#axes)
 * `audioEngine` - the equivalent of the [chart2music option `audioEngine`](https://chart2music.com/docs/API/Config#cc)
 * `axes` - the equivalent of the [chart2music option `axes`](https://chart2music.com/docs/API/Config#axes)
-* `lang` - the language your user speaks. The available languages that Chart2Music supports are: "en", "es". The default is "en". If you would like to add translations for another language, [Chart2Music is open to PRs](https://github.com/julianna-langston/chart2music).
+* `lang` - the language your user speaks. The available languages that Chart2Music supports are: "en", "de", "es", "fr", "it". The default is "en". If you would like to add translations for another language, [Chart2Music is open to PRs](https://github.com/julianna-langston/chart2music).
 
 Here's an example for providing options:
 ```js
