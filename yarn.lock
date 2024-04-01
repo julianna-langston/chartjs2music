@@ -2120,10 +2120,10 @@ chart.js@4.4.2, chart.js@^4.2.1:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
-chart2music@1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.15.1.tgz#45f3f3f63f5f285a2cc8b599e29f5230d10f0c50"
-  integrity sha512-uVfZl/X8LS7O/sI2ackar613jGK8XliJA27optH9MwiCdlypmnCwCdwEVK5bakfdjjtpjiHYUfc8Hy9F4cAgQA==
+chart2music@1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.16.0.tgz#26b6d4c6892e6dc2ef8ed3318fdc982e2149f483"
+  integrity sha512-GuxzjPzErOJZrafb2Mbgt2aybB0hVAYUwbst2Og9LHSSsqOVmw4UjVe3Y4+jlNam/tjBYA7pfgjzqwQRdcy8jQ==
   dependencies:
     "@formatjs/intl" "^2.9.11"
 
