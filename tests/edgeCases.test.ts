@@ -11,6 +11,9 @@ import {
 } from "chart.js";
 import plugin from "../src/c2m-plugin";
 import logChart from "../samples/charts/log";
+import samples from "../samples/charts"
+
+const {simple_bar} = samples;
 
 Chart.register(
     plugin, 
@@ -232,4 +235,64 @@ test("Empty chart (empty datasets)", () => {
             }
         });
     }).not.toThrowError();
+});
+
+test("destroying chart", () => {
+    const mockParent = document.createElement("div");
+    const mockElement = document.createElement("canvas");
+    mockParent.appendChild(mockElement);
+    const mockCC = document.createElement("div");
+    expect(mockParent.childElementCount).toBe(1);
+    const chart = new Chart(mockElement, {
+        ...simple_bar,
+        options: {
+            // @ts-ignore
+            ...simple_bar.options,
+            plugins: {
+                // @ts-ignore
+                ...simple_bar.options.plugins,
+                // @ts-ignore
+                chartjs2music: {
+                    cc: mockCC
+                }
+            }
+        }
+    });
+
+    expect(document.querySelectorAll("dialog")).toHaveLength(0);
+    
+    // Apply focus to the canvas element
+    mockElement.dispatchEvent(new Event("focus"));
+    mockElement.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "h"
+    }));
+
+    expect(document.querySelectorAll("dialog")).toHaveLength(1);
+
+    chart.destroy();
+
+    expect(document.querySelectorAll("dialog")).toHaveLength(0);
+
+    new Chart(mockElement, {
+        ...simple_bar,
+        options: {
+            // @ts-ignore
+            ...simple_bar.options,
+            plugins: {
+                // @ts-ignore
+                ...simple_bar.options.plugins,
+                // @ts-ignore
+                chartjs2music: {
+                    cc: mockCC
+                }
+            }
+        }
+    });
+
+    mockElement.dispatchEvent(new Event("focus"));
+    mockElement.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "h"
+    }));
+
+    expect(document.querySelectorAll("dialog")).toHaveLength(1);
 });

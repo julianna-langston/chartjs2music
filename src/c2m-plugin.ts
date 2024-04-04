@@ -418,6 +418,15 @@ const plugin: Plugin = {
         }
     },
 
+    afterDestroy: (chart) => {
+        const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
+        if(!ref){
+            return;
+        }
+
+        ref.cleanUp();
+    },
+
     defaults: {
         cc: null,
         audioEngine: null,
