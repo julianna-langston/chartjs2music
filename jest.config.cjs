@@ -24,6 +24,6 @@ module.exports = {
     coverageDirectory: "coverage",
     coverageProvider: "babel",
     setupFiles: [
-        "<rootDir>/tests/_setup.js"
+        "<rootDir>/tests/_setup.ts"
     ]
 };
