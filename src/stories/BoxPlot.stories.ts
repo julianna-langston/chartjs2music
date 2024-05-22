@@ -1,7 +1,235 @@
-import { ChartTypeRegistry } from "chart.js";
+import type { StoryObj, Meta } from '@storybook/html';
+import { userEvent, waitFor, within, expect } from '@storybook/test';
+import type { ChartProps } from './Chart';
+import { createChart } from './Chart';
+import { Chart, ChartTypeRegistry } from 'chart.js';
 
-export default {
-    type: "boxplot" as keyof ChartTypeRegistry,
+const meta = {
+  title: 'Charts/Box plot',
+  render: (args) => createChart(args)
+} satisfies Meta<ChartProps>;
+
+export default meta;
+type Story = StoryObj<ChartProps>;
+
+export const BoxPlotComputedData: Story = {
+  args: {
+    type: "boxplot",
+    data: {
+        labels: ["SUV", "Sedan", "Sports", "Wagon", "Truck", "Hybrid"],
+        datasets: [{
+            backgroundColor: "lightsteelblue",
+            data: [
+                {
+                    min: 10,
+                    q1: 14,
+                    median: 15,
+                    mean: 15,
+                    q3: 18,
+                    max: 23
+                },
+                {
+                    min: 14,
+                    q1: 18,
+                    median: 20,
+                    mean: 21,
+                    q3: 23,
+                    max: 35,
+                    outliers: [37, 37, 38, 40]
+                },
+                {
+                    min: 12,
+                    q1: 18,
+                    median: 19,
+                    mean: 19.5,
+                    q3: 20,
+                    max: 23,
+                    outliers: [11, 26]
+                },
+                {
+                    min: 15,
+                    q1: 19,
+                    median: 21,
+                    mean: 22,
+                    q3: 23,
+                    max: 31
+                },
+                {
+                    min: 13,
+                    q1: 14,
+                    median: 16,
+                    mean: 16.5,
+                    q3: 17,
+                    max: 21,
+                    outliers: [26, 26]
+                },
+                {
+                    min: 45,
+                    q1: 45,
+                    mean: 55,
+                    median: 59,
+                    q3: 60,
+                    max: 60
+                }
+            ]
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: "City Mileage for Vehicle Types"
+            }
+        }
+    }
+  }
+}
+
+export const BoxPlotGroupComputedData: Story = {
+  args: {
+    type: "boxplot",
+    data: {
+        labels: ["Sepal Length", "Sepal width", "Petal length", "Petal width"],
+        datasets: [
+            {
+                label: "Setosa",
+                backgroundColor: "orange",
+                data: [
+                    {
+                        min: 4.3,
+                        q1: 4.8,
+                        median: 5,
+                        q3: 5.2,
+                        max: 5.8,
+                        mean: 5.006
+                    },
+                    {
+                        min: 2.3,
+                        q1: 3.2,
+                        median: 3.4,
+                        mean: 3.428,
+                        q3: 3.675,
+                        max: 4.4,
+                        outliers: [2.3, 4.4]
+                    },
+                    {
+                        min: 1,
+                        q1: 1.4,
+                        median: 1.5,
+                        mean: 1.462,
+                        q3: 1.575,
+                        max: 1.9,
+                        outliers: [1,1.1,1.9]
+                    },
+                    {
+                        min: 0.1,
+                        q1: 0.2,
+                        median: 0.2,
+                        mean: 0.248,
+                        q3: 0.3,
+                        max: 0.6,
+                        outliers: [0.5, 0.6]
+                    }
+                ]
+            },
+            {
+                label: "Versicolor",
+                backgroundColor: "blue",
+                data: [
+                    {
+                        min: 4.9,
+                        q1: 5.6,
+                        median: 5.9,
+                        mean: 5.936,
+                        q3: 6.3,
+                        max: 7
+                    },
+                    {
+                        min: 2,
+                        q1: 2.525,
+                        median: 2.8,
+                        mean: 2.77,
+                        q3: 3,
+                        max: 3.4
+                    },
+                    {
+                        min: 3,
+                        q1: 4,
+                        median: 4.35,
+                        mean: 4.26,
+                        q3: 4.6,
+                        max: 5.1,
+                        outliers: [3]
+                    },
+                    {
+                        min: 1,
+                        q1: 1.2,
+                        median: 1.3,
+                        mean: 1.326,
+                        q3: 1.5,
+                        max: 1.8
+                    }
+                ]
+            },
+            {
+                label: "Virginica",
+                backgroundColor: "purple",
+                data: [
+                    {
+                        min: 4.9,
+                        q1: 6.225,
+                        median: 6.5,
+                        mean: 6.588,
+                        q3: 6.9,
+                        max: 7.9,
+                        outliers: [4.9]
+                    },
+                    {
+                        min: 2.2,
+                        q1: 2.8,
+                        median: 3,
+                        mean: 2.974,
+                        q3: 3.175,
+                        max: 3.8,
+                        outliers: [2.2, 3.8]
+                    },
+                    {
+                        min: 4.5,
+                        q1: 5.1,
+                        median: 5.55,
+                        mean: 5.552,
+                        q3: 5.875,
+                        max: 6.9
+                    },
+                    {
+                        min: 1.4,
+                        q1: 1.8,
+                        median: 2,
+                        mean: 2.026,
+                        q3: 2.3,
+                        max: 2.5
+                    }
+                ]
+            }
+        ]
+    },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: "Iris"
+            }
+        }
+    }
+  }
+};
+
+export const BoxPlotGroupRawData: Story = {
+  args: {
+    type: "boxplot",
     data: {
         labels: ["Sepal Length", "Sepal width", "Petal length", "Petal width"],
         datasets: [
@@ -636,4 +864,179 @@ export default {
             }
         }
     }
-};
+}
+}
+
+export const BoxPlotRawData: Story = {
+  args: {
+    type: "boxplot",
+    data: {
+        labels: ["Setosa", "Versicolor", "Virginica"],
+        datasets: [{
+            backgroundColor: "lightsteelblue",
+            data: [
+                [5.1,
+                    4.7,
+                    4.6,
+                    5,
+                    5.4,
+                    4.6,
+                    5,
+                    4.4,
+                    4.9,
+                    5.4,
+                    4.8,
+                    4.8,
+                    4.3,
+                    5.8,
+                    5.7,
+                    5.4,
+                    5.1,
+                    5.7,
+                    5.1,
+                    5.4,
+                    5.1,
+                    4.6,
+                    5.1,
+                    4.8,
+                    5,
+                    5,
+                    5.2,
+                    5.2,
+                    4.7,
+                    4.8,
+                    5.4,
+                    5.2,
+                    5.5,
+                    4.9,
+                    5,
+                    5.5,
+                    4.9,
+                    4.4,
+                    5.1,
+                    5,
+                    4.5,
+                    4.4,
+                    5,
+                    5.1,
+                    4.8,
+                    5.1,
+                    4.6,
+                    5.3,
+                    5],
+                [7,
+                    6.4,
+                    6.9,
+                    5.5,
+                    6.5,
+                    5.7,
+                    6.3,
+                    4.9,
+                    6.6,
+                    5.2,
+                    5,
+                    5.9,
+                    6,
+                    6.1,
+                    5.6,
+                    6.7,
+                    5.6,
+                    5.8,
+                    6.2,
+                    5.6,
+                    5.9,
+                    6.1,
+                    6.3,
+                    6.1,
+                    6.4,
+                    6.6,
+                    6.8,
+                    6.7,
+                    6,
+                    5.7,
+                    5.5,
+                    5.5,
+                    5.8,
+                    6,
+                    5.4,
+                    6,
+                    6.7,
+                    6.3,
+                    5.6,
+                    5.5,
+                    5.5,
+                    6.1,
+                    5.8,
+                    5,
+                    5.6,
+                    5.7,
+                    5.7,
+                    6.2,
+                    5.1,
+                    5.7],
+                [6.3,
+                    5.8,
+                    7.1,
+                    6.3,
+                    6.5,
+                    7.6,
+                    4.9,
+                    7.3,
+                    6.7,
+                    7.2,
+                    6.5,
+                    6.4,
+                    6.8,
+                    5.7,
+                    5.8,
+                    6.4,
+                    6.5,
+                    7.7,
+                    7.7,
+                    6,
+                    6.9,
+                    5.6,
+                    7.7,
+                    6.3,
+                    6.7,
+                    7.2,
+                    6.2,
+                    6.1,
+                    6.4,
+                    7.2,
+                    7.4,
+                    7.9,
+                    6.4,
+                    6.3,
+                    6.1,
+                    7.7,
+                    6.3,
+                    6.4,
+                    6,
+                    6.9,
+                    6.7,
+                    6.9,
+                    5.8,
+                    6.8,
+                    6.7,
+                    6.7,
+                    6.3,
+                    6.5,
+                    6.2,
+                    5.9]
+            ]
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: "Iris"
+            }
+        }
+    }
+}
+}
