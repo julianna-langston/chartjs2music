@@ -1620,10 +1620,10 @@
   resolved "https://registry.npmjs.org/@sgratzl/boxplots/-/boxplots-1.3.0.tgz"
   integrity sha512-2BRWv+WOH58pwzSgP50buoXgxQic+4auz3BF0wiIUXS8D3QGkdBNgsNdQO1754Tm/0uEwly0R3WaCiGnoYWcmA==
 
-"@sgratzl/chartjs-chart-boxplot@4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@sgratzl/chartjs-chart-boxplot/-/chartjs-chart-boxplot-4.3.1.tgz#b7a806900746955183194a3d76292897039f741d"
-  integrity sha512-HgBb/Umjf9ycFnZ0HSNdbRVUZE5aRLpw+hLwnGzQqLCIxsfoPPua8PTJF+5/LZG7VORYnxGVUUYyx6BA+opSTQ==
+"@sgratzl/chartjs-chart-boxplot@4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@sgratzl/chartjs-chart-boxplot/-/chartjs-chart-boxplot-4.4.0.tgz#df4adde7f0ac4a6bec71a2ccc5ed8adcda485d60"
+  integrity sha512-C8rSUpxvJ1117TlNTq+/ykUUwtPLKGyo9m+nJdmr0Z4oMVfJztglUStruVfEiYBl+0JF/wCVHVzvSvBsmzsPMw==
   dependencies:
     "@sgratzl/boxplots" "^1.3.0"
 
