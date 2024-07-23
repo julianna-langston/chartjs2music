@@ -45,7 +45,7 @@
     "@babel/plugin-transform-modules-commonjs": "7.24.8",
     "@babel/preset-env": "7.24.8",
     "@rollup/plugin-typescript": "11.1.6",
-    "@sgratzl/chartjs-chart-boxplot": "4.4.0",
+    "@sgratzl/chartjs-chart-boxplot": "4.4.1",
     "@types/jest": "29.5.12",
     "canvas": "2.11.2",
     "chartjs-chart-wordcloud": "4.4.1",
