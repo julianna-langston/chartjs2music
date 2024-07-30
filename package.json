@@ -58,7 +58,7 @@
     "rollup-plugin-copy": "3.5.0",
     "ts-jest": "29.2.3",
     "tslib": "2.6.3",
-    "typescript": "5.5.3",
+    "typescript": "5.5.4",
     "vite": "5.3.4"
   },
   "dependencies": {
