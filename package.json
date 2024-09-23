@@ -46,7 +46,7 @@
     "@babel/preset-env": "7.25.4",
     "@rollup/plugin-typescript": "12.1.0",
     "@sgratzl/chartjs-chart-boxplot": "4.4.1",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "canvas": "2.11.2",
     "chartjs-chart-wordcloud": "4.4.1",
     "chartjs-plugin-a11y-legend": "0.1.2",
