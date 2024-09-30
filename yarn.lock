@@ -1800,17 +1800,17 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.22.4.tgz#3dd5d53e900df2a40841882c02e56f866c04d202"
   integrity sha512-j8pPKp53/lq9lMXN57S8cFz0MynJk8OWNuUnXct/9KCpKU7DgU3bYMJhwWmcqC0UU29p8Lr0/7KEVcaM6bf47Q==
 
-"@sgratzl/boxplots@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/@sgratzl/boxplots/-/boxplots-1.3.0.tgz"
-  integrity sha512-2BRWv+WOH58pwzSgP50buoXgxQic+4auz3BF0wiIUXS8D3QGkdBNgsNdQO1754Tm/0uEwly0R3WaCiGnoYWcmA==
+"@sgratzl/boxplots@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@sgratzl/boxplots/-/boxplots-1.3.2.tgz#5992ba4ae8ae26069f68d4e0bd78309c03f460ee"
+  integrity sha512-YLpoxx1dEmwpTQIDjMFX+UYM1+asgRCakucAE6h7vUmih135b/rjMEw4w4VE/oJroQzKMkik+TssSsUan2s1lA==
 
-"@sgratzl/chartjs-chart-boxplot@4.4.1":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@sgratzl/chartjs-chart-boxplot/-/chartjs-chart-boxplot-4.4.1.tgz#26ccbbfcef38c22589268464c2439783eede2a2e"
-  integrity sha512-Q/fTr0FBtdV5TjUKNcBqlgNvONkZN302+Y8CYAGeWKOYJeoWigJowdos07F7ZT6MrmuaBe4/BiaGNqyLGn94bQ==
+"@sgratzl/chartjs-chart-boxplot@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@sgratzl/chartjs-chart-boxplot/-/chartjs-chart-boxplot-4.4.2.tgz#ececbdbaa0e4ce210e391db8e928aad0e51ab5df"
+  integrity sha512-z0bf6T/Z38//70U5XgqruTUJW3E0lIunxWCK9ATzs6x8aCi22erCKJ3QjL7OP4shnc61m2puLxTzTHcnoyuI8Q==
   dependencies:
-    "@sgratzl/boxplots" "^1.3.0"
+    "@sgratzl/boxplots" "^1.3.2"
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
