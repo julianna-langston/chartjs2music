@@ -48,7 +48,7 @@
     "@sgratzl/chartjs-chart-boxplot": "4.4.1",
     "@types/jest": "29.5.13",
     "canvas": "2.11.2",
-    "chartjs-chart-wordcloud": "4.4.1",
+    "chartjs-chart-wordcloud": "4.4.2",
     "chartjs-plugin-a11y-legend": "0.1.2",
     "cross-env": "7.0.3",
     "depcheck": "1.4.7",
