@@ -43,7 +43,7 @@
     "@babel/cli": "7.25.9",
     "@babel/core": "7.25.8",
     "@babel/plugin-transform-modules-commonjs": "7.25.9",
-    "@babel/preset-env": "7.25.8",
+    "@babel/preset-env": "7.26.0",
     "@rollup/plugin-typescript": "12.1.1",
     "@sgratzl/chartjs-chart-boxplot": "4.4.3",
     "@types/jest": "29.5.13",
