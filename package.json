@@ -63,6 +63,6 @@
   },
   "dependencies": {
     "chart.js": "4.4.6",
-    "chart2music": "1.17.0"
+    "chart2music": "1.18.0"
   }
 }
