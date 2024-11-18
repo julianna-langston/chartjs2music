@@ -2121,10 +2121,10 @@ chart2music@1.17.0:
   dependencies:
     "@formatjs/intl" "2.10.2"
 
-chartjs-chart-wordcloud@4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.4.3.tgz#fc731c972f0ba64fe8e74a669d075bd4ee64b408"
-  integrity sha512-O4VIhuTsB+YbSE1+u6b/OMv58NaluSIvTwOWRYpNgP58+uiAnAB+J7L/w2HxuBCbhrXGKxV0d/WaEFvcLYuK4Q==
+chartjs-chart-wordcloud@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.4.4.tgz#516dc40e1013163beb16150fe19daaa2b4f47900"
+  integrity sha512-9ruQX5CjfBwpO31mYqniD3BQ9YTCHxWe52eoUl9Z3ecNQWF3OCHeDVv7lHe8ca1NBihfCgoRa3Y0eBGwBmgwcw==
   dependencies:
     "@types/d3-cloud" "^1.2.9"
     d3-cloud "^1.2.7"
