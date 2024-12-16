@@ -62,7 +62,7 @@
     "vite": "6.0.3"
   },
   "dependencies": {
-    "chart.js": "4.4.6",
+    "chart.js": "4.4.7",
     "chart2music": "1.18.0"
   }
 }
