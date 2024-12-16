@@ -44,7 +44,7 @@
     "@babel/core": "7.26.0",
     "@babel/plugin-transform-modules-commonjs": "7.25.9",
     "@babel/preset-env": "7.26.0",
-    "@rollup/plugin-typescript": "12.1.1",
+    "@rollup/plugin-typescript": "12.1.2",
     "@sgratzl/chartjs-chart-boxplot": "4.4.3",
     "@types/jest": "29.5.14",
     "canvas": "2.11.2",
