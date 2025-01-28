@@ -72,7 +72,7 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
         axis.type = "log10";
     }
 
-    if(chartAxisInfo.ticks.callback){
+    if(chartAxisInfo?.ticks?.callback){
         axis.format = chartAxisInfo.ticks.callback;
     }
 
