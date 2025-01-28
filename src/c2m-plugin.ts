@@ -72,6 +72,10 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
         axis.type = "log10";
     }
 
+    if(chartAxisInfo.ticks.callback){
+        axis.format = chartAxisInfo.ticks.callback;
+    }
+
     return axis;
 }
 
@@ -79,13 +83,17 @@ const generateAxes = (chart: any) => {
     const axes = {
         x: {
             ...generateAxisInfo(chart.options?.scales?.x, chart),
-            valueLabels: chart.data.labels.slice(0)
         },
         y: {
+            format: (value: number) => value.toLocaleString(),
             ...generateAxisInfo(chart.options?.scales?.y, chart),
-            format: (value: number) => value.toLocaleString()
         }
     };
+
+    const xAxisValueLabels = chart.data.labels.slice(0);
+    if(xAxisValueLabels.length > 0){
+        axes.x.valueLabels = xAxisValueLabels;
+    }
 
     return axes;
 }
