@@ -23,10 +23,11 @@ import wordcloud2 from "./wordcloud2";
 import scatter from "./scatter";
 import grouped_scatter from "./grouped_scatter";
 import empty from "./empty";
+import memoryChart from "./memoryChart";
 
 export default {
     simple_bar,
-    spanish_bar, 
+    spanish_bar,
     log,
     grouped_bar, 
     grouped_line,
@@ -37,6 +38,7 @@ export default {
     getting_started_Example,
     string_x_minimum,
     string_x_values,
+    memoryChart,
     box_plot,
     box_plot_numbers,
     box_plot_group,

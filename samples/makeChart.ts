@@ -4,6 +4,7 @@ import samples from "./charts";
 import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
 import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud';
 import legendPlugin from "chartjs-plugin-a11y-legend";
+import 'chartjs-adapter-luxon';
 
 const charts = Object.values(samples);
 
