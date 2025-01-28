@@ -49,14 +49,14 @@ const processChartType = (chart: any) => {
 
 const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
     const axis = {} as any;
-    if(chartAxisInfo?.min){
+    if(chartAxisInfo?.min !== undefined){
         if(typeof chartAxisInfo.min === "string"){
             axis.minimum = chart.data.labels.indexOf(chartAxisInfo.min);
         }else{
             axis.minimum = chartAxisInfo.min;
         }
     }
-    if(chartAxisInfo?.max){
+    if(chartAxisInfo?.max !== undefined){
         if(typeof chartAxisInfo.max === "string"){
             axis.maximum = chart.data.labels.indexOf(chartAxisInfo.max);
         }else{
