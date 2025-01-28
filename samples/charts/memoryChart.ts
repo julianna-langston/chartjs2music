@@ -83,6 +83,16 @@ const config = {
                         return `${context.dataset.label}: ${context.parsed.y * 100}%`
                     }
                 }
+            },
+            chartjs2music: {
+                axes: {
+                    x: {
+                        format: (n: number) => formatter.format(n)
+                    },
+                    y: {
+                        format: (y: number) => `${y*100}%`
+                    }
+                }
             }
         },
         responsive: true,
