@@ -77,6 +77,15 @@ new Chart(canvasElement, {
 });
 ```
 
+If you are using TypeScript, replace the first 4 lines with this:
+```ts
+import {Chart, type ChartTypeRegistry} from "chart.js/auto";
+import chartjs2music from "chartjs-plugin-chart2music";
+
+new Chart(canvasElement, {
+    type: "bar" as keyof ChartTypeRegistry,
+```
+
 ## Supported features
 
 This plugin is currently in beta, so not all of the chart.js features are currently supported.
