@@ -97,6 +97,7 @@ A quick list of chart.js features we currently support includes:
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
 * Chart title
 * Most data structures (not including `parsing` or non-standard axes identifiers)
+* Dataset visibility (when you show/hide a category from the legend)
 
 Note that visual-specific chart features are ignored. This includes things like color, padding, line thickness, etc.
 
@@ -106,7 +107,6 @@ Things we plan to support in the future:
 * Complex `parsing` options for data
 * Date/Time support for axes
 * Subtitle
-* Dataset visibility (when you show/hide a category from the legend)
 * Radar charts
 * Custom formatting for axis tick values
 
