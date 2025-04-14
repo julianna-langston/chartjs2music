@@ -77,6 +77,15 @@ new Chart(canvasElement, {
 });
 ```
 
+If you are using TypeScript, replace the first 4 lines with this:
+```ts
+import {Chart, type ChartTypeRegistry} from "chart.js/auto";
+import chartjs2music from "chartjs-plugin-chart2music";
+
+new Chart(canvasElement, {
+    type: "bar" as keyof ChartTypeRegistry,
+```
+
 ## Supported features
 
 This plugin is currently in beta, so not all of the chart.js features are currently supported.
@@ -88,6 +97,7 @@ A quick list of chart.js features we currently support includes:
 * Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
 * Chart title
 * Most data structures (not including `parsing` or non-standard axes identifiers)
+* Dataset visibility (when you show/hide a category from the legend)
 
 Note that visual-specific chart features are ignored. This includes things like color, padding, line thickness, etc.
 
@@ -97,7 +107,6 @@ Things we plan to support in the future:
 * Complex `parsing` options for data
 * Date/Time support for axes
 * Subtitle
-* Dataset visibility (when you show/hide a category from the legend)
 * Radar charts
 * Custom formatting for axis tick values
 
