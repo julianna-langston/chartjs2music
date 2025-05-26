@@ -43,7 +43,7 @@
     "prepack": "npm run clean && npm run build"
   },
   "devDependencies": {
-    "@babel/cli": "7.27.0",
+    "@babel/cli": "7.27.2",
     "@babel/core": "7.26.10",
     "@babel/plugin-transform-modules-commonjs": "7.26.3",
     "@babel/preset-env": "7.27.2",
