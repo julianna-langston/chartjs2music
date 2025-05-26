@@ -2165,10 +2165,10 @@ chart.js@4.4.9, chart.js@^4.2.1:
   dependencies:
     "@kurkle/color" "^0.3.0"
 
-chart2music@1.18.1:
-  version "1.18.1"
-  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.18.1.tgz#6f77bccb03263c3d180c617759b6b4a8e75d38c1"
-  integrity sha512-LiI91emk/1d5le5InL7cqYB4NxWEkhKTXzREX8JjRZLgHa9PKM9jUoAbFH26VJKu5gqPQF9tHBPzves4yRMM9g==
+chart2music@1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/chart2music/-/chart2music-1.19.0.tgz#93c2e2f1301f03cd4fc7932c578bd7923a9ac55e"
+  integrity sha512-v8fiQM19iyrDS1NCdwkokg29/Axg93eLkfKAoNeXE0LbVZxKfk0wMzqQOYDGbn/nye5RJvlkm9Uq8oRdC35CuA==
   dependencies:
     "@formatjs/intl" "3.0.2"
 
