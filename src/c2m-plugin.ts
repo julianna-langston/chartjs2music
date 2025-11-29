@@ -7,7 +7,7 @@ type ChartStatesTypes = {
     lastDataSnapshot: string;
 }
 
-export const chartStates = new Map<Chart, ChartStatesTypes>();
+const chartStates = new Map<Chart, ChartStatesTypes>();
 
 const chartjs_c2m_converter: any = {
     bar: "bar",
