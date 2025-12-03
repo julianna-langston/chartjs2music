@@ -2193,10 +2193,10 @@ chartjs-adapter-luxon@1.3.1:
   resolved "https://registry.yarnpkg.com/chartjs-adapter-luxon/-/chartjs-adapter-luxon-1.3.1.tgz#8ad8be7cc1521bacd6cd2ff4b013669d4dd49364"
   integrity sha512-yxHov3X8y+reIibl1o+j18xzrcdddCLqsXhriV2+aQ4hCR66IYFchlRXUvrJVoxglJ380pgytU7YWtoqdIgqhg==
 
-chartjs-chart-wordcloud@4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.4.4.tgz#516dc40e1013163beb16150fe19daaa2b4f47900"
-  integrity sha512-9ruQX5CjfBwpO31mYqniD3BQ9YTCHxWe52eoUl9Z3ecNQWF3OCHeDVv7lHe8ca1NBihfCgoRa3Y0eBGwBmgwcw==
+chartjs-chart-wordcloud@4.4.5:
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-wordcloud/-/chartjs-chart-wordcloud-4.4.5.tgz#29e7cd56a360ca474c03df467547aa27b460cc5b"
+  integrity sha512-x7gdE5BZyj31+bjHbZ/0tX4hB6un7TQhvwdO5qHhqpmJCS6bONHjMuDzSjL/Qw2uI6CT2/U04LGqBREHwBiK3g==
   dependencies:
     "@types/d3-cloud" "^1.2.9"
     d3-cloud "^1.2.7"
