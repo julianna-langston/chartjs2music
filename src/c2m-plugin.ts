@@ -4,7 +4,6 @@ import {processBoxData} from "./boxplots";
 
 type ChartStatesTypes = {
     c2m: c2m;
-    visible_groups: number[];
 }
 
 const chartStates = new Map<Chart, ChartStatesTypes>();
@@ -173,8 +172,13 @@ const displayPoint = (chart: Chart) => {
     if(!chartStates.has(chart)){
         return;
     }
-    const {c2m: ref, visible_groups} = chartStates.get(chart) as ChartStatesTypes;
+    const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
     const {point, index} = ref.getCurrent();
+
+    // Use Chart2Music's internal visible group tracking
+    // @ts-ignore - accessing internal Chart2Music property
+    const visibleGroupIndices = ref._visible_group_indices?.slice(1) || [];
+
     try{
         const highlightElements = [];
         if("custom" in point){
@@ -185,9 +189,11 @@ const displayPoint = (chart: Chart) => {
                 index: point.custom.index
             });
         }else{
-            visible_groups.forEach((datasetIndex: number) => {
+            // For stacked charts, Chart2Music includes an "All" group at index 0,
+            // so we subtract 1 to get the actual dataset index
+            visibleGroupIndices.forEach((groupIndex: number) => {
                 highlightElements.push({
-                    datasetIndex,
+                    datasetIndex: groupIndex - 1,
                     index
                 })
             })
@@ -355,8 +361,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
     }
 
     chartStates.set(chart, {
-        c2m,
-        visible_groups: groups?.map((g, i) => i) ?? []
+        c2m
     });
 
 }
@@ -395,7 +400,7 @@ const plugin: Plugin = {
             generateChart(chart, options);
         }
 
-        const {c2m: ref, visible_groups} = chartStates.get(chart) as ChartStatesTypes;
+        const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
         if(!ref){
             return;
         }
@@ -409,14 +414,12 @@ const plugin: Plugin = {
 
         if(args.mode === "hide"){
             const err = ref.setCategoryVisibility(groups[args.index], false);
-            visible_groups.splice(args.index, 1);
             if(err){console.error(err)}
             return;
         }
 
         if(args.mode === "show"){
             const err = ref.setCategoryVisibility(groups[args.index], true);
-            visible_groups.push(args.index);
             if(err){console.error(err)}
             return;
         }
