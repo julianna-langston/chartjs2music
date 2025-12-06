@@ -169,7 +169,7 @@ const determineChartTitle = (options: ChartOptions) => {
     return "";
 }
 
-const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement) => {
+const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | null) => {
     if(provided){
         return provided;
     }
@@ -217,11 +217,16 @@ const displayPoint = (chart: Chart) => {
 }
 
 type SupportedC2MOptions = NonNullable<C2MChartConfig['options']>;
-type C2MPluginOptions = ChartOptions & C2MChartConfig & {
+type C2MPluginOptions = {
     cc?: HTMLElement | null;
     audioEngine?: any;
     errorCallback?: (err: string) => void;
     c2mOptions?: SupportedC2MOptions;
+    axes?: {
+        x?: any;
+        y?: any;
+    };
+    lang?: string;
 }
 const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     const {valid, c2m_types, invalidType} = processChartType(chart);
@@ -286,7 +291,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     const userC2mOptions: SupportedC2MOptions = options.c2mOptions || {} as SupportedC2MOptions;
     const userOnFocusCallback = userC2mOptions.onFocusCallback;
 
-    const c2mOptions: C2MPluginOptions = {
+    const c2mOptions: C2MChartConfig = {
         cc,
         element: chart.canvas,
         type: c2m_types,
@@ -296,7 +301,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         options: {
             ...userC2mOptions,
             onFocusCallback: userOnFocusCallback
-                ? (point) => {
+                ? (point: any) => {
                     pluginOnFocusCallback();
                     userOnFocusCallback(point);
                 }
