@@ -303,9 +303,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
                 : pluginOnFocusCallback
         }
     };
-
+    const isNumeric = (n: any) => !Number.isNaN(parseFloat(n)) && Number.isFinite(+n);
     if(Array.isArray(c2mOptions.data)){
-        if(typeof c2mOptions.data[0] === 'number'){
+        if(isNumeric(c2mOptions.data[0])){ // use isNumeric to allow numeric strings
             c2mOptions.data = (c2mOptions.data as any).map((num: any, index: number) => {
                 return {
                     x: index,
@@ -331,7 +331,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         const dataObj = c2mOptions.data as any;
         const groups = Object.keys(dataObj);
         groups.forEach((groupName, groupNumber) => {
-            if(typeof dataObj[groupName][0] === 'number'){
+            if(isNumeric(dataObj[groupName][0])){ // use isNumeric to allow numeric strings
                 dataObj[groupName] = (dataObj[groupName] as number[]).map((num, index) => {
                     return {
                         x: index,
