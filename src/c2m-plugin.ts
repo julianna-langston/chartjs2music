@@ -4,6 +4,7 @@ import {processBoxData} from "./boxplots";
 
 type ChartStatesTypes = {
     c2m: c2m;
+    lastDataSnapshot: string;
 }
 
 const chartStates = new Map<Chart, ChartStatesTypes>();
@@ -141,7 +142,7 @@ const processData = (data: any, c2m_types: string) => {
     data.datasets.forEach((obj: any, index: number) => {
         const groupName = obj.label ?? `Group ${index+1}`;
         groups.push(groupName);
-        
+
         result[groupName] = whichDataStructure(obj.data);
     });
 
@@ -166,6 +167,13 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided: HTMLElement | n
     const cc = document.createElement("div");
     canvas.insertAdjacentElement("afterend", cc);
     return cc;
+}
+
+const createDataSnapshot = (chart: Chart) => {
+    return JSON.stringify({
+        datasets: chart.data.datasets.map(ds => ds.data),
+        labels: chart.data.labels
+    });
 }
 
 const displayPoint = (chart: Chart) => {
@@ -241,7 +249,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
     if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed
         if(!chart.data.labels || chart.data.labels.length === 0){
             axes.x.valueLabels = scrub.labels.slice(0);
-        }    
+        }
     }
 
     if(c2m_types === "scatter"){
@@ -361,7 +369,8 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
     }
 
     chartStates.set(chart, {
-        c2m
+        c2m,
+        lastDataSnapshot: createDataSnapshot(chart)
     });
 
 }
@@ -423,6 +432,31 @@ const plugin: Plugin = {
             if(err){console.error(err)}
             return;
         }
+    },
+
+    afterDatasetsUpdate: (chart: Chart, args, options) => {
+        const state = chartStates.get(chart);
+        if(!state?.c2m) return;
+
+        // Check if data has changed
+        const currentSnapshot = createDataSnapshot(chart);
+        if(currentSnapshot === state.lastDataSnapshot) {
+            return; // No data change, skip update
+        }
+
+        // Get chart type
+        const {valid, c2m_types} = processChartType(chart);
+        if(!valid) return;
+
+        // Process data and generate axes
+        const {data} = processData(chart.data, c2m_types);
+        const axes = generateAxes(chart);
+
+        // Update Chart2Music with new data
+        state.c2m.setData(data, axes);
+
+        // Update snapshot
+        state.lastDataSnapshot = currentSnapshot;
     },
 
     afterDestroy: (chart) => {
