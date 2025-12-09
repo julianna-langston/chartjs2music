@@ -75,13 +75,13 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
     return axis;
 }
 
-const generateAxes = (chart: any) => {
+const generateAxes = (chart: any, options: C2MPluginOptions) => {
     const axes = {
         x: {
             ...generateAxisInfo(chart.options?.scales?.x, chart),
         },
         y: {
-            format: (value: number) => value.toLocaleString(),
+            format: options.axes?.y?.format || ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(chart.options?.scales?.y, chart),
         }
     };
@@ -223,7 +223,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         return;
     }
 
-    let axes = generateAxes(chart);
+    let axes = generateAxes(chart, options);
 
     if(chart.config.type === "wordCloud"){
         delete axes.x.minimum;
