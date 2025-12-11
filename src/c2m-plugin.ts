@@ -224,7 +224,7 @@ const displayPoint = (chart: Chart) => {
     }
 }
 
-type C2MPluginOptions = {
+export type C2MPluginOptions = {
     cc?: HTMLElement | null;
     audioEngine?: any;
     errorCallback?: (err: string) => void;
