@@ -63,17 +63,17 @@ const whichBoxData = (data: any) => {
     })
 }
 
-export const processBoxData = (data) => {
-    
+export const processBoxData = (data: any) => {
+
     if(data.datasets.length === 1){
         return {
             data: whichBoxData(data.datasets[0].data)
         };
     }
-    
+
     const groups: string[] = [];
     const result = {} as Record<string, any>;
-    data.datasets.forEach((obj, index) => {
+    data.datasets.forEach((obj: any, index: number) => {
         const groupName = obj.label ?? `Group ${index+1}`;
         groups.push(groupName);
 
