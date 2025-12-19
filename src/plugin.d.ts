@@ -1,13 +1,8 @@
 import type { Plugin } from "chart.js";
-export type C2MPluginOptions = {
-    cc?: HTMLElement | null;
-    audioEngine?: any;
-    errorCallback?: (err: string) => void;
-    axes?: {
-        x?: any;
-        y?: any;
-    };
-    lang?: string;
-};
+import type { C2MChartConfig } from "chart2music";
+
+export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang"> & {
+    errorCallback: (err: string) => void
+}
 declare const plugin: Plugin;
 export default plugin;
