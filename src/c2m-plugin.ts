@@ -1,6 +1,15 @@
-import type { ChartOptions, Plugin, Chart } from "chart.js";
-import c2mChart, {c2m} from "chart2music";
+import type { ChartOptions, Plugin, Chart, Point, CartesianScaleOptions, ChartConfiguration, ChartTypeRegistry } from "chart.js";
+import c2mChart, {c2m, C2MChartConfig} from "chart2music";
 import {processBoxData} from "./boxplots";
+
+// Extended types for custom data
+type CustomDataPoint = {
+    group: number;
+    index: number;
+};
+
+// Type for data manipulation
+type DataSet = NonNullable<C2MChartConfig['data']>;
 
 type ChartStatesTypes = {
     c2m: c2m;
@@ -48,7 +57,9 @@ const processChartType = (chart: any) => {
 }
 
 const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
-    const axis = {} as any;
+    type axisType = NonNullable<C2MChartConfig["axes"]>;
+    type axisKeys = "x" | "y" | "y2";
+    const axis = {} as NonNullable<axisType[axisKeys]>;
     if(chartAxisInfo?.min !== undefined){
         if(typeof chartAxisInfo.min === "string"){
             axis.minimum = chart.data.labels.indexOf(chartAxisInfo.min);
@@ -111,7 +122,7 @@ const scrubX = (data: any) => {
     if(Array.isArray(data)){
         // console.log("not grouped");
         // Not grouped
-        blackboard.forEach((item, x) => {
+        blackboard.forEach((item: any, x: number) => {
             if(typeof item === "object" && item !== null && "x" in item){
                 labels.push(item.x);
                 item.x = x;
@@ -121,7 +132,7 @@ const scrubX = (data: any) => {
 
     }else{
         // Grouped
-
+        return undefined;
     }
 }
 
@@ -159,7 +170,7 @@ const determineChartTitle = (options: ChartOptions) => {
     return "";
 }
 
-const determineCCElement = (canvas: HTMLCanvasElement, provided: HTMLElement | null) => {
+const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | null) => {
     if(provided){
         return provided;
     }
@@ -190,11 +201,10 @@ const displayPoint = (chart: Chart) => {
     try{
         const highlightElements = [];
         if("custom" in point){
+            const customPoint = point as typeof point & { custom: CustomDataPoint };
             highlightElements.push({
-                // @ts-ignore
-                datasetIndex: point.custom.group,
-                // @ts-ignore
-                index: point.custom.index
+                datasetIndex: customPoint.custom.group,
+                index: customPoint.custom.index
             });
         }else{
             // For stacked charts, Chart2Music includes an "All" group at index 0,
@@ -207,25 +217,28 @@ const displayPoint = (chart: Chart) => {
             })
         }
         chart?.setActiveElements(highlightElements);
-        chart?.tooltip?.setActiveElements(highlightElements, {})
+        chart?.tooltip?.setActiveElements(highlightElements, {} as Point)
         chart?.update();
     }catch(e){
         // console.warn(e);
     }
 }
 
-const generateChart = (chart: Chart, options: ChartOptions) => {
+export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang"> & {
+    errorCallback: (err: string) => void
+}
+
+const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     const {valid, c2m_types, invalidType} = processChartType(chart);
 
     if(!valid){
-        // @ts-ignore
         options.errorCallback?.(`Unable to connect chart2music to chart. The chart is of type "${invalidType}", which is not one of the supported chart types for this plugin. This plugin supports: ${Object.keys(chartjs_c2m_converter).join(", ")}`);
         return;
     }
 
     let axes = generateAxes(chart, options);
 
-    if(chart.config.type === "wordCloud"){
+    if((chart.config as ChartConfiguration).type === "wordCloud" as keyof ChartTypeRegistry){
         delete axes.x.minimum;
         delete axes.x.maximum;
         delete axes.y.minimum;
@@ -242,7 +255,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
-    const {data, groups} = processData(chart.data, c2m_types);
+    const {data} = processData(chart.data, c2m_types);
     // lastDataObj = JSON.stringify(data);
 
     let scrub = scrubX(data);
@@ -269,7 +282,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         },
     };
 
-    const c2mOptions = {
+    const c2mOptions: C2MChartConfig = {
         cc,
         element: chart.canvas,
         type: c2m_types,
@@ -277,7 +290,6 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         title: determineChartTitle(chart.options),
         axes,
         options: {
-            // @ts-ignore
             onFocusCallback: () => {
                 displayPoint(chart);
             }
@@ -285,8 +297,8 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
     };
 
     if(Array.isArray(c2mOptions.data)){
-        if(isNaN(c2mOptions.data[0])){
-            c2mOptions.data = c2mOptions.data.map((point, index) => {
+        if(isNaN(c2mOptions.data[0] as any)){
+            c2mOptions.data = (c2mOptions.data as any).map((point: any, index: number) => {
                 return {
                     ...point,
                     custom: {
@@ -294,9 +306,9 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
                         index
                     }
                 }
-            })
+            }) as DataSet;
         }else{
-            c2mOptions.data = c2mOptions.data.map((num, index) => {
+            c2mOptions.data = (c2mOptions.data as any).map((num: any, index: number) => {
                 return {
                     x: index,
                     y: num,
@@ -305,13 +317,14 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
                         index
                     }
                 }
-            })
+            }) as DataSet;
         }
     }else{
-        const groups = Object.keys(c2mOptions.data);
+        const dataObj = c2mOptions.data as any;
+        const groups = Object.keys(dataObj);
         groups.forEach((groupName, groupNumber) => {
-            if(!isNaN(c2mOptions.data[groupName][0])){
-                c2mOptions.data[groupName] = c2mOptions.data[groupName].map((num: number, index: number) => {
+            if(!isNaN(dataObj[groupName][0])){
+                dataObj[groupName] = (dataObj[groupName] as number[]).map((num, index) => {
                     return {
                         x: index,
                         y: num,
@@ -322,7 +335,7 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
                     }
                 })
             }else{
-                c2mOptions.data[groupName] = c2mOptions.data[groupName].map((point: any, index: number) => {
+                dataObj[groupName] = (dataObj[groupName] as any).map((point: any, index: number) => {
                     return {
                         ...point,
                         custom: {
@@ -335,15 +348,13 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
         });
     }
 
-    // @ts-ignore
-    if(chart.config.options?.scales?.x?.stacked){
-        // @ts-ignore
-        c2mOptions.options.stack = true;
+    if((chart.config.options?.scales?.x as CartesianScaleOptions)?.stacked){
+        if(c2mOptions.options){
+            c2mOptions.options.stack = true;
+        }
     }
 
-        // @ts-ignore
     if(options.audioEngine){
-        // @ts-ignore
         c2mOptions.audioEngine = options.audioEngine;
     }
 
@@ -359,7 +370,6 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
 
     /* istanbul-ignore-next */
     if(err){
-        // @ts-ignore
         options.errorCallback?.(err);
         return;
     }
@@ -378,14 +388,14 @@ const generateChart = (chart: Chart, options: ChartOptions) => {
 const plugin: Plugin = {
     id: "chartjs2music",
 
-    afterInit: (chart: Chart, args, options) => {
+    afterInit: (chart: Chart, _args, options: C2MPluginOptions) => {
         if(!chartStates.has(chart)){
             generateChart(chart, options);
 
             // Remove tooltip when the chart blurs
             chart.canvas.addEventListener("blur", () => {
                 chart.setActiveElements([]);
-                chart.tooltip?.setActiveElements([], {});
+                chart.tooltip?.setActiveElements([], {} as Point);
                 try {
                     chart.update();
                 } catch(e){
@@ -400,7 +410,7 @@ const plugin: Plugin = {
         }
     },
 
-    afterDatasetUpdate: (chart: Chart, args, options) => {
+    afterDatasetUpdate: (chart: Chart, args, options: C2MPluginOptions) => {
         if(!args.mode){
             return;
         }
@@ -414,10 +424,9 @@ const plugin: Plugin = {
             return;
         }
 
-        // @ts-ignore
-        const groups = ref._groups.slice(0);
-        // @ts-ignore
-        if(ref._options.stack){
+        const refInternal = ref as any;
+        const groups = refInternal._groups.slice(0);
+        if(refInternal._options.stack){
             groups.shift();
         }
 
@@ -434,7 +443,7 @@ const plugin: Plugin = {
         }
     },
 
-    afterDatasetsUpdate: (chart: Chart, args, options) => {
+    afterDatasetsUpdate: (chart: Chart, _args, _options) => {
         const state = chartStates.get(chart);
         if(!state?.c2m) return;
 
