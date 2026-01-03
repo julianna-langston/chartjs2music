@@ -195,7 +195,7 @@ const displayPoint = (chart: Chart) => {
     const {point, index} = ref.getCurrent();
 
     // Use Chart2Music's internal visible group tracking
-     // @ts-ignore - accessing internal Chart2Music property
+    // @ts-ignore - accessing internal Chart2Music property
     const visibleGroupIndices = ref._visible_group_indices?.slice(1) || [];
 
     try{
