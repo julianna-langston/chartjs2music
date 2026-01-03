@@ -86,7 +86,7 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
     return axis;
 }
 
-const generateAxes = (chart: any, options: any) => {
+const generateAxes = (chart: any, options: C2MPluginOptions) => {
     const axes = {
         x: {
             ...generateAxisInfo(chart.options?.scales?.x, chart),
@@ -195,7 +195,7 @@ const displayPoint = (chart: Chart) => {
     const {point, index} = ref.getCurrent();
 
     // Use Chart2Music's internal visible group tracking
-    // @ts-ignore - accessing internal Chart2Music property
+     // @ts-ignore - accessing internal Chart2Music property
     const visibleGroupIndices = ref._visible_group_indices?.slice(1) || [];
 
     try{
@@ -224,8 +224,8 @@ const displayPoint = (chart: Chart) => {
     }
 }
 
-export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang"> & {
-    errorCallback: (err: string) => void
+export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang" | "options"> & {
+    errorCallback?: (err: string) => void;
 }
 
 const generateChart = (chart: Chart, options: C2MPluginOptions) => {
@@ -282,6 +282,15 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         },
     };
 
+    // Start with plugin's internal onFocusCallback
+    const pluginOnFocusCallback = () => {
+        displayPoint(chart);
+    };
+
+    // Merge user's options, wrapping onFocusCallback if provided
+    const userOptions = options.options || {};
+    const userOnFocusCallback = userOptions.onFocusCallback;
+
     const c2mOptions: C2MChartConfig = {
         cc,
         element: chart.canvas,
@@ -290,9 +299,13 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         title: determineChartTitle(chart.options),
         axes,
         options: {
-            onFocusCallback: () => {
-                displayPoint(chart);
-            }
+            ...userOptions,
+            onFocusCallback: userOnFocusCallback
+                ? (point: any) => {
+                    pluginOnFocusCallback();
+                    userOnFocusCallback(point);
+                }
+                : pluginOnFocusCallback
         }
     };
 
@@ -443,7 +456,7 @@ const plugin: Plugin = {
         }
     },
 
-    afterDatasetsUpdate: (chart: Chart, _args, _options) => {
+    afterDatasetsUpdate: (chart: Chart, _args, options: C2MPluginOptions) => {
         const state = chartStates.get(chart);
         if(!state?.c2m) return;
 
@@ -459,7 +472,7 @@ const plugin: Plugin = {
 
         // Process data and generate axes
         const {data} = processData(chart.data, c2m_types);
-        const axes = generateAxes(chart);
+        const axes = generateAxes(chart, options);
 
         // Update Chart2Music with new data
         state.c2m.setData(data, axes);
@@ -480,7 +493,8 @@ const plugin: Plugin = {
     defaults: {
         cc: null,
         audioEngine: null,
-        errorCallback: null
+        errorCallback: null,
+        options: {}
     }
 
 };
