@@ -222,7 +222,7 @@ test("Empty chart (empty data)", () => {
         });
         chart.data.datasets[0].data = [1,2,3,4];
         chart.update();
-    }).not.toThrowError();
+    }).not.toThrow();
 });
 test("Empty chart (empty datasets)", () => {
     const mockElement = document.createElement("canvas");
@@ -234,7 +234,7 @@ test("Empty chart (empty datasets)", () => {
                 datasets: []
             }
         });
-    }).not.toThrowError();
+    }).not.toThrow();
 });
 
 test("destroying chart", () => {
