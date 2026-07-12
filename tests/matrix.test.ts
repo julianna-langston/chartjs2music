@@ -1,7 +1,13 @@
 import {CategoryScale, Chart, LinearScale} from "chart.js";
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
+import "chartjs-adapter-luxon";
 import plugin from "../src/c2m-plugin";
 import matrixChart from "../samples/charts/matrix";
+import matrixBasic from "../samples/charts/matrix_basic";
+import matrixCalendar from "../samples/charts/matrix_calendar";
+import matrixCategory from "../samples/charts/matrix_category";
+import matrixC2m from "../samples/charts/matrix_c2m";
+import matrixTime from "../samples/charts/matrix_time";
 
 Chart.register(CategoryScale, LinearScale, MatrixController, MatrixElement, plugin);
 
@@ -49,7 +55,19 @@ describe("Matrix charts", () => {
         jest.advanceTimersByTime(250);
         expect(vertical.chart.getActiveElements()[0].datasetIndex).toBe(0);
         expect(vertical.chart.getActiveElements()[0].index).toBe(1);
+
+        vertical.canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowDown", bubbles: true}));
+        jest.advanceTimersByTime(250);
+        expect(vertical.chart.getActiveElements()[0].index).toBe(0);
         vertical.chart.destroy();
+    });
+
+    test("creates numeric, category, time, calendar, and Chart2Music matrix examples", () => {
+        const examples = [matrixBasic, matrixCategory, matrixTime, matrixCalendar, matrixC2m];
+        const charts = examples.map((config) => new Chart(document.createElement("canvas"), config));
+
+        expect(charts.map((chart) => chart.config.type)).toEqual(["matrix", "matrix", "matrix", "matrix", "matrix"]);
+        charts.forEach((chart) => chart.destroy());
     });
 
     test.todo("uses numeric matrix coordinates without category labels");
