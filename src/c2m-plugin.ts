@@ -27,7 +27,8 @@ const chartjs_c2m_converter: any = {
     boxplot: "box",
     radar: "bar",
     wordCloud: "bar",
-    scatter: "scatter"
+    scatter: "scatter",
+    matrix: "matrix"
 };
 
 const processChartType = (chart: any) => {
@@ -115,6 +116,50 @@ const whichDataStructure = (data: any[]) => {
     return data;
 }
 
+const labelIndex = (labels: string[], value: string) => {
+    let index = labels.indexOf(value);
+    if(index === -1){
+        labels.push(value);
+        index = labels.length - 1;
+    }
+    return index;
+}
+
+const processMatrixDataPoints = (data: any[], xLabels: string[], yLabels: string[]) => {
+    return data.map((point: any) => {
+        const x = typeof point.x === "string" ? labelIndex(xLabels, point.x) : point.x;
+        const y = typeof point.y === "string" ? labelIndex(yLabels, point.y) : point.y;
+        return {
+            ...point,
+            x,
+            y
+        };
+    });
+}
+
+const processMatrixData = (data: any) => {
+    const xLabels: string[] = [];
+    const yLabels: string[] = [];
+
+    if(data.datasets.length === 1){
+        return {
+            data: processMatrixDataPoints(data.datasets[0].data, xLabels, yLabels),
+            xLabels,
+            yLabels
+        };
+    }
+
+    const groups: string[] = [];
+    const result = {} as Record<string, any>;
+    data.datasets.forEach((obj: any, index: number) => {
+        const groupName = obj.label ?? `Group ${index+1}`;
+        groups.push(groupName);
+
+        result[groupName] = processMatrixDataPoints(obj.data, xLabels, yLabels);
+    });
+    return {groups, data: result, xLabels, yLabels};
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -139,6 +184,9 @@ const scrubX = (data: any) => {
 const processData = (data: any, c2m_types: string) => {
     if(c2m_types === "box"){
         return processBoxData(data);
+    }
+    if(c2m_types === "matrix"){
+        return processMatrixData(data);
     }
     let groups: string[] = [];
 
@@ -255,8 +303,18 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
-    const {data} = processData(chart.data, c2m_types);
+    const processedData = processData(chart.data, c2m_types);
+    const {data} = processedData;
     // lastDataObj = JSON.stringify(data);
+
+    if(c2m_types === "matrix"){
+        if(processedData.xLabels?.length > 0){
+            axes.x.valueLabels = processedData.xLabels.slice(0);
+        }
+        if(processedData.yLabels?.length > 0){
+            axes.y.valueLabels = processedData.yLabels.slice(0);
+        }
+    }
 
     let scrub = scrubX(data);
     if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed

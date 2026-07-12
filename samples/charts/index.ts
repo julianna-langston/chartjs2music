@@ -22,6 +22,7 @@ import wordcloud from "./wordcloud";
 import wordcloud2 from "./wordcloud2";
 import scatter from "./scatter";
 import grouped_scatter from "./grouped_scatter";
+import matrix from "./matrix";
 import empty from "./empty";
 import memoryChart from "./memoryChart";
 
@@ -45,6 +46,7 @@ export default {
     box_plot_group_numbers,
     scatter,
     grouped_scatter,
+    matrix,
 
     wordcloud,
     wordcloud2,
