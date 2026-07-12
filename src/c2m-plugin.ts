@@ -325,6 +325,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
             axes.x.valueLabels = processedData.xLabels.slice(0);
         }
         if(processedData.yLabels?.length > 0){
+            // Category labels provide the Matrix Plot's Y-axis formatter.
+            // The general numeric formatter would otherwise announce row indexes.
+            delete axes.y.format;
             axes.y.valueLabels = processedData.yLabels.slice(0);
         }
     }

@@ -16,7 +16,9 @@ class MockAudioEngine {
 describe("Matrix charts", () => {
     test("navigates columns with right and rows with up", () => {
         const createChart = () => {
+            const parent = document.createElement("div");
             const canvas = document.createElement("canvas");
+            parent.appendChild(canvas);
             const chart = new Chart(canvas, {
                 ...matrixChart,
                 options: {
@@ -29,15 +31,16 @@ describe("Matrix charts", () => {
                     }
                 }
             });
-            return {canvas, chart};
+            return {canvas, chart, parent};
         };
 
         const horizontal = createChart();
         horizontal.canvas.dispatchEvent(new Event("focus"));
+        expect(horizontal.parent.children[1].textContent).toContain('Y is "Time" from 9 AM to 3 PM.');
         horizontal.canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
         jest.advanceTimersByTime(250);
         expect(horizontal.chart.getActiveElements()[0].datasetIndex).toBe(0);
-        expect(horizontal.chart.getActiveElements()[0].index).toBe(4);
+        expect(horizontal.chart.getActiveElements()[0].index).toBe(3);
         horizontal.chart.destroy();
 
         const vertical = createChart();

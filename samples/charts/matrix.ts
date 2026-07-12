@@ -2,7 +2,7 @@ import type { ChartConfiguration } from "chart.js";
 import type { MatrixDataPoint } from "chartjs-chart-matrix";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-const hours = ["9 AM", "12 PM", "3 PM", "6 PM"];
+const hours = ["9 AM", "12 PM", "3 PM"];
 
 const data: MatrixDataPoint[] = days.flatMap((day, x) => {
     return hours.map((hour, y) => ({
