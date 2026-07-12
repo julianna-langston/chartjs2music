@@ -30,9 +30,14 @@ test("Chart2Music options are passed through via plugin options", () => {
     // Verify chart was created
     expect(mockElement.getAttribute("tabIndex")).toBe("0");
 
-    // TODO: Test that onSelectCallback actually gets called
-    // This would require simulating Chart2Music interaction which is beyond
-    // the scope of this minimal test - just verifying the option is accepted
+    mockElement.dispatchEvent(new Event("focus"));
+    mockElement.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight"}));
+    mockElement.dispatchEvent(new KeyboardEvent("keydown", {key: "Enter"}));
+
+    expect(onSelectCallback).toHaveBeenCalledWith(expect.objectContaining({
+        index: 1,
+        point: expect.objectContaining({y: 20})
+    }));
 });
 
 test("User's onFocusCallback works alongside plugin's internal callback", () => {
