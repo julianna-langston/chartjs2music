@@ -6,6 +6,7 @@ import {processBoxData} from "./boxplots";
 type CustomDataPoint = {
     group: number;
     index: number;
+    datasetIndex?: number;
 };
 
 // Type for data manipulation
@@ -14,6 +15,8 @@ type DataSet = NonNullable<C2MChartConfig['data']>;
 type ChartStatesTypes = {
     c2m: c2m;
     lastDataSnapshot: string;
+    matrixKeydown?: (event: KeyboardEvent) => void;
+    matrixKeydownTarget?: HTMLCanvasElement;
 }
 
 const chartStates = new Map<Chart, ChartStatesTypes>();
@@ -125,14 +128,20 @@ const labelIndex = (labels: string[], value: string) => {
     return index;
 }
 
-const processMatrixDataPoints = (data: any[], xLabels: string[], yLabels: string[]) => {
-    return data.map((point: any) => {
+const processMatrixDataPoints = (data: any[], datasetIndex: number, xLabels: string[], yLabels: string[]) => {
+    return data.map((point: any, index: number) => {
         const x = typeof point.x === "string" ? labelIndex(xLabels, point.x) : point.x;
         const y = typeof point.y === "string" ? labelIndex(yLabels, point.y) : point.y;
         return {
             ...point,
             x,
-            y
+            y,
+            custom: {
+                ...point.custom,
+                group: datasetIndex,
+                datasetIndex,
+                index
+            }
         };
     });
 }
@@ -141,23 +150,27 @@ const processMatrixData = (data: any) => {
     const xLabels: string[] = [];
     const yLabels: string[] = [];
 
-    if(data.datasets.length === 1){
-        return {
-            data: processMatrixDataPoints(data.datasets[0].data, xLabels, yLabels),
-            xLabels,
-            yLabels
-        };
-    }
-
-    const groups: string[] = [];
-    const result = {} as Record<string, any>;
+    // Chart2Music represents matrix rows as groups and columns as points within
+    // each group. This preserves two-dimensional keyboard navigation.
+    const result = {} as Record<string, any[]>;
     data.datasets.forEach((obj: any, index: number) => {
-        const groupName = obj.label ?? `Group ${index+1}`;
-        groups.push(groupName);
-
-        result[groupName] = processMatrixDataPoints(obj.data, xLabels, yLabels);
+        const points = processMatrixDataPoints(obj.data, index, xLabels, yLabels);
+        points.forEach((point: any) => {
+            const rowLabel = typeof point.y === "number" && yLabels[point.y] !== undefined
+                ? yLabels[point.y]
+                : String(point.y);
+            const groupName = data.datasets.length === 1
+                ? rowLabel
+                : `${obj.label ?? `Group ${index + 1}`}: ${rowLabel}`;
+            if(!result[groupName]){
+                result[groupName] = [];
+            }
+            result[groupName].push(point);
+        });
     });
-    return {groups, data: result, xLabels, yLabels};
+
+    Object.values(result).forEach((row) => row.sort((a, b) => a.x - b.x));
+    return {groups: Object.keys(result), data: result, xLabels, yLabels};
 }
 
 const scrubX = (data: any) => {
@@ -251,7 +264,7 @@ const displayPoint = (chart: Chart) => {
         if("custom" in point){
             const customPoint = point as typeof point & { custom: CustomDataPoint };
             highlightElements.push({
-                datasetIndex: customPoint.custom.group,
+                datasetIndex: customPoint.custom.datasetIndex ?? customPoint.custom.group,
                 index: customPoint.custom.index
             });
         }else{
@@ -360,8 +373,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
                 return {
                     ...point,
                     custom: {
-                        group: 0,
-                        index
+                        ...point.custom,
+                        group: point.custom?.group ?? 0,
+                        index: point.custom?.index ?? index
                     }
                 }
             }) as DataSet;
@@ -397,8 +411,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
                     return {
                         ...point,
                         custom: {
-                            group: groupNumber,
-                            index
+                            ...point.custom,
+                            group: point.custom?.group ?? groupNumber,
+                            index: point.custom?.index ?? index
                         }
                     }
                 })
@@ -440,6 +455,26 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         c2m,
         lastDataSnapshot: createDataSnapshot(chart)
     });
+
+    if(c2m_types === "matrix"){
+        const matrixKeydown = (event: KeyboardEvent) => {
+            if(event.key !== "ArrowUp" && event.key !== "ArrowDown"){
+                return;
+            }
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const actions = (c2m as any)._availableActions;
+            if(event.key === "ArrowUp"){
+                actions.next_category();
+            }else{
+                actions.previous_category();
+            }
+        };
+        chart.canvas.addEventListener("keydown", matrixKeydown, true);
+        const state = chartStates.get(chart) as ChartStatesTypes;
+        state.matrixKeydown = matrixKeydown;
+        state.matrixKeydownTarget = chart.canvas;
+    }
 
 }
 
@@ -527,11 +562,15 @@ const plugin: Plugin = {
     },
 
     afterDestroy: (chart) => {
-        const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
-        if(!ref){
+        const state = chartStates.get(chart);
+        if(!state?.c2m){
             return;
         }
+        const {c2m: ref} = state;
 
+        if(state?.matrixKeydown && state.matrixKeydownTarget){
+            state.matrixKeydownTarget.removeEventListener("keydown", state.matrixKeydown, true);
+        }
         ref.cleanUp();
     },
 
