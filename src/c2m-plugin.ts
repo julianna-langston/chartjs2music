@@ -6,6 +6,7 @@ import {processBoxData} from "./boxplots";
 type CustomDataPoint = {
     group: number;
     index: number;
+    datasetIndex?: number;
 };
 
 // Type for data manipulation
@@ -14,6 +15,8 @@ type DataSet = NonNullable<C2MChartConfig['data']>;
 type ChartStatesTypes = {
     c2m: c2m;
     lastDataSnapshot: string;
+    matrixKeydown?: (event: KeyboardEvent) => void;
+    matrixKeydownTarget?: HTMLCanvasElement;
 }
 
 const chartStates = new Map<Chart, ChartStatesTypes>();
@@ -27,7 +30,8 @@ const chartjs_c2m_converter: any = {
     boxplot: "box",
     radar: "bar",
     wordCloud: "bar",
-    scatter: "scatter"
+    scatter: "scatter",
+    matrix: "matrix"
 };
 
 const processChartType = (chart: any) => {
@@ -86,7 +90,7 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
     return axis;
 }
 
-const generateAxes = (chart: any, options: any) => {
+const generateAxes = (chart: any, options: C2MPluginOptions) => {
     const axes = {
         x: {
             ...generateAxisInfo(chart.options?.scales?.x, chart),
@@ -115,6 +119,60 @@ const whichDataStructure = (data: any[]) => {
     return data;
 }
 
+const labelIndex = (labels: string[], value: string) => {
+    let index = labels.indexOf(value);
+    if(index === -1){
+        labels.push(value);
+        index = labels.length - 1;
+    }
+    return index;
+}
+
+const processMatrixDataPoints = (data: any[], datasetIndex: number, xLabels: string[], yLabels: string[]) => {
+    return data.map((point: any, index: number) => {
+        const x = typeof point.x === "string" ? labelIndex(xLabels, point.x) : point.x;
+        const y = typeof point.y === "string" ? labelIndex(yLabels, point.y) : point.y;
+        return {
+            ...point,
+            x,
+            y,
+            custom: {
+                ...point.custom,
+                group: datasetIndex,
+                datasetIndex,
+                index
+            }
+        };
+    });
+}
+
+const processMatrixData = (data: any) => {
+    const xLabels: string[] = [];
+    const yLabels: string[] = [];
+
+    // Chart2Music represents matrix rows as groups and columns as points within
+    // each group. This preserves two-dimensional keyboard navigation.
+    const result = {} as Record<string, any[]>;
+    data.datasets.forEach((obj: any, index: number) => {
+        const points = processMatrixDataPoints(obj.data, index, xLabels, yLabels);
+        points.forEach((point: any) => {
+            const rowLabel = typeof point.y === "number" && yLabels[point.y] !== undefined
+                ? yLabels[point.y]
+                : String(point.y);
+            const groupName = data.datasets.length === 1
+                ? rowLabel
+                : `${obj.label ?? `Group ${index + 1}`}: ${rowLabel}`;
+            if(!result[groupName]){
+                result[groupName] = [];
+            }
+            result[groupName].push(point);
+        });
+    });
+
+    Object.values(result).forEach((row) => row.sort((a, b) => a.x - b.x));
+    return {groups: Object.keys(result), data: result, xLabels, yLabels};
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -139,6 +197,9 @@ const scrubX = (data: any) => {
 const processData = (data: any, c2m_types: string) => {
     if(c2m_types === "box"){
         return processBoxData(data);
+    }
+    if(c2m_types === "matrix"){
+        return processMatrixData(data);
     }
     let groups: string[] = [];
 
@@ -203,7 +264,7 @@ const displayPoint = (chart: Chart) => {
         if("custom" in point){
             const customPoint = point as typeof point & { custom: CustomDataPoint };
             highlightElements.push({
-                datasetIndex: customPoint.custom.group,
+                datasetIndex: customPoint.custom.datasetIndex ?? customPoint.custom.group,
                 index: customPoint.custom.index
             });
         }else{
@@ -224,8 +285,8 @@ const displayPoint = (chart: Chart) => {
     }
 }
 
-export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang"> & {
-    errorCallback: (err: string) => void
+export type C2MPluginOptions = Pick<C2MChartConfig, "audioEngine" | "axes" | "cc" | "lang" | "options"> & {
+    errorCallback?: (err: string) => void;
 }
 
 const generateChart = (chart: Chart, options: C2MPluginOptions) => {
@@ -255,8 +316,21 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
-    const {data} = processData(chart.data, c2m_types);
+    const processedData = processData(chart.data, c2m_types);
+    const {data} = processedData;
     // lastDataObj = JSON.stringify(data);
+
+    if(c2m_types === "matrix"){
+        if(processedData.xLabels?.length > 0){
+            axes.x.valueLabels = processedData.xLabels.slice(0);
+        }
+        if(processedData.yLabels?.length > 0){
+            // Category labels provide the Matrix Plot's Y-axis formatter.
+            // The general numeric formatter would otherwise announce row indexes.
+            delete axes.y.format;
+            axes.y.valueLabels = processedData.yLabels.slice(0);
+        }
+    }
 
     let scrub = scrubX(data);
     if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed
@@ -282,6 +356,15 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         },
     };
 
+    // Start with plugin's internal onFocusCallback
+    const pluginOnFocusCallback = () => {
+        displayPoint(chart);
+    };
+
+    // Merge user's options, wrapping onFocusCallback if provided
+    const userOptions = options.options || {};
+    const userOnFocusCallback = userOptions.onFocusCallback;
+
     const c2mOptions: C2MChartConfig = {
         cc,
         element: chart.canvas,
@@ -290,9 +373,13 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         title: determineChartTitle(chart.options),
         axes,
         options: {
-            onFocusCallback: () => {
-                displayPoint(chart);
-            }
+            ...userOptions,
+            onFocusCallback: userOnFocusCallback
+                ? (point: any) => {
+                    pluginOnFocusCallback();
+                    userOnFocusCallback(point);
+                }
+                : pluginOnFocusCallback
         }
     };
 
@@ -302,8 +389,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
                 return {
                     ...point,
                     custom: {
-                        group: 0,
-                        index
+                        ...point.custom,
+                        group: point.custom?.group ?? 0,
+                        index: point.custom?.index ?? index
                     }
                 }
             }) as DataSet;
@@ -339,8 +427,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
                     return {
                         ...point,
                         custom: {
-                            group: groupNumber,
-                            index
+                            ...point.custom,
+                            group: point.custom?.group ?? groupNumber,
+                            index: point.custom?.index ?? index
                         }
                     }
                 })
@@ -382,6 +471,26 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         c2m,
         lastDataSnapshot: createDataSnapshot(chart)
     });
+
+    if(c2m_types === "matrix"){
+        const matrixKeydown = (event: KeyboardEvent) => {
+            if(event.key !== "ArrowUp" && event.key !== "ArrowDown"){
+                return;
+            }
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const actions = (c2m as any)._availableActions;
+            if(event.key === "ArrowUp"){
+                actions.next_category();
+            }else{
+                actions.previous_category();
+            }
+        };
+        chart.canvas.addEventListener("keydown", matrixKeydown, true);
+        const state = chartStates.get(chart) as ChartStatesTypes;
+        state.matrixKeydown = matrixKeydown;
+        state.matrixKeydownTarget = chart.canvas;
+    }
 
 }
 
@@ -443,7 +552,7 @@ const plugin: Plugin = {
         }
     },
 
-    afterDatasetsUpdate: (chart: Chart, _args, _options) => {
+    afterDatasetsUpdate: (chart: Chart, _args, options: C2MPluginOptions) => {
         const state = chartStates.get(chart);
         if(!state?.c2m) return;
 
@@ -459,7 +568,7 @@ const plugin: Plugin = {
 
         // Process data and generate axes
         const {data} = processData(chart.data, c2m_types);
-        const axes = generateAxes(chart);
+        const axes = generateAxes(chart, options);
 
         // Update Chart2Music with new data
         state.c2m.setData(data, axes);
@@ -469,18 +578,23 @@ const plugin: Plugin = {
     },
 
     afterDestroy: (chart) => {
-        const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
-        if(!ref){
+        const state = chartStates.get(chart);
+        if(!state?.c2m){
             return;
         }
+        const {c2m: ref} = state;
 
+        if(state?.matrixKeydown && state.matrixKeydownTarget){
+            state.matrixKeydownTarget.removeEventListener("keydown", state.matrixKeydown, true);
+        }
         ref.cleanUp();
     },
 
     defaults: {
         cc: null,
         audioEngine: null,
-        errorCallback: null
+        errorCallback: null,
+        options: {}
     }
 
 };
