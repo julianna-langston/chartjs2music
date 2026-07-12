@@ -4,6 +4,7 @@ ignores: [
     # Used as a script in package.json
     "rollup", # for yarn build
     "rimraf", # for yarn clean
+    "cross-env", # for yarn test
 
     # Configured with the jest.config.js
     "jest-environment-jsdom",
