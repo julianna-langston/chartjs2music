@@ -43,10 +43,10 @@
     "prepack": "npm run clean && npm run build"
   },
   "devDependencies": {
-    "@babel/cli": "7.27.2",
-    "@babel/core": "7.28.5",
-    "@babel/plugin-transform-modules-commonjs": "7.26.3",
-    "@babel/preset-env": "7.28.5",
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
+    "@babel/plugin-transform-modules-commonjs": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
     "@rollup/plugin-typescript": "12.3.0",
     "@sgratzl/chartjs-chart-boxplot": "4.4.5",
     "@types/jest": "29.5.14",
