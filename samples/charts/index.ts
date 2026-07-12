@@ -23,6 +23,11 @@ import wordcloud2 from "./wordcloud2";
 import scatter from "./scatter";
 import grouped_scatter from "./grouped_scatter";
 import matrix from "./matrix";
+import matrix_basic from "./matrix_basic";
+import matrix_calendar from "./matrix_calendar";
+import matrix_category from "./matrix_category";
+import matrix_c2m from "./matrix_c2m";
+import matrix_time from "./matrix_time";
 import empty from "./empty";
 import memoryChart from "./memoryChart";
 
@@ -47,6 +52,11 @@ export default {
     scatter,
     grouped_scatter,
     matrix,
+    matrix_basic,
+    matrix_category,
+    matrix_time,
+    matrix_calendar,
+    matrix_c2m,
 
     wordcloud,
     wordcloud2,
