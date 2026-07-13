@@ -1,5 +1,6 @@
 import Chart from "chart.js/auto";
 import {BoxAndWiskers, BoxPlotController} from "@sgratzl/chartjs-chart-boxplot";
+import {BarWithErrorBar, BarWithErrorBarsController} from "chartjs-chart-error-bars";
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
 import {WordCloudController, WordElement} from "chartjs-chart-wordcloud";
 import legendPlugin from "chartjs-plugin-a11y-legend";
@@ -9,6 +10,8 @@ import chart2music from "../src/c2m-plugin";
 Chart.register(
     BoxPlotController,
     BoxAndWiskers,
+    BarWithErrorBarsController,
+    BarWithErrorBar,
     MatrixController,
     MatrixElement,
     WordCloudController,

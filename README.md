@@ -92,6 +92,7 @@ Available plugin options:
 The plugin supports Chart.js bar, line, pie, doughnut, polar area, and scatter charts, including mixed bar/line configurations. It also supports:
 
 - Box plots from [`@sgratzl/chartjs-chart-boxplot`](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot).
+- Bar charts with error bars from [`chartjs-chart-error-bars`](https://www.npmjs.com/package/chartjs-chart-error-bars).
 - Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix).
 - Word clouds from [`chartjs-chart-wordcloud`](https://www.npmjs.com/package/chartjs-chart-wordcloud).
 - Chart titles, axis titles, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, and chart data updates.
@@ -104,7 +105,6 @@ Planned support includes:
 
 - Chart subtitles.
 - Radar plots.
-- Error bars via [`chartjs-chart-error-bars`](https://www.npmjs.com/package/chartjs-chart-error-bars).
 - Parallel coordinate plots via [`chartjs-chart-pcp`](https://www.npmjs.com/package/chartjs-chart-pcp).
 - Zoom interactions via [`chartjs-plugin-zoom`](https://www.npmjs.com/package/chartjs-plugin-zoom).
 
