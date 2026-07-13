@@ -5,6 +5,8 @@ ignores: [
     "rollup", # for yarn build
     "rimraf", # for yarn clean
     "cross-env", # for yarn test
+    "storybook", # for Storybook commands
+    "@storybook/html-vite", # Storybook framework
 
     # Configured with the jest.config.js
     "jest-environment-jsdom",
