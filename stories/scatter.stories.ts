@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import groupedScatter from "../samples/charts/grouped_scatter";
-import scatter from "../samples/charts/scatter";
+import groupedScatter from "./charts/grouped_scatter";
+import scatter from "./charts/scatter";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

@@ -1,9 +1,9 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import donut from "../samples/charts/donut";
-import polarAreaOne from "../samples/charts/polarArea1";
-import polarAreaTwo from "../samples/charts/polarArea2";
-import radar from "../samples/charts/radar";
-import stackedPie from "../samples/charts/stacked_pie";
+import donut from "./charts/donut";
+import polarAreaOne from "./charts/polarArea1";
+import polarAreaTwo from "./charts/polarArea2";
+import radar from "./charts/radar";
+import stackedPie from "./charts/stacked_pie";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

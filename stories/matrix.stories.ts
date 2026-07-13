@@ -1,10 +1,10 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import matrix from "../samples/charts/matrix";
-import matrixBasic from "../samples/charts/matrix_basic";
-import matrixC2m from "../samples/charts/matrix_c2m";
-import matrixCalendar from "../samples/charts/matrix_calendar";
-import matrixCategory from "../samples/charts/matrix_category";
-import matrixTime from "../samples/charts/matrix_time";
+import matrix from "./charts/matrix";
+import matrixBasic from "./charts/matrix_basic";
+import matrixC2m from "./charts/matrix_c2m";
+import matrixCalendar from "./charts/matrix_calendar";
+import matrixCategory from "./charts/matrix_category";
+import matrixTime from "./charts/matrix_time";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

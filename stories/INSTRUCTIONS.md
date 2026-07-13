@@ -4,11 +4,11 @@ Every new plugin feature needs at least one Storybook story and matching test co
 
 ## Sample-based stories
 
-Add a `*.stories.ts` file in this directory. When the feature has a reusable Chart.js sample under `samples/charts`, import that sample and render it with `renderSample`:
+Add a `*.stories.ts` file in this directory. When the feature has a reusable Chart.js configuration under `stories/charts`, import that configuration and render it with `renderSample`:
 
 ```ts
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import myFeature from "../samples/charts/my_feature";
+import myFeature from "./charts/my_feature";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

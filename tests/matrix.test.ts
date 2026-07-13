@@ -2,12 +2,12 @@ import {CategoryScale, Chart, LinearScale} from "chart.js";
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
 import "chartjs-adapter-luxon";
 import plugin from "../src/c2m-plugin";
-import matrixChart from "../samples/charts/matrix";
-import matrixBasic from "../samples/charts/matrix_basic";
-import matrixCalendar from "../samples/charts/matrix_calendar";
-import matrixCategory from "../samples/charts/matrix_category";
-import matrixC2m from "../samples/charts/matrix_c2m";
-import matrixTime from "../samples/charts/matrix_time";
+import matrixChart from "../stories/charts/matrix";
+import matrixBasic from "../stories/charts/matrix_basic";
+import matrixCalendar from "../stories/charts/matrix_calendar";
+import matrixCategory from "../stories/charts/matrix_category";
+import matrixC2m from "../stories/charts/matrix_c2m";
+import matrixTime from "../stories/charts/matrix_time";
 
 Chart.register(CategoryScale, LinearScale, MatrixController, MatrixElement, plugin);
 

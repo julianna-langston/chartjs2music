@@ -1,6 +1,6 @@
 import {Chart} from "chart.js";
 import plugin from "../src/c2m-plugin";
-import samples from "../samples/charts"
+import samples from "../stories/charts"
 
 const {simple_bar} = samples;
 

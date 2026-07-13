@@ -112,7 +112,7 @@ Visual-only Chart.js settings such as color, padding, and line thickness do not 
 
 ## Examples and Storybook
 
-The repository includes runnable samples under [`samples/charts`](./samples/charts), covering the supported chart types and plugin integrations. A Storybook catalogue exposes these examples as Bar, Line, Multi-chart, Distribution, Circular, Scatter, Matrix, Word cloud, and Options stories.
+The repository includes runnable chart configurations under [`stories/charts`](./stories/charts), covering the supported chart types and plugin integrations. A Storybook catalogue exposes these examples as Bar, Line, Multi-chart, Distribution, Circular, Scatter, Matrix, Word cloud, and Options stories.
 
 ```bash
 npm run storybook

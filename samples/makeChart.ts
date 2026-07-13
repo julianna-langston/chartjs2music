@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 import plugin from "../src/c2m-plugin";
-import samples from "./charts";
+import samples from "../stories/charts";
 import {BoxPlotController, BoxAndWiskers} from "@sgratzl/chartjs-chart-boxplot";
 import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud';
 import { MatrixController, MatrixElement } from "chartjs-chart-matrix";

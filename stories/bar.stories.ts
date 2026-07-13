@@ -1,13 +1,13 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import floatingBar from "../samples/charts/floating_bar";
-import gettingStarted from "../samples/charts/getting_started_Example";
-import groupedBar from "../samples/charts/grouped_bar";
-import logarithmic from "../samples/charts/log";
-import simpleBar from "../samples/charts/simple_bar";
-import spanishBar from "../samples/charts/spanish_bar";
-import stackedBar from "../samples/charts/stacked_bar";
-import stringMinimum from "../samples/charts/string_x_minimum";
-import stringValues from "../samples/charts/string_x_values";
+import floatingBar from "./charts/floating_bar";
+import gettingStarted from "./charts/getting_started_Example";
+import groupedBar from "./charts/grouped_bar";
+import logarithmic from "./charts/log";
+import simpleBar from "./charts/simple_bar";
+import spanishBar from "./charts/spanish_bar";
+import stackedBar from "./charts/stacked_bar";
+import stringMinimum from "./charts/string_x_minimum";
+import stringValues from "./charts/string_x_values";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {
