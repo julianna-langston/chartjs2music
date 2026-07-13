@@ -30,6 +30,7 @@ import matrix_c2m from "./matrix_c2m";
 import matrix_time from "./matrix_time";
 import empty from "./empty";
 import memoryChart from "./memoryChart";
+import multi_axis from "./multi_axis";
 
 export default {
     simple_bar,
@@ -45,6 +46,7 @@ export default {
     string_x_minimum,
     string_x_values,
     memoryChart,
+    multi_axis,
     box_plot,
     box_plot_numbers,
     box_plot_group,
