@@ -5,6 +5,9 @@ const config: StorybookConfig = {
     framework: {
         name: "@storybook/html-vite",
         options: {}
+    },
+    features: {
+        sidebarOnboardingChecklist: false
     }
 };
 
