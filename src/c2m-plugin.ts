@@ -1,7 +1,7 @@
 import type { ChartOptions, Plugin, Chart, Point, CartesianScaleOptions, ChartConfiguration, ChartTypeRegistry } from "chart.js";
 import c2mChart, {c2m, C2MChartConfig} from "chart2music";
 import {processBoxData} from "./boxplots";
-import {convertErrorBarData} from "./errorBars";
+import {convertErrorBarData, normalizeErrorBarBounds} from "./errorBars";
 
 // Extended types for custom data
 type CustomDataPoint = {
@@ -275,6 +275,16 @@ const errorBarDatasetIndexes = (chart: Chart) => {
         return (dataset.type ?? chartType) === "barWithErrorBars" ? [index] : [];
     }));
 }
+
+const normalizeChartErrorBarBounds = (chart: Chart) => {
+    const chartType = chart.config.type;
+    chart.data.datasets.forEach((dataset) => {
+        if((dataset.type ?? chartType) === "barWithErrorBars"){
+            dataset.data = normalizeErrorBarBounds(dataset.data as any[]) as never;
+        }
+    });
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -364,6 +374,13 @@ const displayPoint = (chart: Chart) => {
     if(!chartStates.has(chart)){
         return;
     }
+
+    // Word-cloud controllers lay out words during chart updates. Updating only
+    // to mirror Chart2Music focus makes the cloud jump away from the user.
+    if(chart.config.type === "wordCloud"){
+        return;
+    }
+
     const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
     const {point, index} = ref.getCurrent();
 
@@ -609,6 +626,10 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
 
 const plugin: Plugin = {
     id: "chartjs2music",
+
+    beforeUpdate: (chart: Chart) => {
+        normalizeChartErrorBarBounds(chart);
+    },
 
     afterInit: (chart: Chart, _args, options: C2MPluginOptions) => {
         if(!chartStates.has(chart)){

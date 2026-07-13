@@ -1,5 +1,19 @@
 const errorBarBound = (value: number | number[]) => Array.isArray(value) ? value[0] : value;
 
+export const normalizeErrorBarBounds = (data: any[]) => {
+    return data.map((point) => {
+        if(typeof point !== "object" || point === null || Array.isArray(point) || (point.yMin === undefined && point.yMax === undefined)){
+            return point;
+        }
+
+        return {
+            ...point,
+            yMin: point.yMin ?? point.y,
+            yMax: point.yMax ?? point.y
+        };
+    });
+};
+
 export const convertErrorBarData = (data: any[]) => {
     return data.map((point, index) => {
         if(typeof point !== "object" || point === null || Array.isArray(point)){
@@ -11,11 +25,15 @@ export const convertErrorBarData = (data: any[]) => {
             return point;
         }
 
+        const y = values.y;
+        const low = yMin === undefined ? y : errorBarBound(yMin);
+        const high = yMax === undefined ? y : errorBarBound(yMax);
+
         return {
             ...values,
             x: values.x ?? index,
-            ...(yMin === undefined ? {} : {low: errorBarBound(yMin)}),
-            ...(yMax === undefined ? {} : {high: errorBarBound(yMax)})
+            low,
+            high
         };
     });
 }
