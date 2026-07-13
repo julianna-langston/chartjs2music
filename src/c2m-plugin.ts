@@ -1,6 +1,7 @@
 import type { ChartOptions, Plugin, Chart, Point, CartesianScaleOptions, ChartConfiguration, ChartTypeRegistry } from "chart.js";
 import c2mChart, {c2m, C2MChartConfig} from "chart2music";
 import {processBoxData} from "./boxplots";
+import {convertErrorBarData} from "./errorBars";
 
 // Extended types for custom data
 type CustomDataPoint = {
@@ -15,6 +16,9 @@ type DataSet = NonNullable<C2MChartConfig['data']>;
 type ChartStatesTypes = {
     c2m: c2m;
     lastDataSnapshot: string;
+    axesResolved?: boolean;
+    cc: HTMLElement;
+    title: string;
     matrixKeydown?: (event: KeyboardEvent) => void;
     matrixKeydownTarget?: HTMLCanvasElement;
 }
@@ -23,6 +27,7 @@ const chartStates = new Map<Chart, ChartStatesTypes>();
 
 const chartjs_c2m_converter: any = {
     bar: "bar",
+    barWithErrorBars: "bar",
     line: "line",
     pie: "pie",
     polarArea: "bar",
@@ -90,23 +95,97 @@ const generateAxisInfo = (chartAxisInfo: any, chart: any) => {
     return axis;
 }
 
-const generateAxes = (chart: any, options: C2MPluginOptions) => {
-    const axes = {
+type ResolvedAxes = NonNullable<C2MChartConfig["axes"]> & {
+    x: NonNullable<NonNullable<C2MChartConfig["axes"]>["x"]>;
+    y: NonNullable<NonNullable<C2MChartConfig["axes"]>["y"]>;
+}
+
+type AxisResolution = {
+    axes: ResolvedAxes;
+    secondaryAxisDatasetIndexes: Set<number>;
+    requiresRefresh: boolean;
+    error?: string;
+}
+
+const axisIds = (chart: any, axis: "x" | "y"): string[] => {
+    const resolvedIds = [...new Set<string>(chart.data.datasets.flatMap((_dataset: unknown, index: number): string[] => {
+        const scale = chart.getDatasetMeta(index)[`${axis}Scale`];
+        return scale?.id ? [String(scale.id)] : [];
+    }))];
+    if(resolvedIds.length > 0){
+        return resolvedIds;
+    }
+
+    const axisId = `${axis}AxisID`;
+    return [...new Set<string>(chart.data.datasets.flatMap((dataset: any): string[] => {
+        return dataset[axisId] ? [String(dataset[axisId])] : [];
+    }))];
+}
+
+const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): ResolvedAxes => {
+    const configuredAxes = options.axes;
+    return {
+        ...axes,
+        x: {...axes.x, ...configuredAxes?.x},
+        y: {...axes.y, ...configuredAxes?.y},
+        ...(axes.y2 ? {y2: {...axes.y2, ...configuredAxes?.y2}} : {})
+    } as ResolvedAxes;
+}
+
+const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => {
+    const xAxisIds = axisIds(chart, "x");
+    const yAxisIds = axisIds(chart, "y");
+
+    if(xAxisIds.length > 1){
+        return {
+            axes: {} as ResolvedAxes,
+            secondaryAxisDatasetIndexes: new Set(),
+            requiresRefresh: false,
+            error: `Unable to connect chart2music to chart. Multiple x-axis IDs are not supported: ${xAxisIds.join(", ")}.`
+        };
+    }
+
+    if(yAxisIds.length > 2){
+        return {
+            axes: {} as ResolvedAxes,
+            secondaryAxisDatasetIndexes: new Set(),
+            requiresRefresh: false,
+            error: `Unable to connect chart2music to chart. More than two y-axis IDs are not supported: ${yAxisIds.join(", ")}.`
+        };
+    }
+
+    const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
+    const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
+    const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
+    const axes: ResolvedAxes = {
         x: {
-            ...generateAxisInfo(chart.options?.scales?.x, chart),
+            ...generateAxisInfo(xScale?.options ?? chart.options?.scales?.x, chart),
         },
         y: {
             format: options?.axes?.y?.format || ((value: number) => value.toLocaleString()),
-            ...generateAxisInfo(chart.options?.scales?.y, chart),
+            ...generateAxisInfo(yScale?.options ?? chart.options?.scales?.y, chart),
         }
     };
 
-    const xAxisValueLabels = chart.data.labels.slice(0);
+    if(y2Scale){
+        axes.y2 = {
+            format: options?.axes?.y2?.format || ((value: number) => value.toLocaleString()),
+            ...generateAxisInfo(y2Scale.options, chart),
+        };
+    }
+
+    const xAxisValueLabels = xScale?.getLabels?.() ?? chart.data.labels?.slice(0) ?? [];
     if(xAxisValueLabels.length > 0){
         axes.x.valueLabels = xAxisValueLabels;
     }
 
-    return axes;
+    return {
+        axes: mergePluginAxes(axes, options),
+        secondaryAxisDatasetIndexes: y2Scale ? new Set(chart.data.datasets.flatMap((_dataset: unknown, index: number) => {
+            return chart.getDatasetMeta(index).yScale?.id === y2Scale.id ? [index] : [];
+        })) : new Set(),
+        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y")
+    };
 }
 
 const whichDataStructure = (data: any[]) => {
@@ -173,6 +252,29 @@ const processMatrixData = (data: any) => {
     return {groups: Object.keys(result), data: result, xLabels, yLabels};
 }
 
+const useSecondaryAxis = (data: any[]) => {
+    return data.map((point, index) => {
+        if(typeof point === "number"){
+            return {x: index, y2: point};
+        }
+        if(typeof point !== "object" || point === null || Array.isArray(point)){
+            return point;
+        }
+        if(point.y === undefined){
+            return point;
+        }
+
+        const {y, ...values} = point;
+        return {x: values.x ?? index, ...values, y2: y};
+    });
+}
+
+const errorBarDatasetIndexes = (chart: Chart) => {
+    const chartType = chart.config.type;
+    return new Set(chart.data.datasets.flatMap((dataset, index) => {
+        return (dataset.type ?? chartType) === "barWithErrorBars" ? [index] : [];
+    }));
+}
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -194,7 +296,7 @@ const scrubX = (data: any) => {
     }
 }
 
-const processData = (data: any, c2m_types: string) => {
+const processData = (data: any, c2m_types: string, errorBars = new Set<number>(), secondaryAxisDatasets = new Set<number>()) => {
     if(c2m_types === "box"){
         return processBoxData(data);
     }
@@ -203,9 +305,14 @@ const processData = (data: any, c2m_types: string) => {
     }
     let groups: string[] = [];
 
+    const processValues = (values: any[], datasetIndex: number) => {
+        const converted = errorBars.has(datasetIndex) ? convertErrorBarData(values) : values;
+        const axisData = secondaryAxisDatasets.has(datasetIndex) ? useSecondaryAxis(converted) : converted;
+        return whichDataStructure(axisData);
+    };
     if(data.datasets.length === 1){
         return {
-            data: whichDataStructure(data.datasets[0].data)
+            data: processValues(data.datasets[0].data, 0)
         }
     }
 
@@ -215,20 +322,24 @@ const processData = (data: any, c2m_types: string) => {
         const groupName = obj.label ?? `Group ${index+1}`;
         groups.push(groupName);
 
-        result[groupName] = whichDataStructure(obj.data);
+        result[groupName] = processValues(obj.data, index);
     });
 
     return {groups, data: result};
 }
 
-const determineChartTitle = (options: ChartOptions) => {
-    if(options.plugins?.title?.text){
-        if(Array.isArray(options.plugins.title.text)){
-            return options.plugins.title.text.join(", ");
-        }
-        return options.plugins.title.text;
+const titleText = (text: unknown) => {
+    if(Array.isArray(text)){
+        return text.filter((line): line is string => typeof line === "string").join(", ");
     }
-    return "";
+    return typeof text === "string" ? text : "";
+}
+
+const determineChartTitle = (options: ChartOptions) => {
+    return [
+        titleText(options.plugins?.title?.text),
+        titleText(options.plugins?.subtitle?.text)
+    ].filter(Boolean).join(", ");
 }
 
 const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | null) => {
@@ -244,7 +355,8 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | 
 const createDataSnapshot = (chart: Chart) => {
     return JSON.stringify({
         datasets: chart.data.datasets.map(ds => ds.data),
-        labels: chart.data.labels
+        labels: chart.data.labels,
+        title: determineChartTitle(chart.options)
     });
 }
 
@@ -297,7 +409,12 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         return;
     }
 
-    let axes = generateAxes(chart, options);
+    const axisResolution = generateAxes(chart, options);
+    if(axisResolution.error){
+        options.errorCallback?.(axisResolution.error);
+        return;
+    }
+    let axes = axisResolution.axes;
 
     if((chart.config as ChartConfiguration).type === "wordCloud" as keyof ChartTypeRegistry){
         delete axes.x.minimum;
@@ -316,7 +433,12 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
-    const processedData = processData(chart.data, c2m_types);
+    const processedData: any = processData(
+        chart.data,
+        c2m_types,
+        errorBarDatasetIndexes(chart),
+        axisResolution.secondaryAxisDatasetIndexes
+    );
     const {data} = processedData;
     // lastDataObj = JSON.stringify(data);
 
@@ -343,18 +465,6 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         delete scrub?.data;
         delete axes.x.valueLabels;
     }
-
-    axes = {
-        ...axes,
-        x: {
-            ...axes.x,
-            ...(options.axes?.x)
-        },
-        y: {
-            ...axes.y,
-            ...(options.axes?.y)
-        },
-    };
 
     // Start with plugin's internal onFocusCallback
     const pluginOnFocusCallback = () => {
@@ -469,7 +579,10 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
 
     chartStates.set(chart, {
         c2m,
-        lastDataSnapshot: createDataSnapshot(chart)
+        lastDataSnapshot: createDataSnapshot(chart),
+        axesResolved: false,
+        cc,
+        title: determineChartTitle(chart.options)
     });
 
     if(c2m_types === "matrix"){
@@ -500,23 +613,23 @@ const plugin: Plugin = {
     afterInit: (chart: Chart, _args, options: C2MPluginOptions) => {
         if(!chartStates.has(chart)){
             generateChart(chart, options);
-
-            // Remove tooltip when the chart blurs
-            chart.canvas.addEventListener("blur", () => {
-                chart.setActiveElements([]);
-                chart.tooltip?.setActiveElements([], {} as Point);
-                try {
-                    chart.update();
-                } catch(e){
-                    // console.warn(e);
-                }
-            });
-
-            // Show tooltip when the chart receives focus
-            chart.canvas.addEventListener("focus", () => {
-                displayPoint(chart);
-            });
         }
+
+        // Remove tooltip when the chart blurs
+        chart.canvas.addEventListener("blur", () => {
+            chart.setActiveElements([]);
+            chart.tooltip?.setActiveElements([], {} as Point);
+            try {
+                chart.update();
+            } catch(e){
+                // console.warn(e);
+            }
+        });
+
+        // Show tooltip when the chart receives focus
+        chart.canvas.addEventListener("focus", () => {
+            displayPoint(chart);
+        });
     },
 
     afterDatasetUpdate: (chart: Chart, args, options: C2MPluginOptions) => {
@@ -528,7 +641,7 @@ const plugin: Plugin = {
             generateChart(chart, options);
         }
 
-        const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
+        const {c2m: ref} = chartStates.get(chart) ?? {};
         if(!ref){
             return;
         }
@@ -552,14 +665,25 @@ const plugin: Plugin = {
         }
     },
 
-    afterDatasetsUpdate: (chart: Chart, _args, options: C2MPluginOptions) => {
+    afterUpdate: (chart: Chart, _args, options: C2MPluginOptions) => {
         const state = chartStates.get(chart);
-        if(!state?.c2m) return;
+        if(!state?.c2m){
+            generateChart(chart, options);
+            return;
+        }
 
         // Check if data has changed
         const currentSnapshot = createDataSnapshot(chart);
-        if(currentSnapshot === state.lastDataSnapshot) {
+        if(state.axesResolved && currentSnapshot === state.lastDataSnapshot) {
             return; // No data change, skip update
+        }
+
+        const title = determineChartTitle(chart.options);
+        if(title !== state.title){
+            state.c2m.cleanUp();
+            chartStates.delete(chart);
+            generateChart(chart, {...options, cc: state.cc});
+            return;
         }
 
         // Get chart type
@@ -567,14 +691,28 @@ const plugin: Plugin = {
         if(!valid) return;
 
         // Process data and generate axes
-        const {data} = processData(chart.data, c2m_types);
-        const axes = generateAxes(chart, options);
+        const axisResolution = generateAxes(chart, options);
+        if(axisResolution.error){
+            options.errorCallback?.(axisResolution.error);
+            return;
+        }
+        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot){
+            state.axesResolved = true;
+            return;
+        }
+        const {data} = processData(
+            chart.data,
+            c2m_types,
+            errorBarDatasetIndexes(chart),
+            axisResolution.secondaryAxisDatasetIndexes
+        );
 
         // Update Chart2Music with new data
-        state.c2m.setData(data, axes);
+        state.c2m.setData(data, axisResolution.axes);
 
         // Update snapshot
         state.lastDataSnapshot = currentSnapshot;
+        state.axesResolved = true;
     },
 
     afterDestroy: (chart) => {
