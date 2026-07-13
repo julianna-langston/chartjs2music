@@ -167,6 +167,9 @@ export default {
             title: {
                 display: true,
                 text: "Iris"
+            },
+            chartjs2music: {
+                axes: {x: {label: "Species"}, y: {label: "Sepal Length"}}
             }
         }
     }

@@ -10,6 +10,7 @@ const data: ChartData = {
       label: "Cumutive TAX Savings",
       data: [1, 3, 6, 9, 12, 15],
       borderColor: 'green',
+      backgroundColor: 'rgba(46, 139, 87, 0.55)',
     },
     {
       type: 'line' as keyof ChartTypeRegistry,
@@ -18,6 +19,7 @@ const data: ChartData = {
       borderWidth: 2,
       borderDash: [10, 5],
       borderColor: 'grey',
+      backgroundColor: 'rgba(75, 75, 75, 0.4)',
     },
   ]
 }

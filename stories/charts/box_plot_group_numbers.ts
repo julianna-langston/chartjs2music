@@ -132,6 +132,9 @@ export default {
             title: {
                 display: true,
                 text: "Iris"
+            },
+            chartjs2music: {
+                axes: {x: {label: "Measurement"}, y: {label: "Inches"}}
             }
         }
     }

@@ -5,7 +5,7 @@ const data = {
   labels,
   datasets: [
     {
-      label: 'Fully Rounded',
+      label: 'A',
       data: [60, 75, 2, -60, -62, 25, 100],
       backgroundColor: "red",
       borderWidth: 2,
@@ -13,7 +13,7 @@ const data = {
       borderSkipped: false,
     },
     {
-        label: "Normal",
+        label: "B",
       data: [55,80, 5, -40, -55, -55, 90],
       backgroundColor: "blue",
       borderWidth: 2,

@@ -69,6 +69,9 @@ export default {
             title: {
                 display: true,
                 text: "City Mileage for Vehicle Types"
+            },
+            chartjs2music: {
+                axes: {x: {label: "Type"}, y: {label: "MPG"}}
             }
         }
     }

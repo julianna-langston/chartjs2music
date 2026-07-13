@@ -6,7 +6,7 @@ const data: MatrixDataPoint[] = days.map((x, index) => ({
     x,
     y: (index % 7) + 1,
     v: 10 + (index * 7) % 40
-}));
+})).filter((_point, index) => ![5, 12, 20].includes(index));
 
 export default {
     type: "matrix",

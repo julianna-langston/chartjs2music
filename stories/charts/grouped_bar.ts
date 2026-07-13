@@ -34,6 +34,12 @@ export default {
       title: {
         display: true,
         text: 'Chart.js Bar Chart'
+      },
+      chartjs2music: {
+        axes: {
+          x: {label: "Month"},
+          y: {label: "Score"}
+        }
       }
     }
   }

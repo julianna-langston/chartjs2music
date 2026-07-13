@@ -11,6 +11,9 @@ export default {
       labels: ['January', 'February', 'March', 'April', 'May', 'June']
   },
   options: {
+      plugins: {
+          legend: {display: false}
+      },
       scales: {
           x: {
               min: 'March'

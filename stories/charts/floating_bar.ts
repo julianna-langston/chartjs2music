@@ -1,43 +1,30 @@
-import type {ChartData, ChartOptions, ChartTypeRegistry} from "chart.js";
+import type {ChartTypeRegistry} from "chart.js";
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-const data: ChartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: [
-            [90, -30],
-            [-30, 20],
-            [70, -50],
-        ],
-        backgroundColor: "red"
-      },
-      {
-        label: 'Dataset 2',
-        data: [
-            [90, -30],
-            [-30, 20],
-            [70, -50],
-        ],
-        backgroundColor: "blue",
-      },
-    ]
-  };
-const options: ChartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
+// Monthly extrema at Raleigh-Durham International Airport through July 10, 2026.
+// Source: https://www.extremeweatherwatch.com/cities/raleigh/year-2026
+const months = ["January", "February", "March", "April", "May", "June", "July"];
+
+export default {
+    type: "bar" as keyof ChartTypeRegistry,
+    data: {
+        labels: months,
+        datasets: [{
+            label: "Temperature",
+            data: [[15, 76], [11, 74], [29, 89], [32, 93], [40, 97], [48, 103], [72, 103]],
+            backgroundColor: "#c24e36"
+        }]
     },
-    title: {
-      display: true,
-      text: 'Chart.js Floating Bar Chart'
+    options: {
+        plugins: {
+            title: {display: true, text: "Weather in Raleigh 2026"},
+            legend: {display: false}
+        },
+        scales: {
+            x: {title: {display: true, text: "Month"}},
+            y: {
+                title: {display: true, text: "Temperature"},
+                ticks: {callback: (value) => `${value}\u00b0`}
+            }
+        }
     }
-  }
 };
-  export default {
-    type: 'bar' as keyof ChartTypeRegistry,
-    data,
-    options
-  };
