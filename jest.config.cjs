@@ -8,8 +8,7 @@ module.exports = {
     preset: "ts-jest/presets/default-esm",
     transform: {
         "^.+\\.ts?$": ["ts-jest", {
-            useESM: true,
-            isolatedModules: true
+            useESM: true
         }]
     },
     transformIgnorePatterns: [
