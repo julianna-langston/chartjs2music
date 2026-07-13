@@ -94,7 +94,7 @@ The plugin supports Chart.js bar, line, pie, doughnut, polar area, and scatter c
 - Box plots from [`@sgratzl/chartjs-chart-boxplot`](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot).
 - Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix).
 - Word clouds from [`chartjs-chart-wordcloud`](https://www.npmjs.com/package/chartjs-chart-wordcloud).
-- Chart titles, axis titles, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, and chart data updates.
+- Chart titles and subtitles, axis titles, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, and chart data updates.
 
 Visual-only Chart.js settings such as color, padding, and line thickness do not affect the sonification. Advanced Chart.js parsing configurations and nonstandard axis identifiers are not currently supported.
 
@@ -102,7 +102,6 @@ Visual-only Chart.js settings such as color, padding, and line thickness do not 
 
 Planned support includes:
 
-- Chart subtitles.
 - Radar plots.
 - Error bars via [`chartjs-chart-error-bars`](https://www.npmjs.com/package/chartjs-chart-error-bars).
 - Parallel coordinate plots via [`chartjs-chart-pcp`](https://www.npmjs.com/package/chartjs-chart-pcp).
