@@ -1,6 +1,6 @@
 import {Chart} from "chart.js";
 import plugin from "../src/c2m-plugin";
-import bubble from "../samples/charts/bubble";
+import bubble from "../stories/charts/bubble";
 
 Chart.register(plugin);
 

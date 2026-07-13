@@ -10,8 +10,8 @@ import {
     BarElement,
 } from "chart.js";
 import plugin from "../src/c2m-plugin";
-import logChart from "../samples/charts/log";
-import samples from "../samples/charts"
+import logChart from "../stories/charts/log";
+import samples from "../stories/charts"
 
 const {simple_bar} = samples;
 

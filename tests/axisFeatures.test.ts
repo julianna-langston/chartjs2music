@@ -1,6 +1,6 @@
 import {Chart, ChartConfiguration} from "chart.js";
 import plugin from "../src/c2m-plugin";
-import charts from "../samples/charts"
+import charts from "../stories/charts"
 
 const {
     simple_bar, 

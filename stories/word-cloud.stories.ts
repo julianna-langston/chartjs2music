@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import wordCloud from "../samples/charts/wordcloud";
-import wordCloudTwo from "../samples/charts/wordcloud2";
+import wordCloud from "./charts/wordcloud";
+import wordCloudTwo from "./charts/wordcloud2";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

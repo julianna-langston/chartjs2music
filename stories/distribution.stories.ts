@@ -1,8 +1,8 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import boxPlot from "../samples/charts/box_plot";
-import boxPlotGroup from "../samples/charts/box_plot_group";
-import boxPlotGroupNumbers from "../samples/charts/box_plot_group_numbers";
-import boxPlotNumbers from "../samples/charts/box_plot_numbers";
+import boxPlot from "./charts/box_plot";
+import boxPlotGroup from "./charts/box_plot_group";
+import boxPlotGroupNumbers from "./charts/box_plot_group_numbers";
+import boxPlotNumbers from "./charts/box_plot_numbers";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

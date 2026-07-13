@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import barLine from "../samples/charts/bar_line";
+import barLine from "./charts/bar_line";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {

@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
-import groupedLine from "../samples/charts/grouped_line";
-import memoryChart from "../samples/charts/memoryChart";
+import groupedLine from "./charts/grouped_line";
+import memoryChart from "./charts/memoryChart";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {
