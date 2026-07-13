@@ -1,5 +1,6 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
 import floatingBar from "./charts/floating_bar";
+import errorBars from "./charts/error_bars";
 import gettingStarted from "./charts/getting_started_Example";
 import groupedBar from "./charts/grouped_bar";
 import logarithmic from "./charts/log";
@@ -23,6 +24,7 @@ export const GettingStarted: Story = {args: {sample: gettingStarted}};
 export const Grouped: Story = {args: {sample: groupedBar}};
 export const Stacked: Story = {args: {sample: stackedBar}};
 export const Floating: Story = {args: {sample: floatingBar}};
+export const ErrorBars: Story = {args: {sample: errorBars}};
 export const Spanish: Story = {args: {sample: spanishBar}};
 export const StringValues: Story = {args: {sample: stringValues}};
 export const StringMinimum: Story = {args: {sample: stringMinimum}};

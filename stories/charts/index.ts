@@ -3,6 +3,7 @@ import spanish_bar from "./spanish_bar";
 import grouped_bar from "./grouped_bar";
 import grouped_line from "./grouped_line";
 import floating_bar from "./floating_bar";
+import error_bars from "./error_bars";
 import bar_line from "./bar_line";
 import polarArea1 from "./polarArea1";
 import polarArea2 from "./polarArea2";
@@ -31,6 +32,7 @@ import matrix_time from "./matrix_time";
 import empty from "./empty";
 import memoryChart from "./memoryChart";
 import multi_axis from "./multi_axis";
+import title_subtitle from "./title_subtitle";
 
 export default {
     simple_bar,
@@ -39,6 +41,7 @@ export default {
     grouped_bar, 
     grouped_line,
     floating_bar,
+    error_bars,
     stacked_bar,
     bar_line,
     empty,
@@ -47,6 +50,7 @@ export default {
     string_x_values,
     memoryChart,
     multi_axis,
+    title_subtitle,
     box_plot,
     box_plot_numbers,
     box_plot_group,

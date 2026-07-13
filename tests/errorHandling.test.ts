@@ -26,7 +26,7 @@ test("Warn for invalid chart types", () => {
     
     expect(errorMockFn.mock.calls).toHaveLength(1);
     // @ts-ignore
-    expect(errorMockFn.mock.calls[0][0]).toBe(`Unable to connect chart2music to chart. The chart is of type \"bubble\", which is not one of the supported chart types for this plugin. This plugin supports: bar, line, pie, polarArea, doughnut, boxplot, radar, wordCloud, scatter, matrix`);
+    expect(errorMockFn.mock.calls[0][0]).toBe(`Unable to connect chart2music to chart. The chart is of type \"bubble\", which is not one of the supported chart types for this plugin. This plugin supports: bar, barWithErrorBars, line, pie, polarArea, doughnut, boxplot, radar, wordCloud, scatter, matrix`);
 
     expect(() => mockElement.dispatchEvent(new Event("focus"))).not.toThrow();
     expect(() => chart.destroy()).not.toThrow();
