@@ -28,12 +28,28 @@ export type SampleStoryArgs = {
 };
 
 export const renderChart = (config: Sample) => {
+    const container = document.createElement("div");
     const canvas = document.createElement("canvas");
+    const cc = document.createElement("div");
+    const sourceOptions = config.options ?? {};
+    const sourcePlugins = sourceOptions.plugins as Record<string, unknown> | undefined;
+
+    container.append(canvas, cc);
     new Chart(canvas, {
         type: config.type ?? "bar",
-        ...config
+        ...config,
+        options: {
+            ...sourceOptions,
+            plugins: {
+                ...sourcePlugins,
+                chartjs2music: {
+                    ...(sourcePlugins?.chartjs2music as Record<string, unknown> | undefined),
+                    cc
+                }
+            }
+        }
     } as never);
-    return canvas;
+    return container;
 };
 
 export const renderSample = ({sample}: SampleStoryArgs) => renderChart(sample);
