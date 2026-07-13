@@ -14,7 +14,7 @@ export default {
         plugins: {
             title: {display: true, text: "Población por estado de México (2020)"},
             legend: {display: false},
-            chartjs2music: {lang: "es-MX"}
+            chartjs2music: {lang: "es"}
         },
         scales: {
             x: {title: {display: true, text: "Estados"}},

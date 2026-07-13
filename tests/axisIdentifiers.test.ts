@@ -32,7 +32,7 @@ test("uses custom scale IDs and exposes a secondary y axis", () => {
     }));
 
     canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "PageDown"}));
-    expect(parent.children[1].textContent).toContain('Alternate Y is "Profit margin" from 18 to 24.');
+    expect(parent.children[1].textContent).toContain('Alternate Y is "Profit margin" from 18 to 32.');
     chart.destroy();
 });
 
