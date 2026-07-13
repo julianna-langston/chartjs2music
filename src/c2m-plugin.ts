@@ -1,6 +1,7 @@
 import type { ChartOptions, Plugin, Chart, Point, CartesianScaleOptions, ChartConfiguration, ChartTypeRegistry } from "chart.js";
 import c2mChart, {c2m, C2MChartConfig} from "chart2music";
 import {processBoxData} from "./boxplots";
+import {convertErrorBarData} from "./errorBars";
 
 // Extended types for custom data
 type CustomDataPoint = {
@@ -25,6 +26,7 @@ const chartStates = new Map<Chart, ChartStatesTypes>();
 
 const chartjs_c2m_converter: any = {
     bar: "bar",
+    barWithErrorBars: "bar",
     line: "line",
     pie: "pie",
     polarArea: "bar",
@@ -175,6 +177,13 @@ const processMatrixData = (data: any) => {
     return {groups: Object.keys(result), data: result, xLabels, yLabels};
 }
 
+const errorBarDatasetIndexes = (chart: Chart) => {
+    const chartType = chart.config.type;
+    return new Set(chart.data.datasets.flatMap((dataset, index) => {
+        return (dataset.type ?? chartType) === "barWithErrorBars" ? [index] : [];
+    }));
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -196,7 +205,7 @@ const scrubX = (data: any) => {
     }
 }
 
-const processData = (data: any, c2m_types: string) => {
+const processData = (data: any, c2m_types: string, errorBars = new Set<number>()) => {
     if(c2m_types === "box"){
         return processBoxData(data);
     }
@@ -205,9 +214,14 @@ const processData = (data: any, c2m_types: string) => {
     }
     let groups: string[] = [];
 
+    const processValues = (values: any[], datasetIndex: number) => {
+        const converted = errorBars.has(datasetIndex) ? convertErrorBarData(values) : values;
+        return whichDataStructure(converted);
+    };
+
     if(data.datasets.length === 1){
         return {
-            data: whichDataStructure(data.datasets[0].data)
+            data: processValues(data.datasets[0].data, 0)
         }
     }
 
@@ -217,7 +231,7 @@ const processData = (data: any, c2m_types: string) => {
         const groupName = obj.label ?? `Group ${index+1}`;
         groups.push(groupName);
 
-        result[groupName] = whichDataStructure(obj.data);
+        result[groupName] = processValues(obj.data, index);
     });
 
     return {groups, data: result};
@@ -323,7 +337,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
-    const processedData = processData(chart.data, c2m_types);
+    const processedData = processData(chart.data, c2m_types, errorBarDatasetIndexes(chart));
     const {data} = processedData;
     // lastDataObj = JSON.stringify(data);
 
@@ -584,7 +598,7 @@ const plugin: Plugin = {
         if(!valid) return;
 
         // Process data and generate axes
-        const {data} = processData(chart.data, c2m_types);
+        const {data} = processData(chart.data, c2m_types, errorBarDatasetIndexes(chart));
         const axes = generateAxes(chart, options);
 
         // Update Chart2Music with new data
