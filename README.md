@@ -89,26 +89,24 @@ Available plugin options:
 
 ## Supported charts
 
-The plugin supports Chart.js bar, line, pie, doughnut, polar area, radar, and scatter charts, including mixed bar/line configurations. It also supports:
+The plugin supports Chart.js bar, line, pie, doughnut, polar area, and scatter charts, including mixed bar/line configurations. It also supports:
 
 - Box plots from [`@sgratzl/chartjs-chart-boxplot`](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot).
-- Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix), including numeric, category, time, calendar, and multi-dataset examples.
+- Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix).
 - Word clouds from [`chartjs-chart-wordcloud`](https://www.npmjs.com/package/chartjs-chart-wordcloud).
 - Chart titles, axis titles, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, and chart data updates.
 
-For matrix plots, register the matrix controller and element along with Chart2Music:
-
-```js
-import Chart from "chart.js/auto";
-import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
-import chart2music from "chartjs-plugin-chart2music";
-
-Chart.register(MatrixController, MatrixElement, chart2music);
-```
-
-The matrix integration preserves two-dimensional navigation: left and right move between columns, while up and down move between rows.
-
 Visual-only Chart.js settings such as color, padding, and line thickness do not affect the sonification. Advanced Chart.js parsing configurations and nonstandard axis identifiers are not currently supported.
+
+## Future support
+
+Planned support includes:
+
+- Chart subtitles.
+- Radar plots.
+- Error bars via [`chartjs-chart-error-bars`](https://www.npmjs.com/package/chartjs-chart-error-bars).
+- Parallel coordinate plots via [`chartjs-chart-pcp`](https://www.npmjs.com/package/chartjs-chart-pcp).
+- Zoom interactions via [`chartjs-plugin-zoom`](https://www.npmjs.com/package/chartjs-plugin-zoom).
 
 ## Examples and Storybook
 
@@ -133,5 +131,3 @@ npm test
 npm run build
 npm run depcheck
 ```
-
-Use `npm run clean` to remove generated build and coverage output.
