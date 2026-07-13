@@ -99,6 +99,7 @@ type ResolvedAxes = NonNullable<C2MChartConfig["axes"]> & {
 type AxisResolution = {
     axes: ResolvedAxes;
     secondaryAxisDatasetIndexes: Set<number>;
+    requiresRefresh: boolean;
     error?: string;
 }
 
@@ -135,6 +136,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         return {
             axes: {} as ResolvedAxes,
             secondaryAxisDatasetIndexes: new Set(),
+            requiresRefresh: false,
             error: `Unable to connect chart2music to chart. Multiple x-axis IDs are not supported: ${xAxisIds.join(", ")}.`
         };
     }
@@ -143,6 +145,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         return {
             axes: {} as ResolvedAxes,
             secondaryAxisDatasetIndexes: new Set(),
+            requiresRefresh: false,
             error: `Unable to connect chart2music to chart. More than two y-axis IDs are not supported: ${yAxisIds.join(", ")}.`
         };
     }
@@ -176,7 +179,8 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         axes: mergePluginAxes(axes, options),
         secondaryAxisDatasetIndexes: y2Scale ? new Set(chart.data.datasets.flatMap((_dataset: unknown, index: number) => {
             return chart.getDatasetMeta(index).yScale?.id === y2Scale.id ? [index] : [];
-        })) : new Set()
+        })) : new Set(),
+        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y")
     };
 }
 
@@ -658,6 +662,10 @@ const plugin: Plugin = {
         const axisResolution = generateAxes(chart, options);
         if(axisResolution.error){
             options.errorCallback?.(axisResolution.error);
+            return;
+        }
+        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot){
+            state.axesResolved = true;
             return;
         }
         const {data} = processData(chart.data, c2m_types, axisResolution.secondaryAxisDatasetIndexes);
