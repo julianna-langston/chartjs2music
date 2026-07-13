@@ -15,6 +15,8 @@ type DataSet = NonNullable<C2MChartConfig['data']>;
 type ChartStatesTypes = {
     c2m: c2m;
     lastDataSnapshot: string;
+    cc: HTMLElement;
+    title: string;
     matrixKeydown?: (event: KeyboardEvent) => void;
     matrixKeydownTarget?: HTMLCanvasElement;
 }
@@ -221,14 +223,18 @@ const processData = (data: any, c2m_types: string) => {
     return {groups, data: result};
 }
 
-const determineChartTitle = (options: ChartOptions) => {
-    if(options.plugins?.title?.text){
-        if(Array.isArray(options.plugins.title.text)){
-            return options.plugins.title.text.join(", ");
-        }
-        return options.plugins.title.text;
+const titleText = (text: unknown) => {
+    if(Array.isArray(text)){
+        return text.filter((line): line is string => typeof line === "string").join(", ");
     }
-    return "";
+    return typeof text === "string" ? text : "";
+}
+
+const determineChartTitle = (options: ChartOptions) => {
+    return [
+        titleText(options.plugins?.title?.text),
+        titleText(options.plugins?.subtitle?.text)
+    ].filter(Boolean).join(", ");
 }
 
 const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | null) => {
@@ -244,7 +250,8 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | 
 const createDataSnapshot = (chart: Chart) => {
     return JSON.stringify({
         datasets: chart.data.datasets.map(ds => ds.data),
-        labels: chart.data.labels
+        labels: chart.data.labels,
+        title: determineChartTitle(chart.options)
     });
 }
 
@@ -469,7 +476,9 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
 
     chartStates.set(chart, {
         c2m,
-        lastDataSnapshot: createDataSnapshot(chart)
+        lastDataSnapshot: createDataSnapshot(chart),
+        cc,
+        title: determineChartTitle(chart.options)
     });
 
     if(c2m_types === "matrix"){
@@ -560,6 +569,14 @@ const plugin: Plugin = {
         const currentSnapshot = createDataSnapshot(chart);
         if(currentSnapshot === state.lastDataSnapshot) {
             return; // No data change, skip update
+        }
+
+        const title = determineChartTitle(chart.options);
+        if(title !== state.title){
+            state.c2m.cleanUp();
+            chartStates.delete(chart);
+            generateChart(chart, {...options, cc: state.cc});
+            return;
         }
 
         // Get chart type
