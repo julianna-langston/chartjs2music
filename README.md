@@ -1,117 +1,137 @@
 # chartjs-plugin-chart2music
-[![npm version](https://badge.fury.io/js/chartjs-plugin-chart2music.svg)](https://badge.fury.io/js/chartjs-plugin-chart2music)
 
-**This is a beta release of this plugin. Not all chart.js features are supported yet.**
+[![npm version](https://badge.fury.io/js/chartjs-plugin-chart2music.svg)](https://www.npmjs.com/package/chartjs-plugin-chart2music)
 
-Turns your chart.js charts into music so the blind can hear data. This plugin will automatically add Chart2Music, an interactive sonification library, to your chart.js charts. The contents of the chart element will be modified to best support screen reader users, and the interactions will be visually synchronized to provide support for keyboard-only users.
+`chartjs-plugin-chart2music` connects [Chart.js](https://www.chartjs.org/) charts to [Chart2Music](https://chart2music.com/), providing keyboard navigation, screen-reader output, and interactive data sonification. Focus a chart to explore its data with the keyboard; the active data point is also highlighted on the visual chart.
 
-[Check out our CodePen collection of examples using the plugin.](https://codepen.io/collection/VYEvEQ)
+This plugin is in beta. The supported chart types and integration points are listed below.
 
-## Getting started
+## Install and use
 
-Add the chartjs2music plugin to your existing chart.js code like this:
-
-```js
-import {Chart} from "chart.js/auto";
-import chartjs2music from "chartjs-plugin-chart2music";
-
-Chart.register(chartjs2music);
+```bash
+npm install chart.js chartjs-plugin-chart2music
 ```
 
-That will register the plugin globally. Alternatively, if you only want to enable for a given chart, you can do this:
+Register the plugin globally:
 
 ```js
-import {Chart} from "chart.js/auto";
-import chartjs2music from "chartjs-plugin-chart2music";
+import Chart from "chart.js/auto";
+import chart2music from "chartjs-plugin-chart2music";
+
+Chart.register(chart2music);
 
 new Chart(canvasElement, {
     type: "bar",
     data: {
-        datasets: [{
-            data: [1,4,2,8]
-        }]
+        labels: ["Q1", "Q2", "Q3", "Q4"],
+        datasets: [{label: "Revenue", data: [1, 4, 2, 8]}]
+    }
+});
+```
+
+Or add it to one chart only:
+
+```js
+new Chart(canvasElement, {
+    type: "bar",
+    data: {
+        datasets: [{data: [1, 4, 2, 8]}]
     },
-    plugins: [chartjs2music]
-})
-
+    plugins: [chart2music]
+});
 ```
 
-## Available options
+When no `cc` element is supplied, the plugin creates a caption element immediately after the canvas. Supply your own element when you need to control where the Chart2Music output appears.
 
-The following plugin options are available:
-* `errorCallback` - A callback that will return errors if any arise while the plugin works.
-* `cc` - the equivalent of the [chart2music option `cc`](https://chart2music.com/docs/API/Config#axes)
-* `audioEngine` - the equivalent of the [chart2music option `audioEngine`](https://chart2music.com/docs/API/Config#cc)
-* `axes` - the equivalent of the [chart2music option `axes`](https://chart2music.com/docs/API/Config#axes)
-* `lang` - the language your user speaks. The available languages that Chart2Music supports are: "en", "de", "es", "fr", "it". The default is "en". If you would like to add translations for another language, [Chart2Music is open to PRs](https://github.com/julianna-langston/chart2music).
+## Plugin options
 
-Here's an example for providing options:
+Configure the plugin through `options.plugins.chartjs2music`:
+
 ```js
-import {Chart} from "chart.js/auto";
-import chartjs2music from "chartjs-plugin-chart2music";
-
 new Chart(canvasElement, {
     type: "bar",
     data: {
-        datasets: [{
-            data: [1,4,2,8]
-        }]
+        labels: ["Q1", "Q2", "Q3", "Q4"],
+        datasets: [{label: "Revenue", data: [1, 4, 2, 8]}]
     },
     options: {
         plugins: {
             chartjs2music: {
-                // All errors should be logged as errors
-                errorCallback: console.error,
-                // Here's a div I made to be the CC
-                cc: myDiv,
-                // The Y values should all be money
+                cc: outputElement,
+                lang: "en",
                 axes: {
+                    x: {label: "Quarter"},
                     y: {
-                        format: (value) => "$" + value
+                        label: "Revenue",
+                        format: (value) => `$${value.toLocaleString()}`
                     }
-                }
+                },
+                options: {
+                    enableSound: true,
+                    onFocusCallback: (point) => console.log(point),
+                    onSelectCallback: ({point}) => console.log(point)
+                },
+                errorCallback: console.error
             }
         }
-    },
-    plugins: [chartjs2music]
+    }
 });
 ```
 
-If you are using TypeScript, replace the first 4 lines with this:
-```ts
-import {Chart, type ChartTypeRegistry} from "chart.js/auto";
-import chartjs2music from "chartjs-plugin-chart2music";
+Available plugin options:
 
-new Chart(canvasElement, {
-    type: "bar" as keyof ChartTypeRegistry,
+- `cc`: Element that receives Chart2Music's accessible chart caption. Optional.
+- `lang`: Chart2Music language. Supported values include `en`, `de`, `es`, `fr`, and `it`; default is `en`.
+- `axes`: Chart2Music axis configuration, including labels and value formatters.
+- `audioEngine`: A custom Chart2Music audio engine.
+- `options`: Chart2Music interaction options such as `enableSound`, `onFocusCallback`, and `onSelectCallback`.
+- `errorCallback`: Receives errors while the plugin initializes or updates a chart.
+
+## Supported charts
+
+The plugin supports Chart.js bar, line, pie, doughnut, polar area, radar, and scatter charts, including mixed bar/line configurations. It also supports:
+
+- Box plots from [`@sgratzl/chartjs-chart-boxplot`](https://www.npmjs.com/package/@sgratzl/chartjs-chart-boxplot).
+- Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix), including numeric, category, time, calendar, and multi-dataset examples.
+- Word clouds from [`chartjs-chart-wordcloud`](https://www.npmjs.com/package/chartjs-chart-wordcloud).
+- Chart titles, axis titles, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, and chart data updates.
+
+For matrix plots, register the matrix controller and element along with Chart2Music:
+
+```js
+import Chart from "chart.js/auto";
+import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
+import chart2music from "chartjs-plugin-chart2music";
+
+Chart.register(MatrixController, MatrixElement, chart2music);
 ```
 
-## Supported features
+The matrix integration preserves two-dimensional navigation: left and right move between columns, while up and down move between rows.
 
-This plugin is currently in beta, so not all of the chart.js features are currently supported.
+Visual-only Chart.js settings such as color, padding, and line thickness do not affect the sonification. Advanced Chart.js parsing configurations and nonstandard axis identifiers are not currently supported.
 
-A quick list of chart.js features we currently support includes:
-* Chart types: bar, doughnut, line, pie, polar, radar, scatter, and combinations therein.
-* Boxplots using the `@sgratzl/chartjs-chart-boxplot` plugin (only support boxplots when there are no other chart types present)
-* Wordclouds using the `chartjs-chart-wordcloud` plugin
-* Axes options: `title`, `min`, `max`, `type="linear"`, `type="logarithmic"`.
-* Chart title
-* Most data structures (not including `parsing` or non-standard axes identifiers)
-* Dataset visibility (when you show/hide a category from the legend)
+## Examples and Storybook
 
-Note that visual-specific chart features are ignored. This includes things like color, padding, line thickness, etc.
+The repository includes runnable samples under [`samples/charts`](./samples/charts), covering the supported chart types and plugin integrations. A Storybook catalogue exposes these examples as Bar, Line, Multi-chart, Distribution, Circular, Scatter, Matrix, Word cloud, and Options stories.
 
-Things we plan to support in the future:
-* Interactions and updates
-* Other chart.js plugins
-* Complex `parsing` options for data
-* Date/Time support for axes
-* Subtitle
-* Radar charts
-* Custom formatting for axis tick values
+```bash
+npm run storybook
+```
 
-Plugins we plan to support in the future:
-* [chartjs-char-error-bars](https://www.npmjs.com/package/chartjs-chart-error-bars)
-* [chartjs-chart-matrix](https://www.npmjs.com/package/chartjs-chart-matrix)
-* [chartjs-chart-pcp](https://www.npmjs.com/package/chartjs-chart-pcp)
-* [chartjs-plugin-zoom](https://www.npmjs.com/package/chartjs-plugin-zoom)
+Build the static Storybook site with:
+
+```bash
+npm run build-storybook
+```
+
+More examples are available in the [CodePen collection](https://codepen.io/collection/VYEvEQ).
+
+## Development
+
+```bash
+npm test
+npm run build
+npm run depcheck
+```
+
+Use `npm run clean` to remove generated build and coverage output.
