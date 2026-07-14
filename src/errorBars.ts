@@ -1,19 +1,5 @@
 const errorBarBound = (value: number | number[]) => Array.isArray(value) ? value[0] : value;
 
-export const normalizeErrorBarBounds = (data: any[]) => {
-    return data.map((point) => {
-        if(typeof point !== "object" || point === null || Array.isArray(point) || (point.yMin === undefined && point.yMax === undefined)){
-            return point;
-        }
-
-        return {
-            ...point,
-            yMin: point.yMin ?? point.y,
-            yMax: point.yMax ?? point.y
-        };
-    });
-};
-
 export const convertErrorBarData = (data: any[]) => {
     return data.map((point, index) => {
         if(typeof point !== "object" || point === null || Array.isArray(point)){

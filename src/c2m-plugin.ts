@@ -1,7 +1,7 @@
 import type { ChartOptions, Plugin, Chart, Point, CartesianScaleOptions, ChartConfiguration, ChartTypeRegistry } from "chart.js";
 import c2mChart, {c2m, C2MChartConfig} from "chart2music";
 import {processBoxData} from "./boxplots";
-import {convertErrorBarData, normalizeErrorBarBounds} from "./errorBars";
+import {convertErrorBarData} from "./errorBars";
 
 // Extended types for custom data
 type CustomDataPoint = {
@@ -274,15 +274,6 @@ const errorBarDatasetIndexes = (chart: Chart) => {
     return new Set(chart.data.datasets.flatMap((dataset, index) => {
         return (dataset.type ?? chartType) === "barWithErrorBars" ? [index] : [];
     }));
-}
-
-const normalizeChartErrorBarBounds = (chart: Chart) => {
-    const chartType = chart.config.type;
-    chart.data.datasets.forEach((dataset) => {
-        if((dataset.type ?? chartType) === "barWithErrorBars"){
-            dataset.data = normalizeErrorBarBounds(dataset.data as any[]) as never;
-        }
-    });
 }
 
 const scrubX = (data: any) => {
@@ -626,10 +617,6 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
 
 const plugin: Plugin = {
     id: "chartjs2music",
-
-    beforeUpdate: (chart: Chart) => {
-        normalizeChartErrorBarBounds(chart);
-    },
 
     afterInit: (chart: Chart, _args, options: C2MPluginOptions) => {
         if(!chartStates.has(chart)){
