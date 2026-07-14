@@ -809,6 +809,3 @@ const plugin: Plugin = {
 };
 
 export default plugin;
-        if(!chartStates.has(chart)){
-            generateChart(chart, options);
-        }
