@@ -30,7 +30,9 @@ const setup = (config: ChartConfiguration) => {
 test("Axis with label", () => {
     const {cc} = setup(getting_started_Example);
 
+    expect(cc.textContent).toContain(`Sonified chart titled "Favorite Color"`);
     expect(cc.textContent).toContain(`X is "Color" from Red to Orange`);
+    expect(cc.textContent).toContain(`Y is "Votes" from 2 to 19`);
 });
 test("Axis without label", () => {
     const {cc} = setup(bar_line);
