@@ -21,7 +21,16 @@ type ChartStatesTypes = {
     title: string;
     matrixKeydown?: (event: KeyboardEvent) => void;
     matrixKeydownTarget?: HTMLCanvasElement;
+    zoomKeydown?: (event: KeyboardEvent) => void;
+    zoomKeydownTarget?: HTMLCanvasElement;
+    viewport?: string;
+    pendingViewportAction?: ViewportAction;
 }
+
+type ViewportAction = {
+    type: "zoom-in" | "zoom-out" | "reset" | "pan";
+    direction?: "left" | "right" | "up" | "down";
+};
 
 const chartStates = new Map<Chart, ChartStatesTypes>();
 
@@ -203,6 +212,92 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         })) : new Set(),
         requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y")
     };
+}
+
+const viewportSnapshot = (chart: Chart) => {
+    return JSON.stringify(Object.values(chart.scales)
+        .filter((scale: any) => scale.isHorizontal?.() || scale.axis === "y")
+        .map((scale: any) => ({id: scale.id, axis: scale.axis, min: scale.min, max: scale.max}))
+        .sort((a, b) => a.id.localeCompare(b.id)));
+}
+
+const applyViewportRanges = (chart: Chart, axes: ResolvedAxes): ResolvedAxes => {
+    const xAxisIds = axisIds(chart, "x");
+    const yAxisIds = axisIds(chart, "y");
+    const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
+    const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
+    const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
+    const range = (axis: any, scale: any) => scale ? {
+        ...axis,
+        minimum: scale.min,
+        maximum: scale.max
+    } : axis;
+
+    return {
+        ...axes,
+        x: range(axes.x, xScale),
+        y: range(axes.y, yScale),
+        ...(axes.y2 ? {y2: range(axes.y2, y2Scale)} : {})
+    } as ResolvedAxes;
+}
+
+const filterDataToViewport = (chart: Chart, data: any) => {
+    return {
+        ...data,
+        datasets: data.datasets.map((dataset: any, datasetIndex: number) => {
+            const meta = chart.getDatasetMeta(datasetIndex) as any;
+            const xScale = meta.xScale;
+            const yScale = meta.yScale;
+            const filtered = (dataset.data as any[]).flatMap((point, index) => {
+                const parsed = meta._parsed?.[index];
+                if(!parsed || (xScale && (parsed.x < xScale.min || parsed.x > xScale.max)) ||
+                    (yScale && (parsed.y < yScale.min || parsed.y > yScale.max))){
+                    return [];
+                }
+                if(typeof point === "object" && point !== null){
+                    return [point];
+                }
+                return [{x: parsed.x, y: parsed.y}];
+            });
+            return {...dataset, data: filtered};
+        })
+    };
+}
+
+const axisRangeText = (name: string, axis: any) => {
+    const format = axis.format ?? ((value: unknown) => String(value));
+    const label = axis.label ? ` \"${axis.label}\"` : "";
+    const value = (raw: number) => axis.valueLabels?.[Math.round(raw)] ?? format(raw);
+    return `${name} axis${label} from ${value(axis.minimum)} to ${value(axis.maximum)}`;
+}
+
+const announce = (state: ChartStatesTypes, text: string) => {
+    const screenReader = (state.c2m as any)._sr;
+    if(screenReader?.render){
+        screenReader.render(text);
+        return;
+    }
+    state.cc.textContent = text;
+}
+
+const viewportAnnouncement = (axes: ResolvedAxes, action?: ViewportAction) => {
+    if(action?.type === "pan" && action.direction){
+        return `Panning ${action.direction}. ${axisRangeText(action.direction === "left" || action.direction === "right" ? "X" : "Y", action.direction === "left" || action.direction === "right" ? axes.x : axes.y)}.`;
+    }
+    if(action?.type === "zoom-in"){
+        return `Zoomed in. ${axisRangeText("X", axes.x)}. ${axisRangeText("Y", axes.y)}.`;
+    }
+    if(action?.type === "zoom-out"){
+        return `Zoomed out. ${axisRangeText("X", axes.x)}. ${axisRangeText("Y", axes.y)}.`;
+    }
+    if(action?.type === "reset"){
+        return `Zoom reset. ${axisRangeText("X", axes.x)}. ${axisRangeText("Y", axes.y)}.`;
+    }
+    return `Viewport updated. ${axisRangeText("X", axes.x)}. ${axisRangeText("Y", axes.y)}.`;
+}
+
+const edgeAnnouncement = (action: ViewportAction) => {
+    return `${action.direction === "left" || action.direction === "right" ? action.direction : action.direction === "up" ? "top" : "bottom"} edge.`;
 }
 
 const whichDataStructure = (data: any[]) => {
@@ -490,6 +585,106 @@ const createDataSnapshot = (chart: Chart) => {
     });
 }
 
+const zoomIsConfigured = (chart: Chart) => {
+    const zoomOptions = (chart.options.plugins as any)?.zoom;
+    const zoomable = chart as any;
+    return Boolean(zoomOptions && typeof zoomable.zoom === "function" && typeof zoomable.pan === "function" && typeof zoomable.resetZoom === "function");
+}
+
+const syncViewport = (chart: Chart, state: ChartStatesTypes, options: C2MPluginOptions) => {
+    if(!zoomIsConfigured(chart)){
+        return false;
+    }
+
+    const nextViewport = viewportSnapshot(chart);
+    if(nextViewport === state.viewport){
+        if(state.pendingViewportAction?.type === "pan"){
+            announce(state, edgeAnnouncement(state.pendingViewportAction));
+            state.pendingViewportAction = undefined;
+            return true;
+        }
+        return false;
+    }
+
+    const {valid, c2m_types} = processChartType(chart);
+    if(!valid || c2m_types === "matrix"){
+        state.viewport = nextViewport;
+        return false;
+    }
+
+    const axisResolution = generateAxes(chart, options);
+    if(axisResolution.error){
+        options.errorCallback?.(axisResolution.error);
+        return true;
+    }
+    const parsingData = resolveParsingData(chart);
+    if(parsingData.error){
+        options.errorCallback?.(parsingData.error);
+        return true;
+    }
+
+    const axes = applyViewportRanges(chart, applyErrorBarAxisRange(chart, axisResolution.axes));
+    const visibleData = filterDataToViewport(chart, parsingData.data);
+    const {data} = processData(
+        visibleData,
+        c2m_types,
+        errorBarDatasetIndexes(chart),
+        axisResolution.secondaryAxisDatasetIndexes
+    );
+    state.c2m.setData(data, axes);
+    state.viewport = nextViewport;
+    announce(state, viewportAnnouncement(axes, state.pendingViewportAction));
+    state.pendingViewportAction = undefined;
+    return true;
+}
+
+const addZoomKeyboardShortcuts = (chart: Chart, state: ChartStatesTypes) => {
+    if(!zoomIsConfigured(chart)){
+        return;
+    }
+
+    const zoomable = chart as any;
+    const keydown = (event: KeyboardEvent) => {
+        const commandKey = event.ctrlKey || event.metaKey;
+        const zoomKey = event.key === "+" || event.key === "=" || event.key === "-" || event.key === "0";
+        if(commandKey && zoomKey){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            if(event.key === "0"){
+                state.pendingViewportAction = {type: "reset"};
+                zoomable.resetZoom("none");
+            }else if(event.key === "-"){
+                state.pendingViewportAction = {type: "zoom-out"};
+                zoomable.zoom(0.8, "none");
+            }else{
+                state.pendingViewportAction = {type: "zoom-in"};
+                zoomable.zoom(1.25, "none");
+            }
+            return;
+        }
+
+        if(!event.altKey || !event.shiftKey || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)){
+            return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const chartWidth = chart.chartArea.right - chart.chartArea.left;
+        const chartHeight = chart.chartArea.bottom - chart.chartArea.top;
+        const distance = Math.max(20, Math.round(Math.min(chartWidth, chartHeight) / 4));
+        const action = event.key === "ArrowLeft" ? {type: "pan" as const, direction: "left" as const, amount: {x: distance}} :
+            event.key === "ArrowRight" ? {type: "pan" as const, direction: "right" as const, amount: {x: -distance}} :
+                event.key === "ArrowUp" ? {type: "pan" as const, direction: "up" as const, amount: {y: distance}} :
+                    {type: "pan" as const, direction: "down" as const, amount: {y: -distance}};
+        state.pendingViewportAction = action;
+        zoomable.pan(action.amount, undefined, "none");
+    };
+
+    chart.canvas.addEventListener("keydown", keydown, true);
+    state.zoomKeydown = keydown;
+    state.zoomKeydownTarget = chart.canvas;
+}
+
 const displayPoint = (chart: Chart) => {
     if(!chartStates.has(chart)){
         return;
@@ -725,8 +920,11 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         lastDataSnapshot: createDataSnapshot(chart),
         axesResolved: false,
         cc,
-        title: determineChartTitle(chart.options)
+        title: determineChartTitle(chart.options),
+        viewport: viewportSnapshot(chart)
     });
+
+    addZoomKeyboardShortcuts(chart, chartStates.get(chart) as ChartStatesTypes);
 
     if(c2m_types === "matrix"){
         const matrixKeydown = (event: KeyboardEvent) => {
@@ -815,6 +1013,10 @@ const plugin: Plugin = {
             return;
         }
 
+        if(syncViewport(chart, state, options)){
+            return;
+        }
+
         // Check if data has changed
         const currentSnapshot = createDataSnapshot(chart);
         if(state.axesResolved && currentSnapshot === state.lastDataSnapshot) {
@@ -877,6 +1079,9 @@ const plugin: Plugin = {
 
         if(state?.matrixKeydown && state.matrixKeydownTarget){
             state.matrixKeydownTarget.removeEventListener("keydown", state.matrixKeydown, true);
+        }
+        if(state?.zoomKeydown && state.zoomKeydownTarget){
+            state.zoomKeydownTarget.removeEventListener("keydown", state.zoomKeydown, true);
         }
         ref.cleanUp();
     },
