@@ -225,7 +225,7 @@ const processMatrixDataPoints = (data: any[], datasetIndex: number, xLabels: str
     });
 }
 
-const processMatrixData = (data: any) => {
+export const processMatrixData = (data: any) => {
     const xLabels: string[] = [];
     const yLabels: string[] = [];
 
@@ -248,7 +248,17 @@ const processMatrixData = (data: any) => {
         });
     });
 
-    Object.values(result).forEach((row) => row.sort((a, b) => a.x - b.x));
+    const xValues = [...new Set(Object.values(result).flatMap((row: any) => row.map((point: any) => point.x)))].sort((a, b) => a - b);
+    Object.values(result).forEach((row) => {
+        const points = row as any[];
+        const populated = new Map(points.map((point) => [point.x, point]));
+        const missingCells = xValues.filter((x) => !populated.has(x)).map((x) => ({
+            x,
+            y: NaN,
+            custom: {group: -1, index: -1}
+        }));
+        row.splice(0, row.length, ...[...points, ...missingCells].sort((a, b) => a.x - b.x));
+    });
     return {groups: Object.keys(result), data: result, xLabels, yLabels};
 }
 
@@ -375,10 +385,12 @@ const displayPoint = (chart: Chart) => {
         const highlightElements = [];
         if("custom" in point){
             const customPoint = point as typeof point & { custom: CustomDataPoint };
-            highlightElements.push({
-                datasetIndex: customPoint.custom.datasetIndex ?? customPoint.custom.group,
-                index: customPoint.custom.index
-            });
+            if(customPoint.custom.index >= 0){
+                highlightElements.push({
+                    datasetIndex: customPoint.custom.datasetIndex ?? customPoint.custom.group,
+                    index: customPoint.custom.index
+                });
+            }
         }else{
             // For stacked charts, Chart2Music includes an "All" group at index 0,
             // so we subtract 1 to get the actual dataset index
