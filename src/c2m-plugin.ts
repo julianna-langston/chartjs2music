@@ -486,8 +486,16 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     }
 
     // Start with plugin's internal onFocusCallback
-    const pluginOnFocusCallback = () => {
+    const pluginOnFocusCallback = (focus: any) => {
         displayPoint(chart);
+        if(c2m_types === "matrix" && Number.isNaN(focus.point?.y)){
+            const x = axes.x.valueLabels?.[focus.point.x] ?? focus.point.x;
+            // Chart2Music schedules its point speech after this callback. Render
+            // the missing-cell announcement just after that speech completes.
+            setTimeout(() => {
+                cc.textContent = `${x}, ${focus.slice} missing`;
+            }, 251);
+        }
     };
 
     // Merge user's options, wrapping onFocusCallback if provided
