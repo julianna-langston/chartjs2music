@@ -133,7 +133,7 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
 }
 
 const isDefaultTickCallback = (callback: Function) => {
-    return callback.name.includes("_getLabelForValue") || callback.name === "numeric" || callback.name === "logarithmic";
+    return callback.name.includes("_getLabelForValue") || callback.name === "numeric" || callback.name === "logarithmic" || callback.toString().includes("getLabels");
 }
 
 const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string, fallbackScaleType?: string) => {
