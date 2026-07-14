@@ -3,6 +3,7 @@ import type {ChartTypeRegistry} from "chart.js";
 // Monthly extrema at Raleigh-Durham International Airport through July 10, 2026.
 // Source: https://www.extremeweatherwatch.com/cities/raleigh/year-2026
 const months = ["January", "February", "March", "April", "May", "June", "July"];
+const formatDegrees = (value: number) => `${value}\u00b0`;
 
 export default {
     type: "bar" as keyof ChartTypeRegistry,
@@ -17,13 +18,16 @@ export default {
     options: {
         plugins: {
             title: {display: true, text: "Weather in Raleigh 2026"},
-            legend: {display: false}
+            legend: {display: false},
+            chartjs2music: {
+                axes: {y: {format: formatDegrees}}
+            }
         },
         scales: {
             x: {title: {display: true, text: "Month"}},
             y: {
                 title: {display: true, text: "Temperature"},
-                ticks: {callback: (value) => `${value}\u00b0`}
+                ticks: {callback: (value) => formatDegrees(Number(value))}
             }
         }
     }

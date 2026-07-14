@@ -6,6 +6,7 @@ const {
     simple_bar, 
     bar_line,
     getting_started_Example,
+    floating_bar,
     string_x_minimum,
     string_x_values,
     grouped_scatter
@@ -39,6 +40,11 @@ test("Axis without label", () => {
 
     expect(cc.textContent).toContain(`X is "" from 1st yr to 6th yr.`);
     expect(cc.textContent).toContain(`Y is "" from 1 to 15.`);
+});
+test("Axis format is shared with Chart2Music", () => {
+    const {cc} = setup(floating_bar);
+
+    expect(cc.textContent).toContain(`Y is "Temperature" from 11\u00b0 to 103\u00b0`);
 });
 test("Axis with hidden label", () => {
     const {cc} = setup(simple_bar);
