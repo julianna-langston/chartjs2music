@@ -6,7 +6,7 @@ export default {
             label: "Forecast",
             data: [
                 {y: 12, yMin: 9},
-                {y: 18, yMax: 22},
+                {y: 18, yMax: 19},
                 {y: 15, yMin: 12, yMax: 19}
             ],
             backgroundColor: "#2086d7"

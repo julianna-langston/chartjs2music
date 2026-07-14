@@ -28,7 +28,7 @@ const createChart = (onFocusCallback: jest.Mock) => {
 test("converts low-only, high-only, and two-sided bar error bounds", () => {
     expect(convertErrorBarData(errorBars.data.datasets[0].data)).toEqual([
         {x: 0, y: 12, low: 9, high: 12},
-        {x: 1, y: 18, low: 18, high: 22},
+        {x: 1, y: 18, low: 18, high: 19},
         {x: 2, y: 15, low: 12, high: 19}
     ]);
 });
@@ -41,6 +41,7 @@ test("calculates Chart2Music ranges without changing Chart.js error bars", () =>
         point: expect.objectContaining({x: 0, y: 12, low: 9, high: 12})
     }));
     expect(chart.data.datasets[0].data[0]).toEqual({y: 12, yMin: 9});
+    expect(chart.canvas.nextElementSibling?.textContent).toContain('Y is "Value" from 9 to 19');
     chart.destroy();
 });
 
