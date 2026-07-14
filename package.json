@@ -7,8 +7,8 @@
   "module": "dist/plugin.mjs",
   "exports": {
     "import": {
-      "default": "./dist/plugin.mjs",
-      "types": "./dist/plugin.d.ts"
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.mjs"
     },
     "require": "./dist/plugin.cjs"
   },
