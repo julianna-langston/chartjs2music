@@ -45,6 +45,8 @@ When no `cc` element is supplied, the plugin creates a caption element immediate
 
 ### React (`react-chartjs-2`)
 
+If you're working in React, you will likely be using `react-chartjs-2` for your Chart.js needs. You can use this plugin alongside it as normal.
+
 Install React's Chart.js wrapper alongside the plugin:
 
 ```bash
@@ -64,7 +66,7 @@ import {
     Title,
     Tooltip
 } from "chart.js";
-import chart2music from "chartjs-plugin-chart2music";
+import chartjs2music from "chartjs-plugin-chart2music";
 
 ChartJS.register(
     BarElement,
@@ -73,7 +75,7 @@ ChartJS.register(
     Legend,
     Title,
     Tooltip,
-    chart2music
+    chartjs2music
 );
 
 const data = {
