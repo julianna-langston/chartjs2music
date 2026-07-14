@@ -8,6 +8,7 @@ Chart.register(CategoryScale, LinearScale, BarWithErrorBarsController, BarWithEr
 
 const createChart = (onFocusCallback: jest.Mock) => {
     const canvas = document.createElement("canvas");
+    const cc = document.createElement("div");
     const chart = new Chart(canvas, {
         ...errorBars,
         options: {
@@ -15,6 +16,7 @@ const createChart = (onFocusCallback: jest.Mock) => {
             plugins: {
                 ...errorBars.options.plugins,
                 chartjs2music: {
+                    cc,
                     options: {onFocusCallback}
                 }
             }
@@ -22,7 +24,7 @@ const createChart = (onFocusCallback: jest.Mock) => {
     } as any);
 
     canvas.dispatchEvent(new Event("focus"));
-    return {canvas, chart};
+    return {canvas, chart, cc};
 };
 
 test("converts low-only, high-only, and two-sided bar error bounds", () => {
@@ -35,13 +37,13 @@ test("converts low-only, high-only, and two-sided bar error bounds", () => {
 
 test("calculates Chart2Music ranges without changing Chart.js error bars", () => {
     const onFocusCallback = jest.fn();
-    const {chart} = createChart(onFocusCallback);
+    const {chart, cc} = createChart(onFocusCallback);
 
     expect(onFocusCallback).toHaveBeenCalledWith(expect.objectContaining({
         point: expect.objectContaining({x: 0, y: 12, low: 9, high: 12})
     }));
     expect(chart.data.datasets[0].data[0]).toEqual({y: 12, yMin: 9});
-    expect(chart.canvas.nextElementSibling?.textContent).toContain('Y is "Value" from 9 to 19');
+    expect(cc.textContent).toContain('Y is "Value" from 9 to 19');
     chart.destroy();
 });
 
