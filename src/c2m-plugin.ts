@@ -132,11 +132,13 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
+const defaultTickCallbackNames = new Set(["_getLabelForValue", "numeric", "logarithmic"]);
+
 const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string, fallbackScaleType?: string) => {
     const scaleId = scale?.id ?? fallbackScaleId;
     const callback = scale?.options?.ticks?.callback ?? chart.config.options?.scales?.[scaleId]?.ticks?.callback;
     const defaultCallback = chart.constructor.defaults.scales?.[scale?.type ?? fallbackScaleType]?.ticks?.callback;
-    if(typeof callback !== "function" || callback === defaultCallback){
+    if(typeof callback !== "function" || callback === defaultCallback || defaultTickCallbackNames.has(callback.name)){
         return undefined;
     }
 
