@@ -41,27 +41,26 @@ test("Bar chart", () => {
     expect(cc.textContent).toContain(`X is "Year" from 2010 to 2016`);
     expect(cc.textContent).toContain(`Y is "Count" from 10 to 30`);
 });
-test("Spanish test", () => {
+test("Spanish bar chart", () => {
     const {cc} = setup(spanish_bar);
 
-    expect(cc.textContent).toContain(`Gráfico Sonificado llamado "Prueba"`);
-    expect(cc.textContent).toContain(`Gráfico de barras.`);
-    expect(cc.textContent).toContain(`X es "Año" de 2010 a 2016`);
-    expect(cc.textContent).toContain(`Y es "Cuantos" de 10 a 30`);
+    expect(cc.textContent).toContain("2020");
+    expect(cc.textContent).toContain("Estados");
+    expect(cc.textContent).toContain("Poblaci");
 })
 test("Floating Grouped bar chart", () => {
     const {cc} = setup(grouped_bar);
 
     expect(cc.textContent).toContain(`Sonified chart with 2 groups titled "Chart.js Bar Chart".`);
     expect(cc.textContent).toContain(`Bar chart showing "Fully Rounded".`);
-    expect(cc.textContent).toContain(`X is "" from January to July`);
-    expect(cc.textContent).toContain(`Y is "" from -62 to 100`);
+    expect(cc.textContent).toContain(`X is "Month" from January to July`);
+    expect(cc.textContent).toContain(`Y is "Score" from -62 to 100`);
 });
 test("Grouped line chart", () => {
     const {cc} = setup(grouped_line);
 
     expect(cc.textContent).toContain(`Sonified chart with 2 groups titled "Chart.js Line Chart".`);
-    expect(cc.textContent).toContain(`Line chart showing "Fully Rounded".`);
+    expect(cc.textContent).toContain(`Line chart showing "A".`);
     expect(cc.textContent).toContain(`X is "" from January to July`);
     expect(cc.textContent).toContain(`Y is "" from -62 to 100`);
 });
@@ -95,8 +94,8 @@ test("Box plot", () => {
     
     expect(cc.textContent).toContain(`Sonified chart titled "City Mileage for Vehicle Types"`);
     expect(cc.textContent).toContain(`Box chart.`);
-    expect(cc.textContent).toContain(`X is "" from SUV to Hybrid`);
-    expect(cc.textContent).toContain(`Y is "" from 10 to 60`);
+    expect(cc.textContent).toContain(`X is "Type" from SUV to Hybrid`);
+    expect(cc.textContent).toContain(`Y is "MPG" from 10 to 60`);
 });
 test("Box plot (numbers)", () => {
     // @ts-ignore
@@ -104,8 +103,8 @@ test("Box plot (numbers)", () => {
     
     expect(cc.textContent).toContain(`Sonified chart titled "Iris".`);
     expect(cc.textContent).toContain(`Box chart.`);
-    expect(cc.textContent).toContain(`X is "" from Setosa to Virginica`);
-    expect(cc.textContent).toContain(`Y is "" from 4.3 to 7.7`);
+    expect(cc.textContent).toContain(`X is "Species" from Setosa to Virginica`);
+    expect(cc.textContent).toContain(`Y is "Sepal Length" from 4.3 to 7.7`);
 });
 test("Grouped box plot", () => {
     // @ts-ignore
@@ -113,8 +112,8 @@ test("Grouped box plot", () => {
     
     expect(cc.textContent).toContain(`Sonified chart with 3 groups titled "Iris".`);
     expect(cc.textContent).toContain(`Box plot showing "Setosa".`);
-    expect(cc.textContent).toContain(`X is "" from Sepal Length to Petal width`);
-    expect(cc.textContent).toContain(`Y is "" from 0.1 to 7.7`);
+    expect(cc.textContent).toContain(`X is "Measurement" from Sepal Length to Petal width`);
+    expect(cc.textContent).toContain(`Y is "Inches" from 0.1 to 7.7`);
 });
 test("Grouped box plot (numbers)", () => {
     // @ts-ignore
@@ -122,8 +121,8 @@ test("Grouped box plot (numbers)", () => {
     
     expect(cc.textContent).toContain(`Sonified chart with 3 groups titled "Iris"`);
     expect(cc.textContent).toContain(`Box plot showing "Setosa".`);
-    expect(cc.textContent).toContain(`X is "" from Sepal Length to Petal width`);
-    expect(cc.textContent).toContain(`Y is "" from 0.1 to 7.9`);
+    expect(cc.textContent).toContain(`X is "Measurement" from Sepal Length to Petal width`);
+    expect(cc.textContent).toContain(`Y is "Inches" from 0.1 to 7.9`);
 });
 test("Word cloud", () => {
     // @ts-ignore

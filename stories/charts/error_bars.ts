@@ -17,7 +17,8 @@ export default {
             title: {
                 display: true,
                 text: "Forecast with Error Bars"
-            }
+            },
+            legend: {display: false}
         },
         scales: {
             x: {title: {display: true, text: "Scenario"}},

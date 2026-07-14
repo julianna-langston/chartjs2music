@@ -23,4 +23,6 @@ const data: ChartData = {
 export default {
   type: 'doughnut' as keyof ChartTypeRegistry,
   data,
+  options: {maintainAspectRatio: true},
+  canvasMaxHeight: "95vh"
 }

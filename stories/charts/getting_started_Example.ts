@@ -13,9 +13,17 @@ export default {
     }]
   },
   options: {
+    plugins: {
+      title: {display: true, text: "Favorite Color"},
+      legend: {display: false}
+    },
     scales: {
       y: {
         beginAtZero: true,
+        title: {
+          text: "Votes",
+          display: true
+        }
       },
       x: {
         title: {

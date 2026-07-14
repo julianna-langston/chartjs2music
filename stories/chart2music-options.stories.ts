@@ -10,6 +10,7 @@ type StoryArgs = {
 };
 
 const baseValues = [18, 31, 24, 42];
+const formatCurrency = (value: number) => value.toLocaleString("en-US", {style: "currency", currency: "USD"});
 
 const meta = {
     title: "Chart2Music/Options",
@@ -33,14 +34,18 @@ const meta = {
                     lang: args.language,
                     axes: {
                         x: {label: "Quarter"},
-                        y: {label: "Revenue"}
+                        y: {label: "Revenue", format: formatCurrency}
                     },
                     options: {enableSound: args.enableSound}
                 }
             },
             scales: {
                 x: {title: {display: true, text: "Quarter"}},
-                y: {beginAtZero: true, title: {display: true, text: "Revenue (millions)"}}
+                y: {
+                    beginAtZero: true,
+                    title: {display: true, text: "Revenue (millions)"},
+                    ticks: {callback: (value) => formatCurrency(Number(value))}
+                }
             }
         }
     }),

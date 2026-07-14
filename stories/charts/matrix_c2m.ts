@@ -8,7 +8,7 @@ const data: MatrixDataPoint[] = weeks.flatMap((x, week) => teams.map((y, team) =
     x,
     y,
     v: completion[week * teams.length + team]
-})));
+}))).filter((_point, index) => ![2, 9, 14].includes(index));
 
 export default {
     type: "matrix",
