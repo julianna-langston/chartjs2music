@@ -132,8 +132,8 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
-const tickCallbackFormatter = (chart: any, scale: any) => {
-    const callback = chart.config.options?.scales?.[scale?.id]?.ticks?.callback;
+const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string) => {
+    const callback = chart.config.options?.scales?.[scale?.id ?? fallbackScaleId]?.ticks?.callback;
     if(typeof callback !== "function"){
         return undefined;
     }
@@ -171,8 +171,8 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
-    const xFormat = tickCallbackFormatter(chart, xScale);
-    const yFormat = tickCallbackFormatter(chart, yScale);
+    const xFormat = tickCallbackFormatter(chart, xScale, "x");
+    const yFormat = tickCallbackFormatter(chart, yScale, "y");
     const axes: ResolvedAxes = {
         x: {
             ...generateAxisInfo(xScale?.options ?? chart.options?.scales?.x, chart),
