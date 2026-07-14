@@ -43,6 +43,51 @@ new Chart(canvasElement, {
 
 When no `cc` element is supplied, the plugin creates a caption element immediately after the canvas. Supply your own element when you need to control where the Chart2Music output appears.
 
+### React (`react-chartjs-2`)
+
+If you're working in React, you will likely be using `react-chartjs-2` for your Chart.js needs. You can use this plugin alongside it as normal.
+
+Install React's Chart.js wrapper alongside the plugin:
+
+```bash
+npm install react-chartjs-2 chart.js chartjs-plugin-chart2music
+```
+
+Register the Chart.js components and Chart2Music once, then render the chart component normally:
+
+```jsx
+import {Bar} from "react-chartjs-2";
+import {
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    Title,
+    Tooltip
+} from "chart.js";
+import chartjs2music from "chartjs-plugin-chart2music";
+
+ChartJS.register(
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Legend,
+    Title,
+    Tooltip,
+    chartjs2music
+);
+
+const data = {
+    labels: ["Q1", "Q2", "Q3", "Q4"],
+    datasets: [{label: "Revenue", data: [1, 4, 2, 8]}]
+};
+
+export function RevenueChart() {
+    return <Bar data={data} />;
+}
+```
+
 ## Plugin options
 
 Configure the plugin through `options.plugins.chartjs2music`:
