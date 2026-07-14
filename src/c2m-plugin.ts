@@ -133,15 +133,17 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
 }
 
 const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string) => {
-    const callback = chart.config.options?.scales?.[scale?.id ?? fallbackScaleId]?.ticks?.callback;
+    const scaleId = scale?.id ?? fallbackScaleId;
+    const callback = chart.config.options?.scales?.[scaleId]?.ticks?.callback;
     if(typeof callback !== "function"){
         return undefined;
     }
 
     return (value: number) => {
-        const ticks = scale.ticks ?? [];
+        const resolvedScale = scale ?? chart.scales?.[scaleId];
+        const ticks = resolvedScale?.ticks ?? [];
         const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
-        const formatted = callback.call(scale, value, Math.max(index, 0), ticks);
+        const formatted = callback.call(resolvedScale, value, Math.max(index, 0), ticks);
         return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
     };
 }
@@ -193,7 +195,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
 
     const xAxisValueLabels = xScale?.getLabels?.() ?? chart.data.labels?.slice(0) ?? [];
     if(xAxisValueLabels.length > 0){
-        axes.x.valueLabels = xAxisValueLabels;
+        axes.x.valueLabels = xFormat ? xAxisValueLabels.map((_label: string, index: number) => xFormat(index)) : xAxisValueLabels;
     }
 
     return {
