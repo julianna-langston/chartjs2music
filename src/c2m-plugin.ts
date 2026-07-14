@@ -132,18 +132,21 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
-const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string) => {
-    const scaleId = scale?.id ?? fallbackScaleId;
-    const callback = chart.config.options?.scales?.[scaleId]?.ticks?.callback;
-    if(typeof callback !== "function"){
+const tickCallbackFormatter = (chart: any, scale: any) => {
+    if(!scale){
+        return undefined;
+    }
+
+    const callback = chart.config.options?.scales?.[scale.id]?.ticks?.callback;
+    const defaultCallback = chart.constructor.defaults.scales?.[scale.type]?.ticks?.callback;
+    if(typeof callback !== "function" || callback === defaultCallback){
         return undefined;
     }
 
     return (value: number) => {
-        const resolvedScale = scale ?? chart.scales?.[scaleId];
-        const ticks = resolvedScale?.ticks ?? [];
+        const ticks = scale.ticks ?? [];
         const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
-        const formatted = callback.call(resolvedScale, value, Math.max(index, 0), ticks);
+        const formatted = callback.call(scale, value, Math.max(index, 0), ticks);
         return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
     };
 }
@@ -173,8 +176,9 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
-    const xFormat = tickCallbackFormatter(chart, xScale, "x");
-    const yFormat = tickCallbackFormatter(chart, yScale, "y");
+    const xFormat = tickCallbackFormatter(chart, xScale);
+    const yFormat = tickCallbackFormatter(chart, yScale);
+    const y2Format = tickCallbackFormatter(chart, y2Scale);
     const axes: ResolvedAxes = {
         x: {
             ...generateAxisInfo(xScale?.options ?? chart.options?.scales?.x, chart),
@@ -188,7 +192,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
 
     if(y2Scale){
         axes.y2 = {
-            format: tickCallbackFormatter(chart, y2Scale) ?? ((value: number) => value.toLocaleString()),
+            format: y2Format ?? ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(y2Scale.options, chart),
         };
     }
@@ -203,7 +207,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         secondaryAxisDatasetIndexes: y2Scale ? new Set(chart.data.datasets.flatMap((_dataset: unknown, index: number) => {
             return chart.getDatasetMeta(index).yScale?.id === y2Scale.id ? [index] : [];
         })) : new Set(),
-        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y")
+        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y") || Boolean(xFormat || yFormat || y2Format)
     };
 }
 

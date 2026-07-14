@@ -62,7 +62,7 @@ test("Axis formats use configured Chart.js tick callbacks", () => {
     });
 
     expect(cc.textContent).toContain(`X is "" from Category 0 to Category 1.`);
-    expect(cc.textContent).toContain(`Y is "" from $1,200.00 to $2,500.00.`);
+    expect(cc.textContent).toContain(`Y is "" from $1200.00 to $2500.00.`);
 });
 test("Chart2Music axis formats override Chart.js tick callbacks", () => {
     const {cc} = setup({
