@@ -320,6 +320,69 @@ const applyErrorBarAxisRange = (chart: Chart, axes: ResolvedAxes): ResolvedAxes 
     };
 }
 
+type ParsingDataResolution = {
+    data: any;
+    hasMappings: boolean;
+    error?: string;
+}
+
+const parsingValue = (data: unknown, key: string) => {
+    return key.split(/(?<!\\)\./).reduce((value: any, segment) => {
+        return value?.[segment.replace(/\\\./g, ".")];
+    }, data);
+}
+
+const resolveParsingData = (chart: Chart): ParsingDataResolution => {
+    let hasMappings = false;
+    const datasets = chart.data.datasets.map((dataset: any, datasetIndex) => {
+        const parsing = dataset.parsing ?? chart.options.parsing;
+        if(parsing === undefined || parsing === true || parsing === false || parsing === null){
+            return dataset;
+        }
+
+        if(typeof parsing !== "object" || Array.isArray(parsing)){
+            return undefined;
+        }
+
+        const {xAxisKey, yAxisKey} = parsing as Record<string, unknown>;
+        if(xAxisKey === undefined && yAxisKey === undefined){
+            return dataset;
+        }
+
+        if(typeof xAxisKey !== "string" || typeof yAxisKey !== "string"){
+            return undefined;
+        }
+
+        const chartType = dataset.type ?? (chart.config as ChartConfiguration).type;
+        if(chartType !== "bar" && chartType !== "line" && chartType !== "scatter"){
+            return undefined;
+        }
+
+        hasMappings = true;
+        const controller = chart.getDatasetMeta(datasetIndex).controller as any;
+        const data = dataset.data.map((point: unknown, index: number) => {
+            const parsedPoint = controller?.getParsed(index) as {x?: unknown; y?: unknown} | undefined;
+            const x = parsedPoint?.x ?? parsingValue(point, xAxisKey);
+            const y = parsedPoint?.y ?? parsingValue(point, yAxisKey);
+            return {x, y};
+        });
+        return {...dataset, data};
+    });
+
+    if(datasets.some((dataset) => dataset === undefined)){
+        return {
+            data: chart.data,
+            hasMappings: false,
+            error: "Unsupported Chart.js parsing configuration. Chart2Music supports object parsing with string xAxisKey and yAxisKey mappings for bar, line, and scatter charts."
+        };
+    }
+
+    return {
+        data: {...chart.data, datasets},
+        hasMappings
+    };
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -399,8 +462,9 @@ const determineCCElement = (canvas: HTMLCanvasElement, provided?: HTMLElement | 
 
 const createDataSnapshot = (chart: Chart) => {
     return JSON.stringify({
-        datasets: chart.data.datasets.map(ds => ds.data),
+        datasets: chart.data.datasets.map(ds => ({data: ds.data, parsing: ds.parsing})),
         labels: chart.data.labels,
+        parsing: chart.options.parsing,
         title: determineChartTitle(chart.options)
     });
 }
@@ -486,8 +550,13 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
     // Generate CC element
     const cc = determineCCElement(chart.canvas, options.cc);
 
+    const parsingData = resolveParsingData(chart);
+    if(parsingData.error){
+        options.errorCallback?.(parsingData.error);
+        return;
+    }
     const processedData: any = processData(
-        chart.data,
+        parsingData.data,
         c2m_types,
         errorBarDatasetIndexes(chart),
         axisResolution.secondaryAxisDatasetIndexes
@@ -507,7 +576,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         }
     }
 
-    let scrub = scrubX(data);
+    let scrub = parsingData.hasMappings ? undefined : scrubX(data);
     if(scrub?.labels && scrub?.labels?.length > 0){   // Something was scrubbed
         if(!chart.data.labels || chart.data.labels.length === 0){
             axes.x.valueLabels = scrub.labels.slice(0);
@@ -754,8 +823,13 @@ const plugin: Plugin = {
             return;
         }
         const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
+        const parsingData = resolveParsingData(chart);
+        if(parsingData.error){
+            options.errorCallback?.(parsingData.error);
+            return;
+        }
         const {data} = processData(
-            chart.data,
+            parsingData.data,
             c2m_types,
             errorBarDatasetIndexes(chart),
             axisResolution.secondaryAxisDatasetIndexes
