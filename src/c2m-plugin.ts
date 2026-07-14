@@ -359,9 +359,12 @@ const resolveParsingData = (chart: Chart): ParsingDataResolution => {
         }
 
         hasMappings = true;
-        const data = dataset.data.map((point: unknown) => {
-            const x = parsingValue(point, xAxisKey);
-            const y = parsingValue(point, yAxisKey);
+        const meta = chart.getDatasetMeta(datasetIndex);
+        const data = dataset.data.map((point: unknown, index: number) => {
+            const rawX = parsingValue(point, xAxisKey);
+            const rawY = parsingValue(point, yAxisKey);
+            const x = meta.xScale?.parse(rawX, index) ?? rawX;
+            const y = meta.yScale?.parse(rawY, index) ?? rawY;
             return {x, y};
         });
         if(data.some(({x, y}) => x === undefined || y === undefined)){
@@ -819,16 +822,20 @@ const plugin: Plugin = {
             options.errorCallback?.(axisResolution.error);
             return;
         }
-        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot){
-            state.axesResolved = true;
-            return;
-        }
-        const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
         const parsingData = resolveParsingData(chart);
         if(parsingData.error){
             options.errorCallback?.(parsingData.error);
             return;
         }
+        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot && state.axesResolved){
+            state.axesResolved = true;
+            return;
+        }
+        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot && !parsingData.hasMappings){
+            state.axesResolved = true;
+            return;
+        }
+        const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
         const {data} = processData(
             parsingData.data,
             c2m_types,
