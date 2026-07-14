@@ -24,6 +24,7 @@ type Sample = {
     data: unknown;
     options?: Record<string, unknown>;
     type?: string;
+    canvasMaxHeight?: string;
 };
 
 export type SampleStoryArgs = {
@@ -34,13 +35,18 @@ export const renderChart = (config: Sample) => {
     const container = document.createElement("div");
     const canvas = document.createElement("canvas");
     const cc = document.createElement("div");
-    const sourceOptions = config.options ?? {};
+    const {canvasMaxHeight, ...chartConfig} = config;
+    const sourceOptions = chartConfig.options ?? {};
     const sourcePlugins = sourceOptions.plugins as Record<string, unknown> | undefined;
+
+    if(canvasMaxHeight){
+        canvas.style.maxHeight = canvasMaxHeight;
+    }
 
     container.append(canvas, cc);
     new Chart(canvas, {
-        type: config.type ?? "bar",
-        ...config,
+        type: chartConfig.type ?? "bar",
+        ...chartConfig,
         options: {
             ...sourceOptions,
             plugins: {

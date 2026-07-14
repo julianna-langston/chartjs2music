@@ -3,6 +3,7 @@
 import { ChartOptions, ChartTypeRegistry } from "chart.js";
 
 const labels = ["January", "February", "March", "April", "May", "June", "July"]
+const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
 const data = {
   labels: labels,
   datasets: [
@@ -26,9 +27,12 @@ const options: ChartOptions = {
     chartjs2music: {
       axes: {
         y: {
-          format: (value: number) => `$${value.toLocaleString()}`
+          format: formatCurrency
         }
       }
+    },
+    tooltip: {
+      callbacks: {label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`}
     }
   },
   scales: {
@@ -39,7 +43,7 @@ const options: ChartOptions = {
       display: true,
       type: 'logarithmic',
       ticks: {
-        callback: (value) => `$${value.toLocaleString()}`
+        callback: (value) => formatCurrency(Number(value))
       }
     }
   }

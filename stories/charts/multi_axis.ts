@@ -14,7 +14,7 @@ export default {
             },
             {
                 label: "Profit margin",
-                data: [18, 24, 21],
+                data: [32, 18, 27],
                 xAxisID: "period",
                 yAxisID: "margin",
                 borderColor: "#1d8f5f"

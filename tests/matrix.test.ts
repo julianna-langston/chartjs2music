@@ -1,7 +1,7 @@
 import {CategoryScale, Chart, LinearScale} from "chart.js";
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
 import "chartjs-adapter-luxon";
-import plugin from "../src/c2m-plugin";
+import plugin, {processMatrixData} from "../src/c2m-plugin";
 import matrixChart from "../stories/charts/matrix";
 import matrixBasic from "../stories/charts/matrix_basic";
 import matrixCalendar from "../stories/charts/matrix_calendar";
@@ -20,6 +20,23 @@ class MockAudioEngine {
 }
 
 describe("Matrix charts", () => {
+    test("fills missing matrix cells with missing values for Chart2Music", () => {
+        const processed = processMatrixData({
+            datasets: [{
+                data: [{x: 0, y: 0, v: 10}, {x: 1, y: 1, v: 20}]
+            }]
+        });
+
+        expect(processed.data["0"]).toEqual(expect.arrayContaining([
+            expect.objectContaining({x: 0, y: 0}),
+            expect.objectContaining({x: 1, y: NaN, custom: {group: -1, index: -1}})
+        ]));
+        expect(processed.data["1"]).toEqual(expect.arrayContaining([
+            expect.objectContaining({x: 0, y: NaN, custom: {group: -1, index: -1}}),
+            expect.objectContaining({x: 1, y: 1})
+        ]));
+    });
+
     test("navigates columns with right and rows with up", () => {
         const createChart = () => {
             const parent = document.createElement("div");

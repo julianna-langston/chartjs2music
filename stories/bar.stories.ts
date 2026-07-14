@@ -27,5 +27,5 @@ export const Floating: Story = {args: {sample: floatingBar}};
 export const ErrorBars: Story = {args: {sample: errorBars}};
 export const Spanish: Story = {args: {sample: spanishBar}};
 export const StringValues: Story = {args: {sample: stringValues}};
-export const StringMinimum: Story = {args: {sample: stringMinimum}};
+export const ClippedMinimum: Story = {args: {sample: stringMinimum}};
 export const Logarithmic: Story = {args: {sample: logarithmic}};

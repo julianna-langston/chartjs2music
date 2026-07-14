@@ -6,6 +6,7 @@ var data = new Array(100).fill(0);
 
 export default {
   type: 'polarArea' as keyof ChartTypeRegistry,
+  canvasMaxHeight: "95vh",
   data: {
       labels: data.map((k, i) => 'Label ' + i),
       datasets: [{
