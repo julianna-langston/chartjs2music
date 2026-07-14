@@ -3,6 +3,7 @@ import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
 import "chartjs-adapter-luxon";
 import plugin, {processMatrixData} from "../src/c2m-plugin";
 import matrixChart from "../stories/charts/matrix";
+import matrixMissingValues from "../stories/charts/matrix_missing_values";
 import matrixBasic from "../stories/charts/matrix_basic";
 import matrixCalendar from "../stories/charts/matrix_calendar";
 import matrixCategory from "../stories/charts/matrix_category";
@@ -77,6 +78,30 @@ describe("Matrix charts", () => {
         jest.advanceTimersByTime(250);
         expect(vertical.chart.getActiveElements()[0].index).toBe(0);
         vertical.chart.destroy();
+    });
+
+    test("announces missing values while navigating a sparse matrix", () => {
+        const parent = document.createElement("div");
+        const canvas = document.createElement("canvas");
+        parent.appendChild(canvas);
+        const chart = new Chart(canvas, {
+            ...matrixMissingValues,
+            options: {
+                ...matrixMissingValues.options,
+                plugins: {
+                    ...matrixMissingValues.options.plugins,
+                    chartjs2music: {audioEngine: new MockAudioEngine()}
+                }
+            }
+        });
+
+        canvas.dispatchEvent(new Event("focus"));
+        canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
+        jest.advanceTimersByTime(250);
+
+        expect(chart.getActiveElements()[0]).toMatchObject({datasetIndex: 0, index: 1});
+        expect(parent.children[1].textContent).toContain("missing");
+        chart.destroy();
     });
 
     test("creates numeric, category, time, calendar, and Chart2Music matrix examples", () => {
