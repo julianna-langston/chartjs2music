@@ -285,6 +285,41 @@ const errorBarDatasetIndexes = (chart: Chart) => {
         return (dataset.type ?? chartType) === "barWithErrorBars" ? [index] : [];
     }));
 }
+
+const errorBarAxisRange = (chart: Chart) => {
+    const chartType = chart.config.type;
+    const values = chart.data.datasets.flatMap((dataset) => {
+        if((dataset.type ?? chartType) !== "barWithErrorBars"){
+            return [];
+        }
+
+        return (dataset.data as any[]).flatMap((point) => {
+            if(typeof point !== "object" || point === null || Array.isArray(point)){
+                return [];
+            }
+            const bound = (value: number | number[] | undefined) => Array.isArray(value) ? value[0] : value;
+            return [point.y, bound(point.yMin), bound(point.yMax)].filter((value): value is number => typeof value === "number");
+        });
+    });
+
+    return values.length > 0 ? {minimum: Math.min(...values), maximum: Math.max(...values)} : undefined;
+}
+
+const applyErrorBarAxisRange = (chart: Chart, axes: ResolvedAxes): ResolvedAxes => {
+    const range = errorBarAxisRange(chart);
+    if(!range){
+        return axes;
+    }
+    return {
+        ...axes,
+        y: {
+            ...axes.y,
+            minimum: axes.y.minimum ?? range.minimum,
+            maximum: axes.y.maximum ?? range.maximum
+        }
+    };
+}
+
 const scrubX = (data: any) => {
     const blackboard = JSON.parse(JSON.stringify(data));
 
@@ -380,7 +415,6 @@ const displayPoint = (chart: Chart) => {
     if(chart.config.type === "wordCloud"){
         return;
     }
-
     const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
     const {point, index} = ref.getCurrent();
 
@@ -433,7 +467,7 @@ const generateChart = (chart: Chart, options: C2MPluginOptions) => {
         options.errorCallback?.(axisResolution.error);
         return;
     }
-    let axes = axisResolution.axes;
+    let axes = applyErrorBarAxisRange(chart, axisResolution.axes);
 
     if((chart.config as ChartConfiguration).type === "wordCloud" as keyof ChartTypeRegistry){
         delete axes.x.minimum;
@@ -719,6 +753,7 @@ const plugin: Plugin = {
             state.axesResolved = true;
             return;
         }
+        const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
         const {data} = processData(
             chart.data,
             c2m_types,
@@ -727,7 +762,7 @@ const plugin: Plugin = {
         );
 
         // Update Chart2Music with new data
-        state.c2m.setData(data, axisResolution.axes);
+        state.c2m.setData(data, axes);
 
         // Update snapshot
         state.lastDataSnapshot = currentSnapshot;

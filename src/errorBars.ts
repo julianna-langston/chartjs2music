@@ -11,11 +11,15 @@ export const convertErrorBarData = (data: any[]) => {
             return point;
         }
 
+        const y = values.y;
+        const low = yMin === undefined ? y : errorBarBound(yMin);
+        const high = yMax === undefined ? y : errorBarBound(yMax);
+
         return {
             ...values,
             x: values.x ?? index,
-            ...(yMin === undefined ? {} : {low: errorBarBound(yMin)}),
-            ...(yMax === undefined ? {} : {high: errorBarBound(yMax)})
+            low,
+            high
         };
     });
 }
