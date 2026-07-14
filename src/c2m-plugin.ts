@@ -132,6 +132,20 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
+const tickCallbackFormatter = (chart: any, scale: any) => {
+    const callback = chart.config.options?.scales?.[scale?.id]?.ticks?.callback;
+    if(typeof callback !== "function"){
+        return undefined;
+    }
+
+    return (value: number) => {
+        const ticks = scale.ticks ?? [];
+        const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
+        const formatted = callback.call(scale, value, Math.max(index, 0), ticks);
+        return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
+    };
+}
+
 const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => {
     const xAxisIds = axisIds(chart, "x");
     const yAxisIds = axisIds(chart, "y");
@@ -157,19 +171,22 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
+    const xFormat = tickCallbackFormatter(chart, xScale);
+    const yFormat = tickCallbackFormatter(chart, yScale);
     const axes: ResolvedAxes = {
         x: {
             ...generateAxisInfo(xScale?.options ?? chart.options?.scales?.x, chart),
+            ...(xFormat ? {format: xFormat} : {}),
         },
         y: {
-            format: options?.axes?.y?.format || ((value: number) => value.toLocaleString()),
+            format: yFormat ?? ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(yScale?.options ?? chart.options?.scales?.y, chart),
         }
     };
 
     if(y2Scale){
         axes.y2 = {
-            format: options?.axes?.y2?.format || ((value: number) => value.toLocaleString()),
+            format: tickCallbackFormatter(chart, y2Scale) ?? ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(y2Scale.options, chart),
         };
     }

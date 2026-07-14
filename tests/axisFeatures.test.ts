@@ -46,6 +46,45 @@ test("Axis format is shared with Chart2Music", () => {
 
     expect(cc.textContent).toContain(`Y is "Temperature" from 11\u00b0 to 103\u00b0`);
 });
+test("Axis formats use configured Chart.js tick callbacks", () => {
+    const {cc} = setup({
+        type: "bar",
+        data: {
+            labels: ["A", "B"],
+            datasets: [{data: [1200, 2500]}]
+        },
+        options: {
+            scales: {
+                x: {ticks: {callback: (value) => `Category ${value}`}},
+                y: {ticks: {callback: (value) => `$${Number(value).toFixed(2)}`}}
+            }
+        }
+    });
+
+    expect(cc.textContent).toContain(`X is "" from Category 0 to Category 1.`);
+    expect(cc.textContent).toContain(`Y is "" from $1,200.00 to $2,500.00.`);
+});
+test("Chart2Music axis formats override Chart.js tick callbacks", () => {
+    const {cc} = setup({
+        type: "bar",
+        data: {
+            labels: ["A", "B"],
+            datasets: [{data: [5, 10]}]
+        },
+        options: {
+            plugins: {
+                chartjs2music: {
+                    axes: {y: {format: (value: number) => `C2M ${value}`}}
+                }
+            },
+            scales: {
+                y: {ticks: {callback: (value) => `Tick ${value}`}}
+            }
+        }
+    });
+
+    expect(cc.textContent).toContain(`Y is "" from C2M 5 to C2M 10.`);
+});
 test("Axis with hidden label", () => {
     const {cc} = setup(simple_bar);
 
