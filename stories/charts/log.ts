@@ -24,6 +24,7 @@ const options: ChartOptions = {
       display: true,
       text: ['Chart.js Line Chart', "Logarithmic"]
     },
+    legend: {display: false},
     chartjs2music: {
       axes: {
         y: {

@@ -12,6 +12,11 @@ const preview: Preview = {
                 {name: "Canvas", value: "#f6f7fb"},
                 {name: "Midnight", value: "#162033"}
             ]
+        },
+        options: {
+            storySort: {
+                order: ["Chart2Music", ["Bar", "Line", "Circular", "Distribution", "Matrix", "Scatter", "Multi-Chart", "Word cloud", "Options"]]
+            }
         }
     }
 };

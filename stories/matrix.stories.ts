@@ -1,10 +1,6 @@
 import type {Meta, StoryObj} from "@storybook/html-vite";
 import matrix from "./charts/matrix";
-import matrixBasic from "./charts/matrix_basic";
-import matrixC2m from "./charts/matrix_c2m";
-import matrixCalendar from "./charts/matrix_calendar";
-import matrixCategory from "./charts/matrix_category";
-import matrixTime from "./charts/matrix_time";
+import matrixMissingValues from "./charts/matrix_missing_values";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {
@@ -16,8 +12,4 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const DayAndTime: Story = {args: {sample: matrix}};
-export const Basic: Story = {args: {sample: matrixBasic}};
-export const Categories: Story = {args: {sample: matrixCategory}};
-export const TimeScale: Story = {args: {sample: matrixTime}};
-export const Calendar: Story = {args: {sample: matrixCalendar}};
-export const Chart2MusicExample: Story = {args: {sample: matrixC2m}};
+export const MissingValues: Story = {args: {sample: matrixMissingValues}};
