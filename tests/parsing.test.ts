@@ -44,7 +44,7 @@ describe("Chart.js parsing mappings", () => {
             },
             options: {
                 parsing: {xAxisKey: "period", yAxisKey: "metrics.sales"},
-                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {onFocusCallback}}}
+                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {enableSound: false, onFocusCallback}}}
             }
         });
 
@@ -78,7 +78,7 @@ describe("Chart.js parsing mappings", () => {
             },
             options: {
                 parsing: {xAxisKey: "ignored.x", yAxisKey: "ignored.y"},
-                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {onFocusCallback}}}
+                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {enableSound: false, onFocusCallback}}}
             }
         });
 
@@ -105,7 +105,7 @@ describe("Chart.js parsing mappings", () => {
             },
             options: {
                 parsing: {xAxisKey: "coordinates.x", yAxisKey: "coordinates.y"},
-                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {onFocusCallback}}}
+                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {enableSound: false, onFocusCallback}}}
             }
         });
 
@@ -128,7 +128,7 @@ describe("Chart.js parsing mappings", () => {
             },
             options: {
                 parsing: {xAxisKey: "month", yAxisKey: "amount"},
-                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {onFocusCallback}}}
+                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {enableSound: false, onFocusCallback}}}
             }
         });
 
