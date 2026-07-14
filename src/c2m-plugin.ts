@@ -134,7 +134,7 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
 
 const tickCallbackFormatter = (chart: any, scale: any, scaleId: string) => {
     const callback = chart.config.options?.scales?.[scale?.id ?? scaleId]?.ticks?.callback;
-    if(typeof callback !== "function"){
+    if(typeof callback !== "function" || callback.name === "numeric" || callback.name === "logarithmic"){
         return undefined;
     }
 
