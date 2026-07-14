@@ -132,23 +132,17 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
-const isDefaultTickCallback = (callback: Function) => {
-    return callback.name.includes("_getLabelForValue") || callback.name === "numeric" || callback.name === "logarithmic" || callback.toString().includes("getLabels");
-}
-
-const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string, fallbackScaleType?: string) => {
-    const scaleId = scale?.id ?? fallbackScaleId;
-    const callback = scale?.options?.ticks?.callback ?? chart.config.options?.scales?.[scaleId]?.ticks?.callback;
-    const defaultCallback = chart.constructor.defaults.scales?.[scale?.type ?? fallbackScaleType]?.ticks?.callback;
-    if(typeof callback !== "function" || callback === defaultCallback || isDefaultTickCallback(callback)){
+const tickCallbackFormatter = (chart: any, scale: any) => {
+    const callback = scale?.options?.ticks?.callback;
+    const defaultCallback = chart.constructor.defaults.scales?.[scale?.type]?.ticks?.callback;
+    if(typeof callback !== "function" || callback === defaultCallback){
         return undefined;
     }
 
     return (value: number) => {
-        const resolvedScale = chart.scales?.[scaleId] ?? scale;
-        const ticks = resolvedScale?.ticks ?? [];
+        const ticks = scale.ticks ?? [];
         const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
-        const formatted = callback.call(resolvedScale, value, Math.max(index, 0), ticks);
+        const formatted = callback.call(scale, value, Math.max(index, 0), ticks);
         return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
     };
 }
@@ -178,8 +172,8 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
-    const xFormat = tickCallbackFormatter(chart, xScale, "x", "category");
-    const yFormat = tickCallbackFormatter(chart, yScale, "y", "linear");
+    const xFormat = tickCallbackFormatter(chart, xScale);
+    const yFormat = tickCallbackFormatter(chart, yScale);
     const y2Format = tickCallbackFormatter(chart, y2Scale);
     const axes: ResolvedAxes = {
         x: {
@@ -209,7 +203,7 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
         secondaryAxisDatasetIndexes: y2Scale ? new Set(chart.data.datasets.flatMap((_dataset: unknown, index: number) => {
             return chart.getDatasetMeta(index).yScale?.id === y2Scale.id ? [index] : [];
         })) : new Set(),
-        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y") || Boolean(xFormat || yFormat || y2Format)
+        requiresRefresh: xAxisIds.some((id) => id !== "x") || yAxisIds.some((id) => id !== "y")
     };
 }
 
@@ -689,10 +683,6 @@ const plugin: Plugin = {
     id: "chartjs2music",
 
     afterInit: (chart: Chart, _args, options: C2MPluginOptions) => {
-        if(!chartStates.has(chart)){
-            generateChart(chart, options);
-        }
-
         // Remove tooltip when the chart blurs
         chart.canvas.addEventListener("blur", () => {
             chart.setActiveElements([]);
@@ -713,10 +703,6 @@ const plugin: Plugin = {
     afterDatasetUpdate: (chart: Chart, args, options: C2MPluginOptions) => {
         if(!args.mode){
             return;
-        }
-
-        if(!chartStates.has(chart)){
-            generateChart(chart, options);
         }
 
         const {c2m: ref} = chartStates.get(chart) ?? {};
