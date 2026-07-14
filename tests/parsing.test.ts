@@ -51,7 +51,7 @@ describe("Chart.js parsing mappings", () => {
         canvas.dispatchEvent(new Event("focus"));
 
         expect(onFocusCallback).toHaveBeenCalledWith(expect.objectContaining({
-            point: expect.objectContaining({x: 0, y: 12})
+            point: expect.objectContaining({x: "January", y: 12})
         }));
         canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
         jest.advanceTimersByTime(250);
@@ -85,7 +85,7 @@ describe("Chart.js parsing mappings", () => {
         canvas.dispatchEvent(new Event("focus"));
 
         expect(onFocusCallback).toHaveBeenCalledWith(expect.objectContaining({
-            point: expect.objectContaining({x: 0, y: 30})
+            point: expect.objectContaining({x: "January", y: 30})
         }));
         chart.destroy();
     });
