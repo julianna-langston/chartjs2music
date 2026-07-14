@@ -16,6 +16,7 @@ test("keeps the error-bar legend hidden", () => {
 test("formats logarithmic tooltips as dollars", () => {
     const label = (log.options.plugins?.tooltip as any).callbacks.label;
     expect(label({dataset: {label: "Dataset 1"}, parsed: {y: 1000}})).toBe("Dataset 1: $1,000");
+    expect(log.options.plugins?.legend?.display).toBe(false);
 });
 
 test("limits all circular story canvases to the viewport height", () => {
