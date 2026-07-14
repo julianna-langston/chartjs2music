@@ -132,21 +132,19 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
-const tickCallbackFormatter = (chart: any, scale: any) => {
-    if(!scale){
-        return undefined;
-    }
-
-    const callback = scale.options?.ticks?.callback;
-    const defaultCallback = chart.constructor.defaults.scales?.[scale.type]?.ticks?.callback;
+const tickCallbackFormatter = (chart: any, scale: any, fallbackScaleId?: string, fallbackScaleType?: string) => {
+    const scaleId = scale?.id ?? fallbackScaleId;
+    const callback = scale?.options?.ticks?.callback ?? chart.config.options?.scales?.[scaleId]?.ticks?.callback;
+    const defaultCallback = chart.constructor.defaults.scales?.[scale?.type ?? fallbackScaleType]?.ticks?.callback;
     if(typeof callback !== "function" || callback === defaultCallback){
         return undefined;
     }
 
     return (value: number) => {
-        const ticks = scale.ticks ?? [];
+        const resolvedScale = chart.scales?.[scaleId] ?? scale;
+        const ticks = resolvedScale?.ticks ?? [];
         const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
-        const formatted = callback.call(scale, value, Math.max(index, 0), ticks);
+        const formatted = callback.call(resolvedScale, value, Math.max(index, 0), ticks);
         return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
     };
 }
@@ -176,8 +174,8 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
-    const xFormat = tickCallbackFormatter(chart, xScale);
-    const yFormat = tickCallbackFormatter(chart, yScale);
+    const xFormat = tickCallbackFormatter(chart, xScale, "x", "category");
+    const yFormat = tickCallbackFormatter(chart, yScale, "y", "linear");
     const y2Format = tickCallbackFormatter(chart, y2Scale);
     const axes: ResolvedAxes = {
         x: {
