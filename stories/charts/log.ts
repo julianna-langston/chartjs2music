@@ -29,10 +29,10 @@ const options: ChartOptions = {
         y: {
           format: formatCurrency
         }
-      },
-      tooltip: {
-        callbacks: {label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`}
       }
+    },
+    tooltip: {
+      callbacks: {label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`}
     }
   },
   scales: {

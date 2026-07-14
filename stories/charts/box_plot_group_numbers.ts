@@ -133,6 +133,7 @@ export default {
                 display: true,
                 text: "Iris"
             },
+            tooltip: {enabled: true},
             chartjs2music: {
                 axes: {x: {label: "Measurement"}, y: {label: "Inches"}}
             }

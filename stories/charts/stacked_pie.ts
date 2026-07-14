@@ -27,6 +27,7 @@ const data = {
 const config = {
   type: 'pie' as keyof ChartTypeRegistry,
   data,
+  canvasMaxHeight: "95vh"
 }
 
 export default config;
