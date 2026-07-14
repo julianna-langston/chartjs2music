@@ -3,7 +3,7 @@ import barLine from "./charts/bar_line";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {
-    title: "Chart2Music/Multi-chart",
+    title: "Chart2Music/Multi-Chart",
     render: renderSample
 } satisfies Meta<SampleStoryArgs>;
 
