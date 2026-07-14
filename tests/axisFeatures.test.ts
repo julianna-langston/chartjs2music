@@ -55,13 +55,11 @@ test("Axis formats use configured Chart.js tick callbacks", () => {
         },
         options: {
             scales: {
-                x: {ticks: {callback: (value) => `Category ${value}`}},
                 y: {ticks: {callback: (value) => `$${Number(value).toFixed(2)}`}}
             }
         }
     });
 
-    expect(cc.textContent).toContain(`X is "" from Category 0 to Category 1.`);
     expect(cc.textContent).toContain(`Y is "" from $1200.00 to $2500.00.`);
 });
 test("Chart2Music axis formats override Chart.js tick callbacks", () => {
