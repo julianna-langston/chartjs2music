@@ -13,6 +13,8 @@ import plugin from "../src/c2m-plugin";
 
 Chart.register(BarController, BarElement, CategoryScale, LineController, LineElement, LinearScale, PointElement, ScatterController, plugin);
 
+jest.useFakeTimers();
+
 class MockAudioEngine {
     masterGain = 0;
 
@@ -48,11 +50,13 @@ describe("Chart.js parsing mappings", () => {
 
         canvas.dispatchEvent(new Event("focus"));
 
-        expect(parent.children[1].textContent).toContain('X is "" from January to February.');
-        expect(parent.children[1].textContent).toContain('Y is "" from 12 to 18.');
         expect(onFocusCallback).toHaveBeenCalledWith(expect.objectContaining({
             point: expect.objectContaining({x: 0, y: 12})
         }));
+        canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
+        jest.advanceTimersByTime(250);
+        expect(parent.children[1].textContent).toContain("February");
+        expect(parent.children[1].textContent).toContain("18");
         chart.destroy();
     });
 
@@ -107,7 +111,7 @@ describe("Chart.js parsing mappings", () => {
 
         canvas.dispatchEvent(new Event("focus"));
 
-        expect(parent.children[1].textContent).toContain('X is "" from 10 to 50.');
+        expect(parent.children[1].textContent).toContain('X is "" from 12 to 48 continuously.');
         expect(onFocusCallback).toHaveBeenCalledWith(expect.objectContaining({
             point: expect.objectContaining({x: 12, y: 24})
         }));
@@ -116,6 +120,7 @@ describe("Chart.js parsing mappings", () => {
 
     test("updates mapped data after Chart.js updates", () => {
         const {parent, canvas} = createCanvas();
+        const onFocusCallback = jest.fn();
         const chart = new Chart(canvas, {
             type: "line",
             data: {
@@ -123,7 +128,7 @@ describe("Chart.js parsing mappings", () => {
             },
             options: {
                 parsing: {xAxisKey: "month", yAxisKey: "amount"},
-                plugins: {chartjs2music: {audioEngine: new MockAudioEngine()}}
+                plugins: {chartjs2music: {audioEngine: new MockAudioEngine(), options: {onFocusCallback}}}
             }
         });
 
@@ -131,8 +136,13 @@ describe("Chart.js parsing mappings", () => {
         chart.update();
         canvas.dispatchEvent(new Event("focus"));
 
-        expect(parent.children[1].textContent).toContain('X is "" from March to April.');
-        expect(parent.children[1].textContent).toContain('Y is "" from 100 to 200.');
+        expect(onFocusCallback).toHaveBeenLastCalledWith(expect.objectContaining({
+            point: expect.objectContaining({x: 0, y: 100})
+        }));
+        canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
+        jest.advanceTimersByTime(250);
+        expect(parent.children[1].textContent).toContain("April");
+        expect(parent.children[1].textContent).toContain("200");
         chart.destroy();
     });
 

@@ -359,9 +359,10 @@ const resolveParsingData = (chart: Chart): ParsingDataResolution => {
         }
 
         hasMappings = true;
-        const controller = chart.getDatasetMeta(datasetIndex).controller as any;
+        const meta = chart.getDatasetMeta(datasetIndex) as any;
+        const controller = meta.controller as any;
         const data = dataset.data.map((point: unknown, index: number) => {
-            const parsedPoint = controller?.getParsed(index) as {x?: unknown; y?: unknown} | undefined;
+            const parsedPoint = (meta._parsed?.[index] ?? controller?.getParsed(index)) as {x?: unknown; y?: unknown} | undefined;
             const x = parsedPoint?.x ?? parsingValue(point, xAxisKey);
             const y = parsedPoint?.y ?? parsingValue(point, yAxisKey);
             return {x, y};
