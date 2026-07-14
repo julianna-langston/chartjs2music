@@ -359,14 +359,14 @@ const resolveParsingData = (chart: Chart): ParsingDataResolution => {
         }
 
         hasMappings = true;
-        const meta = chart.getDatasetMeta(datasetIndex) as any;
-        const controller = meta.controller as any;
-        const data = dataset.data.map((point: unknown, index: number) => {
-            const parsedPoint = (meta._parsed?.[index] ?? controller?.getParsed(index)) as {x?: unknown; y?: unknown} | undefined;
-            const x = parsedPoint?.x ?? parsingValue(point, xAxisKey);
-            const y = parsedPoint?.y ?? parsingValue(point, yAxisKey);
+        const data = dataset.data.map((point: unknown) => {
+            const x = parsingValue(point, xAxisKey);
+            const y = parsingValue(point, yAxisKey);
             return {x, y};
         });
+        if(data.some(({x, y}) => x === undefined || y === undefined)){
+            return undefined;
+        }
         return {...dataset, data};
     });
 
@@ -819,20 +819,16 @@ const plugin: Plugin = {
             options.errorCallback?.(axisResolution.error);
             return;
         }
+        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot){
+            state.axesResolved = true;
+            return;
+        }
+        const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
         const parsingData = resolveParsingData(chart);
         if(parsingData.error){
             options.errorCallback?.(parsingData.error);
             return;
         }
-        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot && state.axesResolved){
-            state.axesResolved = true;
-            return;
-        }
-        if(!axisResolution.requiresRefresh && currentSnapshot === state.lastDataSnapshot && !parsingData.hasMappings){
-            state.axesResolved = true;
-            return;
-        }
-        const axes = applyErrorBarAxisRange(chart, axisResolution.axes);
         const {data} = processData(
             parsingData.data,
             c2m_types,
