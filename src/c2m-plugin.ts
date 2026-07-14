@@ -137,7 +137,7 @@ const tickCallbackFormatter = (chart: any, scale: any) => {
         return undefined;
     }
 
-    const callback = chart.config.options?.scales?.[scale.id]?.ticks?.callback;
+    const callback = scale.options?.ticks?.callback;
     const defaultCallback = chart.constructor.defaults.scales?.[scale.type]?.ticks?.callback;
     if(typeof callback !== "function" || callback === defaultCallback){
         return undefined;
