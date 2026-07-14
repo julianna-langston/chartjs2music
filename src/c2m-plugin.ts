@@ -366,12 +366,6 @@ const displayPoint = (chart: Chart) => {
         return;
     }
 
-    // Word-cloud controllers lay out words during chart updates. Updating only
-    // to mirror Chart2Music focus makes the cloud jump away from the user.
-    if(chart.config.type === "wordCloud"){
-        return;
-    }
-
     const {c2m: ref} = chartStates.get(chart) as ChartStatesTypes;
     const {point, index} = ref.getCurrent();
 
