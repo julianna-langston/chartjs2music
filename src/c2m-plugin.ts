@@ -132,6 +132,21 @@ const mergePluginAxes = (axes: ResolvedAxes, options: C2MPluginOptions): Resolve
     } as ResolvedAxes;
 }
 
+const tickCallbackFormatter = (chart: any, scale: any, scaleId: string) => {
+    const callback = chart.config.options?.scales?.[scale?.id ?? scaleId]?.ticks?.callback;
+    if(typeof callback !== "function" || callback.name === "numeric" || callback.name === "logarithmic"){
+        return undefined;
+    }
+
+    return (value: number) => {
+        const resolvedScale = scale ?? chart.scales?.[scaleId];
+        const ticks = resolvedScale?.ticks ?? [];
+        const index = ticks.findIndex((tick: {value: number}) => tick.value === value);
+        const formatted = callback.call(resolvedScale, value, Math.max(index, 0), ticks);
+        return Array.isArray(formatted) ? formatted.join(", ") : String(formatted);
+    };
+}
+
 const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => {
     const xAxisIds = axisIds(chart, "x");
     const yAxisIds = axisIds(chart, "y");
@@ -157,19 +172,21 @@ const generateAxes = (chart: any, options: C2MPluginOptions): AxisResolution => 
     const xScale = xAxisIds[0] ? chart.scales[xAxisIds[0]] : chart.scales?.x;
     const yScale = yAxisIds[0] ? chart.scales[yAxisIds[0]] : chart.scales?.y;
     const y2Scale = yAxisIds[1] ? chart.scales[yAxisIds[1]] : undefined;
+    const yFormat = tickCallbackFormatter(chart, yScale, "y");
+    const y2Format = y2Scale ? tickCallbackFormatter(chart, y2Scale, y2Scale.id) : undefined;
     const axes: ResolvedAxes = {
         x: {
             ...generateAxisInfo(xScale?.options ?? chart.options?.scales?.x, chart),
         },
         y: {
-            format: options?.axes?.y?.format || ((value: number) => value.toLocaleString()),
+            format: yFormat ?? ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(yScale?.options ?? chart.options?.scales?.y, chart),
         }
     };
 
     if(y2Scale){
         axes.y2 = {
-            format: options?.axes?.y2?.format || ((value: number) => value.toLocaleString()),
+            format: y2Format ?? ((value: number) => value.toLocaleString()),
             ...generateAxisInfo(y2Scale.options, chart),
         };
     }
