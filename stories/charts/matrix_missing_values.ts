@@ -3,7 +3,7 @@ import type {MatrixDataPoint} from "chartjs-chart-matrix";
 
 const columns = ["A", "B", "C"];
 const rows = ["X", "Y", "Z"];
-const populatedCells: Array<[string, string]> = [["A", "X"], ["C", "X"], ["B", "Y"], ["A", "Z"]];
+const populatedCells: Array<[string, string]> = [["A", "X"], ["B", "Y"], ["C", "X"], ["A", "Z"]];
 
 const data: MatrixDataPoint[] = populatedCells.map(([x, y]) => ({
     x,

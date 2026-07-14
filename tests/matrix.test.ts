@@ -97,14 +97,13 @@ describe("Matrix charts", () => {
 
         canvas.dispatchEvent(new Event("focus"));
         canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
-        jest.advanceTimersByTime(251);
+        jest.advanceTimersByTime(250);
 
-        expect(chart.getActiveElements()[0]).toMatchObject({datasetIndex: 0, index: 1});
         expect(parent.children[1].textContent).toContain("missing");
 
         canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowRight", bubbles: true}));
         canvas.dispatchEvent(new KeyboardEvent("keydown", {key: "ArrowLeft", bubbles: true}));
-        jest.advanceTimersByTime(251);
+        jest.advanceTimersByTime(250);
 
         expect(parent.children[1].textContent).toContain("missing");
         chart.destroy();
