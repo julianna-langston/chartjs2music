@@ -5303,10 +5303,10 @@ stack-utils@^2.0.6:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-storybook@10.5.2:
-  version "10.5.2"
-  resolved "https://registry.yarnpkg.com/storybook/-/storybook-10.5.2.tgz#751aca53cbeea086886d84ceb46c8a29a5f802f3"
-  integrity sha512-zkYxVZoDMj8njzZc3EH5UyY7885wpi9a1mmWVwFiNHSo+i5r2Go84E2OI1cdOctRymLkNvgs1j5jqAKA0ftBqg==
+storybook@10.5.4:
+  version "10.5.4"
+  resolved "https://registry.yarnpkg.com/storybook/-/storybook-10.5.4.tgz#3190fc10568053bd32f198ef164c045904cd2582"
+  integrity sha512-bmLxPsxVSPnbeiZqYQpozyNOiJXfk+pf7WfHZflvPkwT6Y+rvYz3Cj/D6H4Kf2jHpuDNiMXBKO3yawLN2OWirg==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@storybook/icons" "^2.0.2"
