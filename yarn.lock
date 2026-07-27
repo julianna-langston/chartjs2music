@@ -2155,18 +2155,18 @@
   dependencies:
     "@sinonjs/commons" "^3.0.1"
 
-"@storybook/builder-vite@10.5.0":
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/@storybook/builder-vite/-/builder-vite-10.5.0.tgz#7d9108f275d8db878a5306d82eae5de820690559"
-  integrity sha512-KXlifNIThDgS84KqVAJXyilool8OLTWp6DGoO9h5bHM2IPLe7UcdKfOzMUBkQ807mWBk4aW1yGEekj7kC2dvmg==
+"@storybook/builder-vite@10.5.2":
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/@storybook/builder-vite/-/builder-vite-10.5.2.tgz#e271c168808bf017cfbc8c686d3648a22cea1b08"
+  integrity sha512-XxY/zpMrEOXqdJaEw8s7fJefDCjO1eRkjvZvb50ojiqDJpTdfguhBrwqlHilpWWt5a12VjbbMrUHza4YPs/bBg==
   dependencies:
-    "@storybook/csf-plugin" "10.5.0"
+    "@storybook/csf-plugin" "10.5.2"
     ts-dedent "^2.0.0"
 
-"@storybook/csf-plugin@10.5.0":
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/@storybook/csf-plugin/-/csf-plugin-10.5.0.tgz#c96c7f5a4d8d421f4b00169e6a660bc3491be76d"
-  integrity sha512-R7VFw6FnDZTWct0ekOcFnTfDgdHnnAuQW+AbGG9A9IZPvyH9uLJivK7L86+r9MITRrO2+v81HaFDsT/OFk6ZkQ==
+"@storybook/csf-plugin@10.5.2":
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/@storybook/csf-plugin/-/csf-plugin-10.5.2.tgz#a359dffe0b842dfffacb0e94ad98da0ccb13ba69"
+  integrity sha512-PK/wXiALFf88mt4HmDtiZJ6NRvhExSXEM9uFIN+OIHxGqg7Xbp6MB0SPdhsTbMY9720ahiu/DJx5iIzkidcA3w==
   dependencies:
     unplugin "^2.3.5"
 
@@ -2175,18 +2175,18 @@
   resolved "https://registry.yarnpkg.com/@storybook/global/-/global-5.0.0.tgz#b793d34b94f572c1d7d9e0f44fac4e0dbc9572ed"
   integrity sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==
 
-"@storybook/html-vite@10.5.0":
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/@storybook/html-vite/-/html-vite-10.5.0.tgz#70a2f138df66743832db27b48083401b170625d4"
-  integrity sha512-gEE3bCnbh+91gdCzQCmhm1bqp4/glxIKiTB0S8zVB0d4fjEHu4N+tVIGU9CarI8ff7lWVyHjnAX0SZYvcJMaiA==
+"@storybook/html-vite@10.5.2":
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/@storybook/html-vite/-/html-vite-10.5.2.tgz#4da0fa2f61429cbd29211e0d35284bf8a0c982d7"
+  integrity sha512-nCr1vQXIEXVQ2lQVzYlBj+HN0jq4x+OVHfGOnm/zrZTVdV2AeXAUWGcHuYgkpeyuKQe6Q765B5VqsMg+iAlt6Q==
   dependencies:
-    "@storybook/builder-vite" "10.5.0"
-    "@storybook/html" "10.5.0"
+    "@storybook/builder-vite" "10.5.2"
+    "@storybook/html" "10.5.2"
 
-"@storybook/html@10.5.0":
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/@storybook/html/-/html-10.5.0.tgz#1c60943d31c29061d49a2fa47058d294ac4c1c01"
-  integrity sha512-buj/0N+mhsDTIqaEGxa9q6Q7mDCDbZJkBUmABwMep77FOP9eH/TFuUmDYhHK4/o9sNTCrROG6Df/Q/A+fiO0zQ==
+"@storybook/html@10.5.2":
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/@storybook/html/-/html-10.5.2.tgz#80e0edaa813e46d369caf72b2dffe880bfd4f3b1"
+  integrity sha512-WCaW1X2Ix1FnjzKwGG822YNSce833yDpbH1iN50YOFgbFAtbvjlth/BD06MK551UKZiQ7Ak0kHfexkseMdjX6g==
   dependencies:
     "@storybook/global" "^5.0.0"
     ts-dedent "^2.0.0"
