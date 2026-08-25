@@ -6,6 +6,7 @@ import multiAxis from "./charts/multi_axis";
 import parsing from "./charts/parsing";
 import stringMinimum from "./charts/string_x_minimum";
 import titleSubtitle from "./charts/title_subtitle";
+import zoom from "./charts/zoom";
 import {renderSample, type SampleStoryArgs} from "./sample-chart";
 
 const meta = {
@@ -23,3 +24,4 @@ export const TitleAndSubtitle: Story = {args: {sample: titleSubtitle}};
 export const Logarithmic: Story = {args: {sample: logarithmic}};
 export const ClippedMinimum: Story = {args: {sample: stringMinimum}};
 export const Parsing: Story = {args: {sample: parsing}};
+export const ZoomAndPan: Story = {args: {sample: zoom}};

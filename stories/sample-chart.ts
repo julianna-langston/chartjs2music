@@ -4,6 +4,7 @@ import {BarWithErrorBar, BarWithErrorBarsController} from "chartjs-chart-error-b
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
 import {WordCloudController, WordElement} from "chartjs-chart-wordcloud";
 import legendPlugin from "chartjs-plugin-a11y-legend";
+import zoomPlugin from "chartjs-plugin-zoom";
 import "chartjs-adapter-luxon";
 import chart2music from "../src/c2m-plugin";
 
@@ -17,6 +18,7 @@ Chart.register(
     WordCloudController,
     WordElement,
     legendPlugin,
+    zoomPlugin,
     chart2music
 );
 

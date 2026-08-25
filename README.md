@@ -140,9 +140,12 @@ The plugin supports Chart.js bar, line, pie, doughnut, polar area, and scatter c
 - Bar charts with error bars from [`chartjs-chart-error-bars`](https://www.npmjs.com/package/chartjs-chart-error-bars).
 - Matrix plots from [`chartjs-chart-matrix`](https://www.npmjs.com/package/chartjs-chart-matrix).
 - Word clouds from [`chartjs-chart-wordcloud`](https://www.npmjs.com/package/chartjs-chart-wordcloud).
+- Zoom and pan interactions from [`chartjs-plugin-zoom`](https://www.npmjs.com/package/chartjs-plugin-zoom).
 - Chart titles and subtitles, axis titles, custom scale IDs, secondary Y axes, minimum and maximum values, linear and logarithmic axes, custom axis formatting, dataset visibility, chart data updates, and `xAxisKey` / `yAxisKey` parsing mappings for bar, line, and scatter charts.
 
 Visual-only Chart.js settings such as color, padding, and line thickness do not affect the sonification. Parsing mappings use Chart.js `xAxisKey` and `yAxisKey` options at either the chart or dataset level.
+
+When using `chartjs-plugin-zoom`, install and register it alongside this plugin. Chart2Music follows the visible range and navigates only visible points. Focus the chart and use Ctrl/Cmd + `+`, `-`, or `0` to zoom in, zoom out, or reset without triggering browser zoom. Use Alt+Shift plus an arrow key to pan; Chart2Music announces the updated axis or the relevant edge.
 
 ## Future support
 
@@ -150,7 +153,6 @@ Planned support includes:
 
 - Radar plots.
 - Parallel coordinate plots via [`chartjs-chart-pcp`](https://www.npmjs.com/package/chartjs-chart-pcp).
-- Zoom interactions via [`chartjs-plugin-zoom`](https://www.npmjs.com/package/chartjs-plugin-zoom).
 
 ## Examples and Storybook
 
