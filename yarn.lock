@@ -2199,10 +2199,10 @@
     picocolors "^1.1.1"
     redent "^3.0.0"
 
-"@testing-library/user-event@^14.6.1":
-  version "14.6.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.6.1.tgz#13e09a32d7a8b7060fe38304788ebf4197cd2149"
-  integrity sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==
+"@testing-library/user-event@^14.6.3":
+  version "14.6.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.6.7.tgz#c453ccfcaffed110cc79048ed18fccb0f4224f3b"
+  integrity sha512-MPCpX8bxe8zS+JmmTwLp8jd0dy1rAm60Te/SL8JrQM3qvQJcBOs1d7IefJMyZzqM3EWBrDn/LWDt1BCGu4ASfg==
 
 "@tybys/wasm-util@^0.10.3":
   version "0.10.3"
@@ -5276,16 +5276,16 @@ stack-utils@^2.0.6:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-storybook@10.5.10:
-  version "10.5.10"
-  resolved "https://registry.yarnpkg.com/storybook/-/storybook-10.5.10.tgz#97e9b4a71b4df7732e82d64edffe07f9e8d70083"
-  integrity sha512-Rz8k9ejFHsi7lbtJTaxZlhCUz4GkbJIKEoKDjXeLfr/ZhXip73E6keKxW0KH8iGeKiCqHAbJCV4YIQrxTOLiig==
+storybook@10.6.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/storybook/-/storybook-10.6.0.tgz#095ec809a6ff7e24ceb8766a9db86dfeb000a94f"
+  integrity sha512-H48X6AURAFTpfN2zEux6vNesee5Oq8Gxj1IanYmblPZ218sfKSeyyerF1NC7GD7BrruoC8L4/cU0zII4y+d6zw==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@storybook/icons" "^2.0.2"
     "@testing-library/dom" "^10.4.1"
     "@testing-library/jest-dom" "6.9.1"
-    "@testing-library/user-event" "^14.6.1"
+    "@testing-library/user-event" "^14.6.3"
     "@vitest/expect" "3.2.4"
     "@vitest/spy" "3.2.4"
     "@webcontainer/env" "^1.1.1"
