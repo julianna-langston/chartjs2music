@@ -2921,10 +2921,10 @@ chartjs-chart-error-bars@4.4.5:
   resolved "https://registry.yarnpkg.com/chartjs-chart-error-bars/-/chartjs-chart-error-bars-4.4.5.tgz#232fe70462c246ce9da47cdca90c003b4a7a0958"
   integrity sha512-JXdPy0AsgllDgjGUG/Kyz4oIFPPqbaa4zgAN+JqhDq0MaYYSCq17467BYDwdJEeOjmPRhtldf/7DF3p8873eTg==
 
-chartjs-chart-matrix@3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/chartjs-chart-matrix/-/chartjs-chart-matrix-3.0.5.tgz#33df79ad2f5b9f782a9fbf3916e447dcc465ac52"
-  integrity sha512-hVqXBEtLoYJk+iA9NajA/ArG7HlPZl3XXNsRDY3c5sCuqSrM6uTythSJh1jVR7UNVApdY9PStb84xSEjEceKaw==
+chartjs-chart-matrix@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-matrix/-/chartjs-chart-matrix-3.1.0.tgz#57c7fb5eefd86e2cdac3481153caecc605c542f8"
+  integrity sha512-pdo8DnhFXOisjbLDgfkzZH1w0xmjGqiaAMgkQSHCEMzxQENsXTgkXImIyweDiO7SqlE5PuzjhklyBCiorQhRmw==
 
 chartjs-chart-wordcloud@4.4.5:
   version "4.4.5"
