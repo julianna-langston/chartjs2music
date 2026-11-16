@@ -15,7 +15,8 @@ ignores: [
     "tslib",
     "ts-jest",  # transformer for jest to work with typescript
     "@types/jest",
-    "canvas"  # without this, Chart.js can't run in the test system
+    "canvas",  # without this, Chart.js can't run in the test system
+    "@kurkle/color"  # explicit because Yarn 1 can drop Chart.js's transitive edge
   ]
 skip-missing: true
 
